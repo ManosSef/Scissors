@@ -17,7 +17,7 @@ public class Scissors {
     public static final JiraAPI JIRA_API = new JiraAPI("https://manossef.atlassian.net/rest/api/2/");
     public static final Gson GSON = new Gson();
 
-    void main() {
+    public static void main(String[] args) {
     }
 
 }
