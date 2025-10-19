@@ -2,7 +2,7 @@ package me.manossef.scissors.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
@@ -17,9 +17,8 @@ public class IssueCommand {
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
         dispatcher.register(Commands.literal("issue")
-            .requires(Commands.devRestricted())
-            .then(Commands.argument("key", StringArgumentType.word())
-                .executes(context -> getIssue(context.getSource(), context.getArgument("key", String.class)))
+            .then(Commands.argument("number", IntegerArgumentType.integer(1))
+                .executes(context -> getIssue(context.getSource(), "SCIS-" + context.getArgument("number", Integer.class)))
             )
         );
 
@@ -29,7 +28,7 @@ public class IssueCommand {
 
         Issue issue = Scissors.JIRA_API.getIssue(issueKey);
         if(issue.id() == null) throw ISSUE_NOT_FOUND.create(issueKey);
-        source.sendSuccess(issue.toString());
+        source.commandMessage().reply(issue.makeEmbed()).queue();
         return 1;
 
     }

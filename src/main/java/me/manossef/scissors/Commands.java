@@ -66,8 +66,8 @@ public class Commands {
         HelpCommand.register(dispatcher);
         PingCommand.register(dispatcher);
         SuggestCommand.register(dispatcher);
-        ListGuildsCommand.register(dispatcher);
         IssueCommand.register(dispatcher);
+        ListGuildsCommand.register(dispatcher);
 
     }
 
