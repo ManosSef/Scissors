@@ -23,7 +23,7 @@ public class Commands {
 
     public static void dispatch(Message message, User user) {
 
-        String command = message.getContentRaw().replaceFirst(SharedConstants.COMMAND_PREFIX, "");
+        String command = message.getContentRaw().replaceFirst(SharedConstants.COMMAND_PREFIX, "").strip();
         MessageChannel channel = message.getChannel();
         source = source.withMessage(message).withUser(user);
         try {
