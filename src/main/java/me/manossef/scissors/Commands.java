@@ -63,10 +63,11 @@ public class Commands {
 
     private static void registerCommands(CommandDispatcher<ChatCommandSource> dispatcher) {
 
+        EchoCommand.register(dispatcher);
         HelpCommand.register(dispatcher);
+        IssueCommand.register(dispatcher);
         PingCommand.register(dispatcher);
         SuggestCommand.register(dispatcher);
-        IssueCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
 
     }
