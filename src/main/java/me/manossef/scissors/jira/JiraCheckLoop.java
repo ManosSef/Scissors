@@ -6,6 +6,7 @@ import me.manossef.scissors.jira.objects.Issue;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JiraCheckLoop implements Runnable {
 
@@ -55,12 +56,12 @@ public class JiraCheckLoop implements Runnable {
         List<Integer> checkedFixed = Arrays.stream(fixedIssues)
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
-            .toList();
+            .collect(Collectors.toList());
         Issue[] invalidIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution IN (Invalid, \"Won't Do\", \"Works as Intended\") ORDER BY created ASC", "id,key,resolution").issues();
         List<Integer> checkedInvalid = Arrays.stream(invalidIssues)
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
-            .toList();
+            .collect(Collectors.toList());
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
         System.out.println("Checked issues, found: " + found);
         return found;
