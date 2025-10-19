@@ -8,7 +8,7 @@ public class SharedConstants {
 
     public static final long MY_USER_ID = 611151083141857286L;
 
-    public static final String COMMAND_PREFIX = ">";
+    public static final String COMMAND_PREFIX = "8<";
 
     public static final String ISSUETYPE_BUG_ID = "10009";
     public static final String ISSUETYPE_FEATURE_ID = "10048";
