@@ -21,9 +21,12 @@ public class Scissors {
         .build();
     public static final JiraAPI JIRA_API = new JiraAPI("https://manossef.atlassian.net/rest/api/2/");
     public static final Gson GSON = new Gson();
+    public static boolean isReady = false;
 
     public static void main(String[] args) {
 
+        do {
+        } while(!isReady);
         JiraCheckLoop.CheckedIssues checkedIssues = getCheckedIssues();
         if(checkedIssues == null) checkedIssues = new JiraCheckLoop.CheckedIssues(new ArrayList<>(), new ArrayList<>());
         Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues));

@@ -25,10 +25,12 @@ public class JiraCheckLoop implements Runnable {
             CheckedIssues newChecked = this.checkIssues();
             List<Integer> uncheckedFixed = newChecked.checkedFixed;
             uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
+            System.out.println("To post in #done-issues: " + uncheckedFixed);
             for(Integer number : uncheckedFixed)
                 DevGuild.logDoneIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
             List<Integer> uncheckedInvalid = newChecked.checkedInvalid;
             uncheckedInvalid.removeAll(this.checkedIssues.checkedInvalid);
+            System.out.println("To post in #invalid-issues: " + uncheckedInvalid);
             for(Integer number : uncheckedInvalid)
                 DevGuild.logInvalidIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
             this.checkedIssues = newChecked;
@@ -59,7 +61,9 @@ public class JiraCheckLoop implements Runnable {
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
             .toList();
-        return new CheckedIssues(checkedFixed, checkedInvalid);
+        CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
+        System.out.println("Checked issues, found: " + found);
+        return found;
 
     }
 
