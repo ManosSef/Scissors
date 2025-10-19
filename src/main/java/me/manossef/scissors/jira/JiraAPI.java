@@ -1,10 +1,12 @@
 package me.manossef.scissors.jira;
 
+import kong.unirest.core.GetRequest;
 import kong.unirest.core.JsonNode;
 import kong.unirest.core.Unirest;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.jira.objects.Issue;
+import me.manossef.scissors.jira.objects.SearchResults;
 
 public record JiraAPI(String baseUrl) {
 
@@ -29,6 +31,18 @@ public record JiraAPI(String baseUrl) {
 
     }
 
+    public SearchResults searchIssues(String jql, String fields) {
+
+        JsonNode node = getRequest("search/jql")
+            .queryString("jql", jql)
+            .queryString("maxResults", "1000")
+            .queryString("fields", fields)
+            .asJson()
+            .getBody();
+        return Scissors.GSON.fromJson(node.toString(), SearchResults.class);
+
+    }
+
     public Issue createIssue(String summary, String description, Issue.Fields.Issuetype issuetype, Issue.Fields.Project project, String reporterUserID) {
 
         JsonNode node = post("issue", Scissors.GSON.toJson(new Issue(null, null, new Issue.Fields(
@@ -40,11 +54,17 @@ public record JiraAPI(String baseUrl) {
 
     private JsonNode get(String endpoint) {
 
-        return Unirest.get(baseUrl + endpoint)
-            .basicAuth(SharedConstants.JIRA_EMAIL, SharedConstants.JIRA_API_TOKEN)
-            .header("Accept", "application/json")
+        return getRequest(endpoint)
             .asJson()
             .getBody();
+
+    }
+
+    private GetRequest getRequest(String endpoint) {
+
+        return Unirest.get(baseUrl + endpoint)
+            .basicAuth(SharedConstants.JIRA_EMAIL, SharedConstants.JIRA_API_TOKEN)
+            .header("Accept", "application/json");
 
     }
 

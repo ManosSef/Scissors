@@ -1,12 +1,17 @@
 package me.manossef.scissors;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import me.manossef.scissors.jira.JiraAPI;
+import me.manossef.scissors.jira.JiraCheckLoop;
 import me.manossef.scissors.listeners.CommandListener;
 import me.manossef.scissors.listeners.Startup;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+
+import java.io.*;
+import java.util.ArrayList;
 
 public class Scissors {
 
@@ -18,6 +23,57 @@ public class Scissors {
     public static final Gson GSON = new Gson();
 
     public static void main(String[] args) {
+
+        JiraCheckLoop.CheckedIssues checkedIssues = getCheckedIssues();
+        if(checkedIssues == null) checkedIssues = new JiraCheckLoop.CheckedIssues(new ArrayList<>(), new ArrayList<>());
+        Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues));
+        try {
+
+            jiraCheckLoop.join();
+
+        } catch(InterruptedException e) {
+
+            System.err.println("The thread was interrupted!");
+
+        }
+
+    }
+
+    private static JiraCheckLoop.CheckedIssues getCheckedIssues() {
+
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(SharedConstants.CHECKED_ISSUES_FILE_NAME));
+            StringBuilder builder = new StringBuilder();
+            String line;
+            while((line = reader.readLine()) != null)
+                builder.append(line).append("\n");
+            reader.close();
+            return GSON.fromJson(builder.toString(), JiraCheckLoop.CheckedIssues.class);
+
+        } catch(IOException | JsonSyntaxException e) {
+
+            System.err.println("Failed to read the checked_issues.json file.");
+            return null;
+
+        }
+
+    }
+
+    public static void saveCheckedIssues(JiraCheckLoop.CheckedIssues checkedIssues) {
+
+        try {
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(SharedConstants.CHECKED_ISSUES_FILE_NAME));
+            writer.write(GSON.toJson(checkedIssues));
+            writer.close();
+
+        } catch(IOException e) {
+
+            System.err.println("Failed to save the checked_issues.json file.");
+
+        }
+
     }
 
 }
