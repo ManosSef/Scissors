@@ -40,7 +40,7 @@ public class RockPaperScissorsCommand {
                     case SCISSORS -> Move.PAPER;
 
                 };
-                source.sendSuccess("I chose **" + botMove.name + "**! I win!" + (botMove == Move.SCISSORS ? " *Yay! I win with scissors again! I mean, that was expected.*" : ""));
+                source.sendSuccess("I chose **" + botMove.name + "**! You win!" + (botMove == Move.SCISSORS ? " *What?! How did I lose with scissors? This must be a glitch...*" : ""));
 
             }
             case 1 -> {
@@ -52,7 +52,7 @@ public class RockPaperScissorsCommand {
                     case SCISSORS -> Move.ROCK;
 
                 };
-                source.sendSuccess("I chose **" + botMove.name + "**! You win!" + (botMove == Move.SCISSORS ? " *What?! How did I lose with scissors? This must be a glitch...*" : ""));
+                source.sendSuccess("I chose **" + botMove.name + "**! I win!" + (botMove == Move.SCISSORS ? " *Yay! I win with scissors again! I mean, that was expected.*" : ""));
 
             }
 
