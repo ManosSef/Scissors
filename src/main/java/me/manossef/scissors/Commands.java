@@ -67,6 +67,7 @@ public class Commands {
         HelpCommand.register(dispatcher);
         IssueCommand.register(dispatcher);
         PingCommand.register(dispatcher);
+        RockPaperScissorsCommand.register(dispatcher);
         RollCommand.register(dispatcher);
         SuggestCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);

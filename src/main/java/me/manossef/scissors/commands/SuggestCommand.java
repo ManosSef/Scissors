@@ -47,7 +47,7 @@ public class SuggestCommand {
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
             "Reported by " + source.user().getName() + " (" + source.user().getId() + ")\nOriginal message: https://discordapp.com/channels/" + source.commandMessage().getGuildId() + "/" + source.commandMessage().getChannelId() + "/" + source.commandMessage().getId(),
-            Scissors.JIRA_API.getIssuetype(type.getID()),
+            Scissors.JIRA_API.getIssuetype(type.id),
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
             source.user().getId()
         );
@@ -68,12 +68,6 @@ public class SuggestCommand {
         IssueType(String id) {
 
             this.id = id;
-
-        }
-
-        public String getID() {
-
-            return this.id;
 
         }
 
