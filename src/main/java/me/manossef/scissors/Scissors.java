@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Scissors {
 
@@ -21,6 +22,7 @@ public class Scissors {
         .build();
     public static final JiraAPI JIRA_API = new JiraAPI("https://manossef.atlassian.net/rest/api/2/");
     public static final Gson GSON = new Gson();
+    public static final Random RANDOM = new Random();
 
     public static void main(String[] args) {
 
