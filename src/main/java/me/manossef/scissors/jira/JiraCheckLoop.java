@@ -4,9 +4,9 @@ import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JiraCheckLoop implements Runnable {
 
@@ -24,12 +24,12 @@ public class JiraCheckLoop implements Runnable {
         while(true) {
 
             CheckedIssues newChecked = this.checkIssues();
-            List<Integer> uncheckedFixed = newChecked.checkedFixed;
+            List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
             uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
             System.out.println("To post in #done-issues: " + uncheckedFixed);
             for(Integer number : uncheckedFixed)
                 DevGuild.logDoneIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
-            List<Integer> uncheckedInvalid = newChecked.checkedInvalid;
+            List<Integer> uncheckedInvalid = new ArrayList<>(newChecked.checkedInvalid);
             uncheckedInvalid.removeAll(this.checkedIssues.checkedInvalid);
             System.out.println("To post in #invalid-issues: " + uncheckedInvalid);
             for(Integer number : uncheckedInvalid)
@@ -56,12 +56,12 @@ public class JiraCheckLoop implements Runnable {
         List<Integer> checkedFixed = Arrays.stream(fixedIssues)
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
-            .collect(Collectors.toList());
+            .toList();
         Issue[] invalidIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution IN (Invalid, \"Won't Do\", \"Works as Intended\") ORDER BY created ASC", "id,key,resolution").issues();
         List<Integer> checkedInvalid = Arrays.stream(invalidIssues)
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
-            .collect(Collectors.toList());
+            .toList();
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
         System.out.println("Checked issues, found: " + found);
         return found;
