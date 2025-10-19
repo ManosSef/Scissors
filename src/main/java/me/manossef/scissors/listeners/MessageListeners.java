@@ -11,6 +11,7 @@ public class MessageListeners extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
 
         Message message = event.getMessage();
+        if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         if(message.getContentRaw().toLowerCase().contains("paper"))
             message.addReaction(Emoji.fromUnicode("✂️")).queue();
 
