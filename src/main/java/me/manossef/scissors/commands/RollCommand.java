@@ -1,6 +1,7 @@
 package me.manossef.scissors.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -10,8 +11,8 @@ import me.manossef.scissors.Scissors;
 
 public class RollCommand {
 
-    private static final SimpleCommandExceptionType MAX_LESS_THAN_1 = new SimpleCommandExceptionType(() -> "The maximum value cannot be less than 1");
-    private static final SimpleCommandExceptionType MAX_LESS_THAN_MIN = new SimpleCommandExceptionType(() -> "The maximum value cannot be less than the minimum value");
+    private static final SimpleCommandExceptionType MAX_LESS_THAN_1 = new SimpleCommandExceptionType(new LiteralMessage("The maximum value cannot be less than 1"));
+    private static final SimpleCommandExceptionType MAX_LESS_THAN_MIN = new SimpleCommandExceptionType(new LiteralMessage("The maximum value cannot be less than the minimum value"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
