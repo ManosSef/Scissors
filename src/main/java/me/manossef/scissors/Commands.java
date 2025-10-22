@@ -41,9 +41,9 @@ public class Commands {
             source.sendError(e.getMessage());
             StringBuilder stackTrace = new StringBuilder();
             for(StackTraceElement element : e.getStackTrace())
-                stackTrace.append("\tat ").append(element.toString()).append("\n");
-            DevGuild.logCommand(user.getName() + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception:```" +
-                e.getClass().getName() + ": " + e.getMessage() + "\n" + stackTrace + "```");
+                stackTrace.append("\t`at ").append(element.toString()).append("`\n");
+            DevGuild.logCommand(user.getName() + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception: `" +
+                e.getClass().getName() + ": " + e.getMessage() + "`\n" + stackTrace);
 
         }
 
