@@ -63,6 +63,7 @@ public class Commands {
 
     private static void registerCommands(CommandDispatcher<ChatCommandSource> dispatcher) {
 
+        CoinflipCommand.register(dispatcher);
         EchoCommand.register(dispatcher);
         HelpCommand.register(dispatcher);
         IssueCommand.register(dispatcher);
