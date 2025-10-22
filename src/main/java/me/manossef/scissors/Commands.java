@@ -33,15 +33,16 @@ public class Commands {
         String command = message.getContentRaw().replaceFirst(SharedConstants.COMMAND_PREFIX, "").strip();
         MessageChannel channel = message.getChannel();
         source = source.withMessage(message).withUser(user);
+        String username = user.getName().replace("_", "\\_");
         try {
 
             int result = DISPATCHER.execute(command, source);
-            DevGuild.logCommand(user.getName() + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and succeeded with return value " + result);
+            DevGuild.logCommand(username + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and succeeded with return value " + result);
 
         } catch(CommandSyntaxException e) {
 
             source.sendFailure(e.getMessage());
-            DevGuild.logCommand(user.getName() + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and failed");
+            DevGuild.logCommand(username + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and failed");
 
         } catch(Exception e) {
 
@@ -49,7 +50,7 @@ public class Commands {
             StringBuilder stackTrace = new StringBuilder();
             for(StackTraceElement element : e.getStackTrace())
                 stackTrace.append("\t`at ").append(element.toString()).append("`\n");
-            DevGuild.logCommand(user.getName() + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception: `" +
+            DevGuild.logCommand(username + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception: `" +
                 e.getClass().getName() + ": " + e.getMessage() + "`\n" + stackTrace);
 
         }
