@@ -75,6 +75,7 @@ public class Commands {
         CoinflipCommand.register(dispatcher);
         EchoCommand.register(dispatcher);
         HelpCommand.register(dispatcher);
+        InfoCommand.register(dispatcher);
         IssueCommand.register(dispatcher);
         PingCommand.register(dispatcher);
         RockPaperScissorsCommand.register(dispatcher);
