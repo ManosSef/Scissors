@@ -19,7 +19,9 @@ public class HelpCommand {
 
         String[] usage = dispatcher.getAllUsage(dispatcher.getRoot(), source, true);
         StringBuilder builder = new StringBuilder();
-        for(String line : usage) builder.append("- `" + SharedConstants.COMMAND_PREFIX).append(line).append("`\n");
+        for(String line : usage)
+            if(Character.isLowerCase(line.charAt(0)))
+                builder.append("- `" + SharedConstants.COMMAND_PREFIX).append(line).append("`\n");
         source.sendSuccess("All commands:\n" + builder);
         return usage.length;
 
