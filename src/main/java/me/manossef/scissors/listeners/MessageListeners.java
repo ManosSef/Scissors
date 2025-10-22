@@ -36,7 +36,13 @@ public class MessageListeners extends ListenerAdapter {
 
             if(Scissors.RANDOM.nextInt(10) == 0 && channel.canTalk()
                 && !(channel.getName().toLowerCase().contains("counting") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting"))))
-                message.reply(GPPCT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_RESPONSES.size()))).queue();
+                channel.sendMessage(GPPCT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_RESPONSES.size()))).setMessageReference(message).mentionRepliedUser(false).queue();
+
+        }
+        if(content.toLowerCase().contains("scissors")) {
+
+            if(Scissors.RANDOM.nextInt(5) == 0 && channel.canTalk())
+                channel.sendMessage("RAHHH!").setMessageReference(message).mentionRepliedUser(false).queue();
 
         }
         if(content.toLowerCase().contains("paper"))
