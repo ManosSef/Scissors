@@ -32,7 +32,7 @@ public class SquaredleCommand {
         if(todayConfig == null) throw CONFIG_NOT_FOUND.create();
         String date = todayConfig.currentDate();
         PuzzleData puzzle = todayConfig.puzzles().get(date + (xp ? "-xp" : ""));
-        source.sendSuccess("**Daily " + (xp ? "xp " : "") + date.replace("/", "-") + "\n" + PuzzleUtil.getMessageText(puzzle));
+        source.sendSuccess("**Daily " + (xp ? "xp " : "") + date.replace("/", "-") + "**\n" + PuzzleUtil.getMessageText(puzzle));
         return 1;
 
     }

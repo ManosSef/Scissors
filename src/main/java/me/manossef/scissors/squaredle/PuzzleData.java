@@ -27,16 +27,18 @@ public record PuzzleData(String[] board, String wordScores, String optionalWordS
 
     public String censoredWOTD() {
 
-        char[] letters = wordOfTheDay.term.toCharArray();
-        for(int d = 2; d < letters.length; d++) {
-
-            if((1 == d % 4 || 2 == d % 4 || 3 == d) && d < letters.length - 2)
-                letters[d] = '*';
-            if(6 > letters.length)
-                letters[3] = '*';
-
-        }
-        return new String(letters);
+        String word = wordOfTheDay.term;
+        int length = word.length();
+        String n = "*".repeat(length);
+        int p = 2;
+        if(12 <= length) p = 3;
+        n = word.substring(0, p) + n.substring(p);
+        p = 0;
+        if(10 <= length) p = 3;
+        else if(8 <= length) p = 2;
+        else if(7 == length) p = 1;
+        n = n.substring(0, length - p) + word.substring(length - p);
+        return n;
 
     }
 

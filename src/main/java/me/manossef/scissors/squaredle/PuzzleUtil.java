@@ -1,5 +1,6 @@
 package me.manossef.scissors.squaredle;
 
+import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.util.Arrays;
@@ -15,7 +16,7 @@ public class PuzzleUtil {
         for(String row : puzzle.board()) {
 
             for(char letter : row.toCharArray())
-                builder.append(getEmojiForLetter(letter)).append(" ");
+                builder.append(getEmojiForLetter(letter).getAsMention()).append(" ");
             builder.append("\n");
 
         }
@@ -57,7 +58,7 @@ public class PuzzleUtil {
 
     }
 
-    private static Emoji getEmojiForLetter(char letter) {
+    private static CustomEmoji getEmojiForLetter(char letter) {
 
         return switch(letter) {
 
