@@ -11,12 +11,13 @@ import me.manossef.scissors.Scissors;
 
 public class RollCommand {
 
+    private static final SimpleCommandExceptionType MAX_LESS_THAN_1 = new SimpleCommandExceptionType(new LiteralMessage("The maximum value cannot be less than 1"));
     private static final SimpleCommandExceptionType MAX_LESS_THAN_MIN = new SimpleCommandExceptionType(new LiteralMessage("The maximum value cannot be less than the minimum value"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
         dispatcher.register(Commands.literal("roll")
-            .then(Commands.argument("max", IntegerArgumentType.integer(1))
+            .then(Commands.argument("max", IntegerArgumentType.integer())
                 .executes(context -> roll(context.getSource(), context.getArgument("max", Integer.class)))
             )
             .then(Commands.argument("min", IntegerArgumentType.integer())
@@ -30,6 +31,7 @@ public class RollCommand {
 
     private static int roll(ChatCommandSource source, int max) throws CommandSyntaxException {
 
+        if(max < 1) throw MAX_LESS_THAN_1.create();
         return roll(source, 1, max);
 
     }
