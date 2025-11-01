@@ -80,6 +80,7 @@ public class Commands {
         PingCommand.register(dispatcher);
         RockPaperScissorsCommand.register(dispatcher);
         RollCommand.register(dispatcher);
+        SquaredleCommand.register(dispatcher);
         SuggestCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
 
