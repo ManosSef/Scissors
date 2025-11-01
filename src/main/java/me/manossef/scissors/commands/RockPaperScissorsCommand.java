@@ -11,11 +11,11 @@ public class RockPaperScissorsCommand {
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
         LiteralCommandNode<ChatCommandSource> node = dispatcher.register(Commands.literal("rockpaperscissors")
-            .then(Commands.literal("rock")
-                .executes(context -> rockPaperScissors(context.getSource(), Move.ROCK))
-            )
             .then(Commands.literal("paper")
                 .executes(context -> rockPaperScissors(context.getSource(), Move.PAPER))
+            )
+            .then(Commands.literal("rock")
+                .executes(context -> rockPaperScissors(context.getSource(), Move.ROCK))
             )
             .then(Commands.literal("scissors")
                 .executes(context -> rockPaperScissors(context.getSource(), Move.SCISSORS))
