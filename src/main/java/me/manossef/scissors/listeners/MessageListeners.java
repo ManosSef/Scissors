@@ -7,23 +7,34 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MessageListeners extends ListenerAdapter {
 
-    private static final List<String> GPPCT_RESPONSES = new ArrayList<>() {{
-
-        add("As part of the Great Purge of Pointless Counting Threads (GPPCT), this channel has been closed due to the following criteria: **Not a counting channel.**");
-        add("RAHHH! No counting!");
-        add("I don't even get where's the fun in counting channels");
-        add("Be careful not to stationary zero too much or you might end up with zero brain cells");
-        add("Whoever invented the term \"stationary zeroing\" anyway?");
-        add("I hope this is hardcore counting so you are prevented from doing that again");
-        add("Reminder that this is not a counting channel");
-        add("What channel is this again?");
-
-    }};
+    private static final List<String> GPPCT_RESPONSES = List.of(
+        "As part of the Great Purge of Pointless Counting Threads (GPPCT), this channel has been closed due to the following criteria: **Not a counting channel.**",
+        "RAHHH! No counting!",
+        "I don't even get where's the fun in counting channels",
+        "Be careful not to stationary zero too much or you might end up with zero brain cells",
+        "Whoever invented the term \"stationary zeroing\" anyway?",
+        "I hope this is hardcore counting so you are prevented from doing that again",
+        "Reminder that this is not a counting channel",
+        "What channel is this again?",
+        "WHAT DID I SAY ABOUT COUNTING?",
+        "HEY STOP IT",
+        "I HOPE YOU GET BANNED FOR SPAMMING",
+        "What's the punishment for spamming again?",
+        "Did I miss this channel being renamed to #arbitrary-counting?",
+        "BRO WHAT'S WITH YOU AND NUMBERS",
+        "I'm made of numbers and I don't like them",
+        "Right, now you have to be doing it on purpose",
+        "Are you kidding me",
+        "I'm gonna call the GPPCT police",
+        "You know what, I guess you can keep doing it, it's not like I can stop you",
+        "This isn't #counting, is it?",
+        "Oh my goodness! Is that... a... a... *number*?",
+        "Is that your age?"
+    );
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
