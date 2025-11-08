@@ -37,7 +37,8 @@ public class MessageListeners extends ListenerAdapter {
         "\uD83D\uDE21",
         "Don't you have anything better to do?",
         "NO COUNTING NO COUNTING NO COUNTING NO COUNTING",
-        "YOU HAVE TO BE RAGEBAITING RIGHT NOW"
+        "YOU HAVE TO BE RAGEBAITING RIGHT NOW",
+        "Ah yes, counting... I used to like it, until it corrupted me"
     );
     private static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",

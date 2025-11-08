@@ -36,8 +36,6 @@ public abstract class Game extends ListenerAdapter {
 
     }
 
-    public abstract boolean hasStarted();
-
     public abstract void start();
 
     public abstract void end();

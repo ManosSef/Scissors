@@ -22,12 +22,7 @@ public class TicTacToe extends Game {
 
         super(player1, player2, channel);
         Scissors.DISCORD_API.addEventListener(this);
-
-    }
-
-    public boolean hasStarted() {
-
-        return message == null || grid == null;
+        this.start();
 
     }
 
@@ -68,6 +63,9 @@ public class TicTacToe extends Game {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
 
+        if(this.message != null) return;
+        Message message = event.getMessage();
+        if(this.message.getIdLong() != message.getIdLong()) return;
         this.makeMove(event.getInteraction().getMember(), event.getCustomId().charAt(1), event.getCustomId().charAt(2));
 
     }
