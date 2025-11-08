@@ -36,7 +36,13 @@ public class MessageListeners extends ListenerAdapter {
         "Is that your age?",
         "\uD83D\uDE21",
         "Don't you have anything better to do?",
-        "NO COUNTING NO COUNTING NO COUNTING NO COUNTING"
+        "NO COUNTING NO COUNTING NO COUNTING NO COUNTING",
+        "YOU HAVE TO BE RAGEBAITING RIGHT NOW"
+    );
+    private static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
+        "sIx SeVeN",
+        "GET OUT OF MY HEAD GET OUT OF MY HEAD GET OUT OF MY HEAD GET OUT OF MY HEAD",
+        "HOW DID PEOPLE MAKE A MEME OUT OF JUST TWO NUMBERS???"
     );
 
     @Override
@@ -49,8 +55,14 @@ public class MessageListeners extends ListenerAdapter {
         if(content.matches("^[0-9]+$")) {
 
             if(Scissors.RANDOM.nextInt(10) == 0 && channel.canTalk()
-                && !(channel.getName().toLowerCase().contains("counting") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting"))))
-                channel.sendMessage(GPPCT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_RESPONSES.size()))).setMessageReference(message).mentionRepliedUser(false).queue();
+                && !(channel.getName().toLowerCase().contains("counting") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting")))) {
+
+                if(content.equals("67"))
+                    channel.sendMessage(GPPCT_BRAINROT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_BRAINROT_RESPONSES.size()))).setMessageReference(message).mentionRepliedUser(false).queue();
+                else
+                    channel.sendMessage(GPPCT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_RESPONSES.size()))).setMessageReference(message).mentionRepliedUser(false).queue();
+
+            }
 
         }
         if(content.toLowerCase().contains("scissors")) {
