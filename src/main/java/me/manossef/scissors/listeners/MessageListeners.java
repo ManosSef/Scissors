@@ -35,7 +35,8 @@ public class MessageListeners extends ListenerAdapter {
         "Oh my goodness! Is that... a... a... *number*?",
         "Is that your age?",
         "\uD83D\uDE21",
-        "Don't you have anything better to do?"
+        "Don't you have anything better to do?",
+        "NO COUNTING NO COUNTING NO COUNTING NO COUNTING"
     );
 
     @Override

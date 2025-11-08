@@ -53,15 +53,21 @@ public class JiraCheckLoop implements Runnable {
     private CheckedIssues checkIssues() {
 
         Issue[] fixedIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution = Done ORDER BY created ASC", "id,key").issues();
-        List<Integer> checkedFixed = Arrays.stream(fixedIssues)
+        List<Integer> checkedFixed;
+        if(fixedIssues != null)
+            checkedFixed = Arrays.stream(fixedIssues)
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
             .toList();
+        else checkedFixed = new ArrayList<>();
         Issue[] invalidIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution IN (Invalid, \"Won't Do\", \"Works as Intended\") ORDER BY created ASC", "id,key,resolution").issues();
-        List<Integer> checkedInvalid = Arrays.stream(invalidIssues)
+        List<Integer> checkedInvalid;
+        if(invalidIssues != null)
+            checkedInvalid = Arrays.stream(invalidIssues)
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
             .toList();
+        else checkedInvalid = new ArrayList<>();
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
         System.out.println("Checked issues, found: " + found);
         return found;
