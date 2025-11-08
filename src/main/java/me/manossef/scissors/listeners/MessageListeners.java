@@ -33,7 +33,8 @@ public class MessageListeners extends ListenerAdapter {
         "You know what, I guess you can keep doing it, it's not like I can stop you",
         "This isn't #counting, is it?",
         "Oh my goodness! Is that... a... a... *number*?",
-        "Is that your age?"
+        "Is that your age?",
+        "\uD83D\uDE21"
     );
 
     @Override
