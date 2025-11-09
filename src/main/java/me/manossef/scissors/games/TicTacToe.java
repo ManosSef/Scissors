@@ -63,7 +63,7 @@ public class TicTacToe extends Game {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
 
-        if(this.message != null) return;
+        if(this.message == null) return;
         Message message = event.getMessage();
         if(this.message.getIdLong() != message.getIdLong()) return;
         this.makeMove(event.getInteraction().getMember(), event.getCustomId().charAt(1), event.getCustomId().charAt(2));
