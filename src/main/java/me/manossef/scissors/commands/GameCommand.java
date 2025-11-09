@@ -19,14 +19,14 @@ public class GameCommand {
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
         dispatcher.register(Commands.literal("game")
-            .then(Commands.literal("tictactoe")
-                .then(Commands.argument("opponent", UserArgument.user())
-                    .executes(context -> startTicTacToeGame(context.getSource(), context.getArgument("opponent", User.class)))
-                )
-            )
             .then(Commands.literal("rps")
                 .then(Commands.argument("opponent", UserArgument.user())
                     .executes(context -> startRockPaperScissorsGame(context.getSource(), context.getArgument("opponent", User.class)))
+                )
+            )
+            .then(Commands.literal("tictactoe")
+                .then(Commands.argument("opponent", UserArgument.user())
+                    .executes(context -> startTicTacToeGame(context.getSource(), context.getArgument("opponent", User.class)))
                 )
             )
         );
