@@ -52,7 +52,7 @@ public class TicTacToe extends Game {
         if(this.message != null) return;
         Message message = event.getMessage();
         if(message.getAuthor().getIdLong() != Scissors.DISCORD_API.getSelfUser().getIdLong()) return;
-        if(!message.getEmbeds().isEmpty()) return;
+        if(message.getEmbeds().isEmpty()) return;
         String title = message.getEmbeds().get(0).getTitle();
         if(title == null) return;
         if(!title.contains("Tic-tac-toe")) return;
