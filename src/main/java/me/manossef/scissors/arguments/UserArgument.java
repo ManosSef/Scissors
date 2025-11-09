@@ -25,7 +25,7 @@ public class UserArgument implements ArgumentType<User> {
     @Override
     public User parse(StringReader reader) throws CommandSyntaxException {
 
-        String remaining = reader.getRemaining();
+        String remaining = reader.getRemaining().split(" ")[0];
         if(this.isLong(remaining)) {
 
             reader.setCursor(reader.getCursor() + remaining.length());
