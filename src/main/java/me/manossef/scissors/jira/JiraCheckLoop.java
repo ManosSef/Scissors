@@ -59,7 +59,7 @@ public class JiraCheckLoop implements Runnable {
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
             .toList();
-        else checkedFixed = new ArrayList<>();
+        else checkedFixed = this.checkedIssues.checkedFixed;
         Issue[] invalidIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution IN (Invalid, \"Won't Do\", \"Works as Intended\") ORDER BY created ASC", "id,key,resolution").issues();
         List<Integer> checkedInvalid;
         if(invalidIssues != null)
@@ -67,7 +67,7 @@ public class JiraCheckLoop implements Runnable {
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
             .toList();
-        else checkedInvalid = new ArrayList<>();
+        else checkedInvalid = this.checkedIssues.checkedInvalid;
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
         System.out.println("Checked issues, found: " + found);
         return found;
