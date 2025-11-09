@@ -59,6 +59,7 @@ public class RockPaperScissors extends Game {
         if(this.message == null) return;
         Message message = event.getMessage();
         if(this.message.getIdLong() != message.getIdLong()) return;
+        event.getInteraction().deferEdit().queue();
         this.makeMove(event.getInteraction().getMember(), switch(event.getCustomId()) {
 
             case "20" -> Move.ROCK;
@@ -67,7 +68,6 @@ public class RockPaperScissors extends Game {
             default -> null;
 
         });
-        event.getInteraction().deferEdit().queue();
 
     }
 

@@ -12,11 +12,14 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
+import java.util.Objects;
+
 public class TicTacToe extends Game {
 
     private static final CustomEmoji TICTACTOE_EMOJI = Emoji.fromCustom("tictactoe", 1436395840276135936L, true);
     private Message message;
     private char[][] grid;
+    private boolean player1MovedLast;
 
     public TicTacToe(User player1, User player2, MessageChannel channel) {
 
@@ -66,8 +69,12 @@ public class TicTacToe extends Game {
         if(this.message == null) return;
         Message message = event.getMessage();
         if(this.message.getIdLong() != message.getIdLong()) return;
-        this.makeMove(event.getInteraction().getMember(), event.getCustomId().charAt(1), event.getCustomId().charAt(2));
         event.getInteraction().deferEdit().queue();
+        if(Objects.requireNonNull(event.getInteraction().getMember()).getIdLong() == this.getPlayer1().getIdLong() && this.player1MovedLast)
+            return;
+        if(Objects.requireNonNull(event.getInteraction().getMember()).getIdLong() == this.getPlayer2().getIdLong() && !this.player1MovedLast)
+            return;
+        this.makeMove(event.getInteraction().getMember(), Integer.parseInt(String.valueOf(event.getCustomId().charAt(1))), Integer.parseInt(String.valueOf(event.getCustomId().charAt(2))));
 
     }
 
@@ -79,6 +86,7 @@ public class TicTacToe extends Game {
         else if(member.getIdLong() == this.getPlayer2().getIdLong()) mark = 'O';
         else return;
         grid[row][column] = mark;
+        this.player1MovedLast = !this.player1MovedLast;
         this.update();
 
     }
