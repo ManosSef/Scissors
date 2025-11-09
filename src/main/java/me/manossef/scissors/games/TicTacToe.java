@@ -171,13 +171,4 @@ public class TicTacToe extends Game {
 
     }
 
-    private enum Status {
-
-        ONGOING,
-        PLAYER_1_WON,
-        PLAYER_2_WON,
-        DRAW
-
-    }
-
 }

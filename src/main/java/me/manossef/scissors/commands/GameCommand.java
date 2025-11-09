@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.arguments.UserArgument;
+import me.manossef.scissors.games.RockPaperScissors;
 import me.manossef.scissors.games.TicTacToe;
 import net.dv8tion.jda.api.entities.User;
 
@@ -23,6 +24,11 @@ public class GameCommand {
                     .executes(context -> startTicTacToeGame(context.getSource(), context.getArgument("opponent", User.class)))
                 )
             )
+            .then(Commands.literal("rps")
+                .then(Commands.argument("opponent", UserArgument.user())
+                    .executes(context -> startRockPaperScissorsGame(context.getSource(), context.getArgument("opponent", User.class)))
+                )
+            )
         );
 
     }
@@ -33,6 +39,16 @@ public class GameCommand {
         if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();
         source.sendSuccess("Starting a tic-tac-toe game with " + user.getAsMention());
         new TicTacToe(source.user(), user, source.commandMessage().getChannel());
+        return 1;
+
+    }
+
+    private static int startRockPaperScissorsGame(ChatCommandSource source, User user) throws CommandSyntaxException {
+
+        if(user == null) throw USER_NOT_FOUND.create();
+        if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();
+        source.sendSuccess("Starting a game of rock paper scissors with " + user.getAsMention());
+        new RockPaperScissors(source.user(), user, source.commandMessage().getChannel());
         return 1;
 
     }

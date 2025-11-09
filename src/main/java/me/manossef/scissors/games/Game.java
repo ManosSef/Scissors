@@ -40,4 +40,13 @@ public abstract class Game extends ListenerAdapter {
 
     public abstract void end();
 
+    public enum Status {
+
+        ONGOING,
+        PLAYER_1_WON,
+        PLAYER_2_WON,
+        DRAW
+
+    }
+
 }
