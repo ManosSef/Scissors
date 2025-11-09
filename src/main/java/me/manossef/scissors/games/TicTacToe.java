@@ -28,6 +28,7 @@ public class TicTacToe extends Game {
 
     public void start() {
 
+        this.grid = new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(
             new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), this.getGridFormat(), EmbedType.RICH, null, 0xDE6868,
                 null, null, null, null, null, null, null)
@@ -36,7 +37,6 @@ public class TicTacToe extends Game {
             ActionRow.of(Button.success("110", TICTACTOE_EMOJI), Button.success("111", TICTACTOE_EMOJI), Button.success("112", TICTACTOE_EMOJI)),
             ActionRow.of(Button.success("120", TICTACTOE_EMOJI), Button.success("121", TICTACTOE_EMOJI), Button.success("122", TICTACTOE_EMOJI))
         ).queue();
-        this.grid = new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
 
     }
 
