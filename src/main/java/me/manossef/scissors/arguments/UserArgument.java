@@ -29,7 +29,7 @@ public class UserArgument implements ArgumentType<User> {
         if(this.isLong(remaining)) {
 
             reader.setCursor(reader.getCursor() + remaining.length());
-            return Scissors.DISCORD_API.getUserById(Long.parseLong(remaining));
+            return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(remaining)).complete();
 
         }
         if(remaining.startsWith("<@") && remaining.endsWith(">")) {
@@ -38,14 +38,14 @@ public class UserArgument implements ArgumentType<User> {
             if(this.isLong(middle)) {
 
                 reader.setCursor(reader.getCursor() + remaining.length());
-                return Scissors.DISCORD_API.getUserById(Long.parseLong(middle));
+                return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(middle)).complete();
 
             }
             String legacyMiddle = middle.replaceFirst("!", "");
             if(middle.startsWith("!") && this.isLong(legacyMiddle)) {
 
                 reader.setCursor(reader.getCursor() + remaining.length());
-                return Scissors.DISCORD_API.getUserById(Long.parseLong(legacyMiddle));
+                return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(legacyMiddle)).complete();
 
             }
 
