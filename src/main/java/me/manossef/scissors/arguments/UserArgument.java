@@ -26,16 +26,28 @@ public class UserArgument implements ArgumentType<User> {
     public User parse(StringReader reader) throws CommandSyntaxException {
 
         String remaining = reader.getRemaining();
-        if(this.isLong(remaining))
+        if(this.isLong(remaining)) {
+
+            reader.setCursor(reader.getCursor() + remaining.length());
             return Scissors.DISCORD_API.getUserById(Long.parseLong(remaining));
+
+        }
         if(remaining.startsWith("<@") && remaining.endsWith(">")) {
 
             String middle = remaining.substring(2, remaining.length() - 1);
-            if(this.isLong(middle))
+            if(this.isLong(middle)) {
+
+                reader.setCursor(reader.getCursor() + remaining.length());
                 return Scissors.DISCORD_API.getUserById(Long.parseLong(middle));
+
+            }
             String legacyMiddle = middle.replaceFirst("!", "");
-            if(middle.startsWith("!") && this.isLong(legacyMiddle))
-                Scissors.DISCORD_API.getUserById(Long.parseLong(legacyMiddle));
+            if(middle.startsWith("!") && this.isLong(legacyMiddle)) {
+
+                reader.setCursor(reader.getCursor() + remaining.length());
+                return Scissors.DISCORD_API.getUserById(Long.parseLong(legacyMiddle));
+
+            }
 
         }
         throw INVALID_MENTION.create();
