@@ -29,7 +29,7 @@ public class TicTacToe extends Game {
     public void start() {
 
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(
-            new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getAsMention() + " and " + this.getPlayer2().getAsMention(), this.getGridFormat(), EmbedType.RICH, null, 0xDE6868,
+            new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), this.getGridFormat(), EmbedType.RICH, null, 0xDE6868,
                 null, null, null, null, null, null, null)
         )).addComponents(
             ActionRow.of(Button.success("100", TICTACTOE_EMOJI), Button.success("101", TICTACTOE_EMOJI), Button.success("102", TICTACTOE_EMOJI)),
@@ -67,6 +67,7 @@ public class TicTacToe extends Game {
         Message message = event.getMessage();
         if(this.message.getIdLong() != message.getIdLong()) return;
         this.makeMove(event.getInteraction().getMember(), event.getCustomId().charAt(1), event.getCustomId().charAt(2));
+        event.getInteraction().deferEdit().queue();
 
     }
 
@@ -94,7 +95,7 @@ public class TicTacToe extends Game {
 
         };
         this.message.editMessage(MessageEditData.fromEmbeds(
-            new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getAsMention() + " and " + this.getPlayer2().getAsMention(), this.getGridFormat() + statusText, EmbedType.RICH, null, 0xDE6868,
+            new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), this.getGridFormat() + statusText, EmbedType.RICH, null, 0xDE6868,
                 null, null, null, null, null, null, null)
         )).setComponents(
             ActionRow.of(Button.success("100", TICTACTOE_EMOJI).withDisabled(grid[0][0] != ' '), Button.success("101", TICTACTOE_EMOJI).withDisabled(grid[0][1] != ' '), Button.success("102", TICTACTOE_EMOJI).withDisabled(grid[0][2] != ' ')),
