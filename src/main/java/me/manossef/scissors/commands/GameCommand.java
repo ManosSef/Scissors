@@ -15,6 +15,7 @@ public class GameCommand {
 
     private static final SimpleCommandExceptionType USER_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No user was found"));
     private static final SimpleCommandExceptionType SAME_USER = new SimpleCommandExceptionType(new LiteralMessage("You cannot start a game with yourself"));
+    private static final SimpleCommandExceptionType NO_BOTS = new SimpleCommandExceptionType(new LiteralMessage("You cannot start a game with a bot"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
@@ -36,6 +37,7 @@ public class GameCommand {
     private static int startTicTacToeGame(ChatCommandSource source, User user) throws CommandSyntaxException {
 
         if(user == null) throw USER_NOT_FOUND.create();
+        if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
         if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();
         source.sendSuccess("Starting a tic-tac-toe game with " + user.getAsMention());
         new TicTacToe(source.user(), user, source.commandMessage().getChannel());
@@ -46,6 +48,7 @@ public class GameCommand {
     private static int startRockPaperScissorsGame(ChatCommandSource source, User user) throws CommandSyntaxException {
 
         if(user == null) throw USER_NOT_FOUND.create();
+        if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
         if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();
         source.sendSuccess("Starting a game of rock paper scissors with " + user.getAsMention());
         new RockPaperScissors(source.user(), user, source.commandMessage().getChannel());
