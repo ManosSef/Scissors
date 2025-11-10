@@ -7,6 +7,7 @@ import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.games.RockPaperScissors;
+import net.dv8tion.jda.api.entities.User;
 
 public class RockPaperScissorsCommand {
 
@@ -23,7 +24,7 @@ public class RockPaperScissorsCommand {
                 .executes(context -> rockPaperScissors(context.getSource(), RockPaperScissors.Move.SCISSORS))
             )
             .then(Commands.argument("opponent", UserArgument.user())
-                .redirect(dispatcher.getRoot().getChild("game").getChild("rps").getChild("opponent"))
+                .executes(context -> GameCommand.startRockPaperScissorsGame(context.getSource(), context.getArgument("opponent", User.class)))
             )
         );
         dispatcher.register(Commands.literal("rps").redirect(node));

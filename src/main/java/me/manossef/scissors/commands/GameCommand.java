@@ -45,7 +45,7 @@ public class GameCommand {
 
     }
 
-    private static int startRockPaperScissorsGame(ChatCommandSource source, User user) throws CommandSyntaxException {
+    static int startRockPaperScissorsGame(ChatCommandSource source, User user) throws CommandSyntaxException {
 
         if(user == null) throw USER_NOT_FOUND.create();
         if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
