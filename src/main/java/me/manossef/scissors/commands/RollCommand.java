@@ -75,7 +75,7 @@ public class RollCommand {
     private static int roll(ChatCommandSource source, float min, float max) throws CommandSyntaxException {
 
         if(max < min) throw MAX_LESS_THAN_MIN.create();
-        float random = Scissors.RANDOM.nextFloat(min, max + 1);
+        float random = Scissors.RANDOM.nextFloat(min, max);
         source.sendSuccess("You rolled " + random);
         return (int) random;
 
@@ -91,7 +91,7 @@ public class RollCommand {
     private static int roll(ChatCommandSource source, double min, double max) throws CommandSyntaxException {
 
         if(max < min) throw MAX_LESS_THAN_MIN.create();
-        double random = Scissors.RANDOM.nextDouble(min, max + 1);
+        double random = Scissors.RANDOM.nextDouble(min, max);
         source.sendSuccess("You rolled " + random);
         return (int) random;
 
