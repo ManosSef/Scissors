@@ -15,6 +15,8 @@ public class RollCommand {
 
     private static final SimpleCommandExceptionType MAX_LESS_THAN_1 = new SimpleCommandExceptionType(new LiteralMessage("The maximum value cannot be less than 1"));
     private static final SimpleCommandExceptionType MAX_LESS_THAN_MIN = new SimpleCommandExceptionType(new LiteralMessage("The maximum value cannot be less than the minimum value"));
+    private static final SimpleCommandExceptionType MAX_FLOAT_LESS_THAN_0 = new SimpleCommandExceptionType(new LiteralMessage("The maximum value must be greater 0"));
+    private static final SimpleCommandExceptionType MAX_FLOAT_LESS_THAN_MIN = new SimpleCommandExceptionType(new LiteralMessage("The maximum value must be greater than the minimum value"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
@@ -67,14 +69,14 @@ public class RollCommand {
 
     private static int roll(ChatCommandSource source, float max) throws CommandSyntaxException {
 
-        if(max < 1) throw MAX_LESS_THAN_1.create();
+        if(max <= 0) throw MAX_FLOAT_LESS_THAN_0.create();
         return roll(source, 0, max);
 
     }
 
     private static int roll(ChatCommandSource source, float min, float max) throws CommandSyntaxException {
 
-        if(max < min) throw MAX_LESS_THAN_MIN.create();
+        if(max <= min) throw MAX_FLOAT_LESS_THAN_MIN.create();
         float random = Scissors.RANDOM.nextFloat(min, max);
         source.sendSuccess("You rolled " + random);
         return (int) random;
@@ -83,14 +85,14 @@ public class RollCommand {
 
     private static int roll(ChatCommandSource source, double max) throws CommandSyntaxException {
 
-        if(max < 1) throw MAX_LESS_THAN_1.create();
+        if(max <= 0) throw MAX_FLOAT_LESS_THAN_0.create();
         return roll(source, 0, max);
 
     }
 
     private static int roll(ChatCommandSource source, double min, double max) throws CommandSyntaxException {
 
-        if(max < min) throw MAX_LESS_THAN_MIN.create();
+        if(max <= min) throw MAX_FLOAT_LESS_THAN_MIN.create();
         double random = Scissors.RANDOM.nextDouble(min, max);
         source.sendSuccess("You rolled " + random);
         return (int) random;
