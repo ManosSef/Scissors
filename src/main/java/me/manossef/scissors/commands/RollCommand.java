@@ -68,7 +68,7 @@ public class RollCommand {
     private static int roll(ChatCommandSource source, float max) throws CommandSyntaxException {
 
         if(max < 1) throw MAX_LESS_THAN_1.create();
-        return roll(source, 1, max);
+        return roll(source, 0, max);
 
     }
 
@@ -84,7 +84,7 @@ public class RollCommand {
     private static int roll(ChatCommandSource source, double max) throws CommandSyntaxException {
 
         if(max < 1) throw MAX_LESS_THAN_1.create();
-        return roll(source, 1, max);
+        return roll(source, 0, max);
 
     }
 
