@@ -39,6 +39,7 @@ public record JiraAPI(String baseUrl) {
             .queryString("fields", fields)
             .asJson()
             .getBody();
+        if(node == null) return new SearchResults(null);
         return Scissors.GSON.fromJson(node.toString(), SearchResults.class);
 
     }
