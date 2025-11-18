@@ -172,11 +172,25 @@ public class TicTacToe extends Game {
     private String getGridFormat() {
 
         return String.format("""
-            ```%s|%s|%s
-            -+-+-
-            %s|%s|%s
-            -+-+-
-            %s|%s|%s```""", grid[0][0], grid[0][1], grid[0][2], grid[1][0], grid[1][1], grid[1][2], grid[2][0], grid[2][1], grid[2][2]);
+                %s%s%s
+                %s%s%s
+                %s%s%s""",
+            getEmojiForChar(grid[0][0]), getEmojiForChar(grid[0][1]), getEmojiForChar(grid[0][2]),
+            getEmojiForChar(grid[1][0]), getEmojiForChar(grid[1][1]), getEmojiForChar(grid[1][2]),
+            getEmojiForChar(grid[2][0]), getEmojiForChar(grid[2][1]), getEmojiForChar(grid[2][2]));
+
+    }
+
+    private String getEmojiForChar(char ch) {
+
+        return switch(ch) {
+
+            case 'X' -> Emoji.fromCustom("x_", 1440259387934642284L, false).getAsMention();
+            case 'O' -> Emoji.fromCustom("o_", 1440259386306990181L, false).getAsMention();
+            case ' ' -> "⬛";
+            default -> throw new IllegalArgumentException("Tic-tac-toe can only use X, O and space");
+
+        };
 
     }
 
