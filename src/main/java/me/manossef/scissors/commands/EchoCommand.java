@@ -12,6 +12,8 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
+import java.util.Collections;
+
 public class EchoCommand {
 
     private static final SimpleCommandExceptionType CANNOT_DELETE = new SimpleCommandExceptionType(new LiteralMessage("Cannot delete this type of message"));
@@ -43,7 +45,7 @@ public class EchoCommand {
             throw NO_PERMISSION.create();
 
         }
-        channel.sendMessage(message).queue();
+        channel.sendMessage(message).setAllowedMentions(Collections.emptyList()).queue();
         return 1;
 
     }
