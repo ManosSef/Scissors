@@ -1,10 +1,12 @@
 package me.manossef.scissors.listeners;
 
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.SharedConstants;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.Collections;
@@ -44,7 +46,8 @@ public class MessageListeners extends ListenerAdapter {
         "?warn %s Spam",
         "Would you like me to summon the admins?",
         "Are you testing my nerves or something?",
-        "A number?! At this time of year? At this time of day? In this part of the country? ~~Localized entirely within your kitchen?!~~"
+        "A number?! At this time of year? At this time of day? In this part of the country? ~~Localized entirely within your kitchen?!~~",
+        "How did my creator not go crazy from having to deal with this"
     );
     private static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
@@ -88,6 +91,16 @@ public class MessageListeners extends ListenerAdapter {
         }
         if(content.toLowerCase().contains("paper"))
             message.addReaction(Emoji.fromUnicode("✂️")).onErrorMap(e -> null).queue();
+
+    }
+
+    @Override
+    public void onMessageReactionAdd(MessageReactionAddEvent event) {
+
+        if(event.getMessageAuthorIdLong() != Scissors.DISCORD_API.getSelfUser().getIdLong()) return;
+        if(!event.getEmoji().getName().equals("\uD83D\uDDD1\uFE0F")) return;
+        if(event.getUserIdLong() != SharedConstants.MY_USER_ID) return;
+        event.retrieveMessage().onSuccess(message -> message.delete().queue()).queue();
 
     }
 
