@@ -4,6 +4,7 @@ import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,22 +24,26 @@ public class JiraCheckLoop implements Runnable {
 
         while(true) {
 
-            CheckedIssues newChecked = this.checkIssues();
-            List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
-            uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
-            System.out.println("To post in #done-issues: " + uncheckedFixed);
-            for(Integer number : uncheckedFixed)
-                DevGuild.logDoneIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
-            List<Integer> uncheckedInvalid = new ArrayList<>(newChecked.checkedInvalid);
-            uncheckedInvalid.removeAll(this.checkedIssues.checkedInvalid);
-            System.out.println("To post in #invalid-issues: " + uncheckedInvalid);
-            for(Integer number : uncheckedInvalid)
-                DevGuild.logInvalidIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
-            this.checkedIssues = newChecked;
-            Scissors.saveCheckedIssues(newChecked);
             try {
 
+                CheckedIssues newChecked = this.checkIssues();
+                List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
+                uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
+                System.out.println("To post in #done-issues: " + uncheckedFixed);
+                for(Integer number : uncheckedFixed)
+                    DevGuild.logDoneIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
+                List<Integer> uncheckedInvalid = new ArrayList<>(newChecked.checkedInvalid);
+                uncheckedInvalid.removeAll(this.checkedIssues.checkedInvalid);
+                System.out.println("To post in #invalid-issues: " + uncheckedInvalid);
+                for(Integer number : uncheckedInvalid)
+                    DevGuild.logInvalidIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
+                this.checkedIssues = newChecked;
+                Scissors.saveCheckedIssues(newChecked);
                 Thread.sleep(60000L);
+
+            } catch(IOException e) {
+
+                System.err.println("An IO exception occurred; ignoring and continuing as normal.");
 
             } catch(InterruptedException e) {
 
@@ -50,7 +55,7 @@ public class JiraCheckLoop implements Runnable {
 
     }
 
-    private CheckedIssues checkIssues() {
+    private CheckedIssues checkIssues() throws IOException {
 
         Issue[] fixedIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution = Done ORDER BY created ASC", "id,key").issues();
         List<Integer> checkedFixed;
