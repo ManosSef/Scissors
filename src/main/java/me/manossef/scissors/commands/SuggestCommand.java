@@ -15,6 +15,8 @@ import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
 
+import java.io.IOException;
+
 public class SuggestCommand {
 
     private static final DynamicNCommandExceptionType ISSUE_CREATION_FAILED = new DynamicNCommandExceptionType(errors -> {
@@ -47,7 +49,19 @@ public class SuggestCommand {
 
         return Commands.literal(literal)
             .then(Commands.argument("summary", StringArgumentType.greedyString())
-                .executes(context -> createIssue(context.getSource(), type, context.getArgument("summary", String.class)))
+                .executes(context -> {
+
+                    try {
+
+                        return createIssue(context.getSource(), type, context.getArgument("summary", String.class));
+
+                    } catch(IOException e) {
+
+                        throw Commands.IO_EXCEPTION.create();
+
+                    }
+
+                })
             );
 
     }
@@ -56,18 +70,30 @@ public class SuggestCommand {
 
         return Commands.literal(literal)
             .then(Commands.argument("summary", StringArgumentType.greedyString())
-                .executes(context -> createIssue(context.getSource(), type, context.getArgument("summary", String.class), context.getArgument("reporter", User.class)))
+                .executes(context -> {
+
+                    try {
+
+                        return createIssue(context.getSource(), type, context.getArgument("summary", String.class), context.getArgument("reporter", User.class));
+
+                    } catch(IOException e) {
+
+                        throw Commands.IO_EXCEPTION.create();
+
+                    }
+
+                })
             );
 
     }
 
-    private static int createIssue(ChatCommandSource source, IssueType type, String summary) throws CommandSyntaxException {
+    private static int createIssue(ChatCommandSource source, IssueType type, String summary) throws CommandSyntaxException, IOException {
 
         return createIssue(source, type, summary, source.user());
 
     }
 
-    private static int createIssue(ChatCommandSource source, IssueType type, String summary, User user) throws CommandSyntaxException {
+    private static int createIssue(ChatCommandSource source, IssueType type, String summary, User user) throws CommandSyntaxException, IOException {
 
         if(user == null) throw USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(

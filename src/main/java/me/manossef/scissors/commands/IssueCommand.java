@@ -10,6 +10,8 @@ import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
 
+import java.io.IOException;
+
 public class IssueCommand {
 
     private static final DynamicCommandExceptionType ISSUE_NOT_FOUND = new DynamicCommandExceptionType(issue -> new LiteralMessage("Could not find issue " + issue));
@@ -18,13 +20,25 @@ public class IssueCommand {
 
         dispatcher.register(Commands.literal("issue")
             .then(Commands.argument("number", IntegerArgumentType.integer(1))
-                .executes(context -> getIssue(context.getSource(), "SCIS-" + context.getArgument("number", Integer.class)))
+                .executes(context -> {
+
+                    try {
+
+                        return getIssue(context.getSource(), "SCIS-" + context.getArgument("number", Integer.class));
+
+                    } catch(IOException e) {
+
+                        throw Commands.IO_EXCEPTION.create();
+
+                    }
+
+                })
             )
         );
 
     }
 
-    private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException {
+    private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException, IOException {
 
         Issue issue = Scissors.JIRA_API.getIssue(issueKey);
         if(issue.id() == null) throw ISSUE_NOT_FOUND.create(issueKey);

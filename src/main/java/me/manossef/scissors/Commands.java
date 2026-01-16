@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 
 public class Commands {
 
+    public static final SimpleCommandExceptionType IO_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Something went wrong; please try again"));
     private static final CommandDispatcher<ChatCommandSource> DISPATCHER = new CommandDispatcher<>() {{
 
         registerCommands(this);

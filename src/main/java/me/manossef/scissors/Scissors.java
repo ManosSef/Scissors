@@ -33,7 +33,7 @@ public class Scissors {
             JiraCheckLoop.CheckedIssues checkedIssues = getCheckedIssues();
             if(checkedIssues == null)
                 checkedIssues = new JiraCheckLoop.CheckedIssues(new ArrayList<>(), new ArrayList<>());
-            System.out.println("Retrieved previous checked issues: " + checkedIssues);
+            if(SharedConstants.DEBUG) System.out.println("Retrieved previous checked issues: " + checkedIssues);
             Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues));
             jiraCheckLoop.start();
 
