@@ -55,7 +55,7 @@ public class DevGuild {
         if(message.length() > 2000) {
 
             channel.sendMessage(message.substring(0, 1997) + "...").queue();
-            System.out.println("Could not log entire commandMessage: " + message);
+            System.err.println("Could not log entire message: " + message);
             return;
 
         }
@@ -106,7 +106,7 @@ public class DevGuild {
         }
         if(!(logsChannel instanceof MessageChannel messageChannel)) {
 
-            System.err.println("Found #" + name + " in dev guild, but it isn't a commandMessage channel.");
+            System.err.println("Found #" + name + " in dev guild, but it isn't a message channel.");
             return null;
 
         }
