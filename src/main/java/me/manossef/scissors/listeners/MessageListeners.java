@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MessageListeners extends ListenerAdapter {
@@ -39,7 +40,8 @@ public class MessageListeners extends ListenerAdapter {
         "NO COUNTING NO COUNTING NO COUNTING NO COUNTING",
         "YOU HAVE TO BE RAGEBAITING RIGHT NOW",
         "Ah yes, counting... I used to like it, until it corrupted me",
-        "Trust me, rock paper scissors is more fun than this"
+        "Trust me, rock paper scissors is more fun than this",
+        "?warn %s Spam"
     );
     private static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
@@ -60,9 +62,17 @@ public class MessageListeners extends ListenerAdapter {
                 && !(channel.getName().toLowerCase().contains("counting") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting")))) {
 
                 if(content.equals("67"))
-                    channel.sendMessage(GPPCT_BRAINROT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_BRAINROT_RESPONSES.size()))).setMessageReference(message).mentionRepliedUser(false).queue();
+                    channel.sendMessage(GPPCT_BRAINROT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_BRAINROT_RESPONSES.size())).formatted(message.getAuthor().getAsMention()))
+                        .setMessageReference(message)
+                        .mentionRepliedUser(false)
+                        .setAllowedMentions(Collections.emptyList())
+                        .queue();
                 else
-                    channel.sendMessage(GPPCT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_RESPONSES.size()))).setMessageReference(message).mentionRepliedUser(false).queue();
+                    channel.sendMessage(GPPCT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_RESPONSES.size())).formatted(message.getAuthor().getAsMention()))
+                        .setMessageReference(message)
+                        .mentionRepliedUser(false)
+                        .setAllowedMentions(Collections.emptyList())
+                        .queue();
 
             }
 
