@@ -35,11 +35,13 @@ public class SuggestCommand {
             .then(argumentsForIssueType("bug", IssueType.BUG))
             .then(argumentsForIssueType("feature", IssueType.FEATURE))
             .then(argumentsForIssueType("improvement", IssueType.IMPROVEMENT))
+            .then(argumentsForIssueType("task", IssueType.TASK))
             .then(Commands.argument("reporter", UserArgument.user())
                 .requires(Commands.devRestricted())
                 .then(argumentsForIssueTypeWithUser("bug", IssueType.BUG))
                 .then(argumentsForIssueTypeWithUser("feature", IssueType.FEATURE))
                 .then(argumentsForIssueTypeWithUser("improvement", IssueType.IMPROVEMENT))
+                .then(argumentsForIssueTypeWithUser("task", IssueType.TASK))
             )
         );
 
@@ -113,7 +115,8 @@ public class SuggestCommand {
 
         BUG(SharedConstants.ISSUETYPE_BUG_ID),
         FEATURE(SharedConstants.ISSUETYPE_FEATURE_ID),
-        IMPROVEMENT(SharedConstants.ISSUETYPE_IMPROVEMENT_ID);
+        IMPROVEMENT(SharedConstants.ISSUETYPE_IMPROVEMENT_ID),
+        TASK(SharedConstants.ISSUETYPE_TASK_ID);
 
         private final String id;
 

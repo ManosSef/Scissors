@@ -43,7 +43,8 @@ public class MessageListeners extends ListenerAdapter {
         "Trust me, rock paper scissors is more fun than this",
         "?warn %s Spam",
         "Would you like me to summon the admins?",
-        "Are you testing my nerves or something?"
+        "Are you testing my nerves or something?",
+        "A number?! At this time of year? At this time of day? In this part of the country? ~~Localized entirely within your kitchen?!~~"
     );
     private static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",

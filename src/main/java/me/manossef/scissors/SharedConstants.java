@@ -15,6 +15,7 @@ public class SharedConstants {
     public static final String ISSUETYPE_BUG_ID = "10009";
     public static final String ISSUETYPE_FEATURE_ID = "10048";
     public static final String ISSUETYPE_IMPROVEMENT_ID = "10049";
+    public static final String ISSUETYPE_TASK_ID = "10147";
 
     public static final String PROJECT_SCIS_ID = "10039";
 
