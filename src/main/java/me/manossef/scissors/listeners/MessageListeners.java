@@ -41,7 +41,8 @@ public class MessageListeners extends ListenerAdapter {
         "YOU HAVE TO BE RAGEBAITING RIGHT NOW",
         "Ah yes, counting... I used to like it, until it corrupted me",
         "Trust me, rock paper scissors is more fun than this",
-        "?warn %s Spam"
+        "?warn %s Spam",
+        "Would you like me to summon the admins?"
     );
     private static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
@@ -84,7 +85,7 @@ public class MessageListeners extends ListenerAdapter {
 
         }
         if(content.toLowerCase().contains("paper"))
-            message.addReaction(Emoji.fromUnicode("✂️")).queue();
+            message.addReaction(Emoji.fromUnicode("✂️")).onErrorMap(e -> null).queue();
 
     }
 
