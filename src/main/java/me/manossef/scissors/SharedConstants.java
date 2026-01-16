@@ -2,6 +2,8 @@ package me.manossef.scissors;
 
 public class SharedConstants {
 
+    public static final boolean DEBUG = false;
+
     public static final String TOKEN = System.getenv("SCISSORS_BOT_TOKEN");
     public static final String JIRA_EMAIL = System.getenv("JIRA_ALT_EMAIL");
     public static final String JIRA_API_TOKEN = System.getenv("JIRA_ALT_API_TOKEN");

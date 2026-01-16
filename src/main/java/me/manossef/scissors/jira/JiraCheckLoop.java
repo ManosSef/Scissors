@@ -2,6 +2,7 @@ package me.manossef.scissors.jira;
 
 import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.jira.objects.Issue;
 
 import java.io.IOException;
@@ -29,12 +30,12 @@ public class JiraCheckLoop implements Runnable {
                 CheckedIssues newChecked = this.checkIssues();
                 List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
                 uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
-                System.out.println("To post in #done-issues: " + uncheckedFixed);
+                if(SharedConstants.DEBUG) System.out.println("To post in #done-issues: " + uncheckedFixed);
                 for(Integer number : uncheckedFixed)
                     DevGuild.logDoneIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
                 List<Integer> uncheckedInvalid = new ArrayList<>(newChecked.checkedInvalid);
                 uncheckedInvalid.removeAll(this.checkedIssues.checkedInvalid);
-                System.out.println("To post in #invalid-issues: " + uncheckedInvalid);
+                if(SharedConstants.DEBUG) System.out.println("To post in #invalid-issues: " + uncheckedInvalid);
                 for(Integer number : uncheckedInvalid)
                     DevGuild.logInvalidIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
                 this.checkedIssues = newChecked;
@@ -74,7 +75,7 @@ public class JiraCheckLoop implements Runnable {
             .toList();
         else checkedInvalid = this.checkedIssues.checkedInvalid;
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
-        System.out.println("Checked issues, found: " + found);
+        if(SharedConstants.DEBUG) System.out.println("Checked issues, found: " + found);
         return found;
 
     }
