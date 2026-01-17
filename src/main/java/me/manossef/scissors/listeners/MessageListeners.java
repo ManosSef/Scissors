@@ -47,7 +47,8 @@ public class MessageListeners extends ListenerAdapter {
         "Would you like me to summon the admins?",
         "Are you testing my nerves or something?",
         "A number?! At this time of year? At this time of day? In this part of the country? ~~Localized entirely within your kitchen?!~~",
-        "How did my creator not go crazy from having to deal with this"
+        "How did my creator not go crazy from having to deal with this",
+        "You're the reason I crash this often"
     );
     private static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",

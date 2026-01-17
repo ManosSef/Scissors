@@ -35,7 +35,7 @@ public class SuggestCommand {
             .then(argumentsForIssueType("bug", IssueType.BUG))
             .then(argumentsForIssueType("feature", IssueType.FEATURE))
             .then(argumentsForIssueType("improvement", IssueType.IMPROVEMENT))
-            .then(argumentsForIssueType("task", IssueType.TASK))
+            .then(argumentsForIssueType("task", IssueType.TASK).requires(Commands.devRestricted()))
             .then(Commands.argument("reporter", UserArgument.user())
                 .requires(Commands.devRestricted())
                 .then(argumentsForIssueTypeWithUser("bug", IssueType.BUG))
