@@ -48,7 +48,8 @@ public class MessageListeners extends ListenerAdapter {
         "Are you testing my nerves or something?",
         "A number?! At this time of year? At this time of day? In this part of the country? ~~Localized entirely within your kitchen?!~~",
         "How did my creator not go crazy from having to deal with this",
-        "You're the reason I crash this often"
+        "You're the reason I crash this often",
+        "I'm not a fan of your schadenfreude"
     );
     private static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
@@ -66,7 +67,7 @@ public class MessageListeners extends ListenerAdapter {
         if(content.matches("^[0-9]+$")) {
 
             if(Scissors.RANDOM.nextInt(10) == 0 && channel.canTalk()
-                && !(channel.getName().toLowerCase().contains("counting") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting")))) {
+                && !(channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting")))) {
 
                 if(content.equals("67"))
                     channel.sendMessage(GPPCT_BRAINROT_RESPONSES.get(Scissors.RANDOM.nextInt(GPPCT_BRAINROT_RESPONSES.size())).formatted(message.getAuthor().getAsMention()))
