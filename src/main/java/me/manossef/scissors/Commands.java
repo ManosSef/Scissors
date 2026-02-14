@@ -73,6 +73,7 @@ public class Commands {
     private static void registerCommands(CommandDispatcher<ChatCommandSource> dispatcher) {
 
         NineCommand.register(dispatcher);
+        CatFactCommand.register(dispatcher);
         CoinflipCommand.register(dispatcher);
         EchoCommand.register(dispatcher);
         GameCommand.register(dispatcher);
