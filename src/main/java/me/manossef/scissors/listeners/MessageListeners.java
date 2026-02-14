@@ -51,7 +51,8 @@ public class MessageListeners extends ListenerAdapter {
         "You're the reason I crash this often",
         "I'm not a fan of your schadenfreude",
         "Do you really want to test me? *snips*",
-        "My blades are very sharp. Consider this a threat"
+        "My blades are very sharp. Consider this a threat",
+        "You're probably one of those school nerds that have no friends"
     );
     private static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",

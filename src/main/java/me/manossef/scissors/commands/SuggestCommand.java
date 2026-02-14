@@ -100,7 +100,7 @@ public class SuggestCommand {
         if(user == null) throw USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
-            "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: https://discordapp.com/channels/" + source.commandMessage().getGuildId() + "/" + source.commandMessage().getChannelId() + "/" + source.commandMessage().getId(),
+            "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: https://discord.com/channels/" + source.commandMessage().getGuildId() + "/" + source.commandMessage().getChannelId() + "/" + source.commandMessage().getId(),
             Scissors.JIRA_API.getIssuetype(type.id),
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
             user.getId()
