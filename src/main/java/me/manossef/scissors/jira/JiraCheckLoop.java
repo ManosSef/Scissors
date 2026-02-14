@@ -40,7 +40,7 @@ public class JiraCheckLoop implements Runnable {
                     DevGuild.logInvalidIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
                 this.checkedIssues = newChecked;
                 Scissors.saveCheckedIssues(newChecked);
-                Thread.sleep(60000L);
+                Thread.sleep(600000L);
 
             } catch(IOException e) {
 
