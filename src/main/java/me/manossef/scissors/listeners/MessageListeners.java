@@ -28,7 +28,9 @@ public class MessageListeners extends ListenerAdapter {
                 replyWithRandomMessage(message, content.equals("67") ? Messages.GPPCT_BRAINROT_RESPONSES : Messages.GPPCT_RESPONSES);
 
         }
-        if(content.toLowerCase().contains("scissors")) {
+        if(content.contains(Scissors.DISCORD_API.getSelfUser().getAsMention()))
+            replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES);
+        else if(content.toLowerCase().contains("scissors")) {
 
             if(Scissors.RANDOM.nextInt(5) == 0 && channel.canTalk())
                 replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES);

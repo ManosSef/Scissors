@@ -51,7 +51,8 @@ public class Messages {
         "HOW DID PEOPLE MAKE A MEME OUT OF JUST TWO NUMBERS???"
     );
     static final List<String> SCISSORS_RESPONSES = List.of(
-        "RAHHH!"
+        "RAHHH!",
+        "You rang?"
     );
 
 }
