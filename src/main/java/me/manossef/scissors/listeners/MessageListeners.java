@@ -31,9 +31,8 @@ public class MessageListeners extends ListenerAdapter {
 
             }
 
-        }
-        if(content.contains(Scissors.DISCORD_API.getSelfUser().getAsMention()))
-            replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES, "scissors");
+        } else if(content.contains(Scissors.DISCORD_API.getSelfUser().getAsMention()))
+            replyWithRandomMessage(message, Messages.PING_RESPONSES, "ping");
         else if(content.toLowerCase().contains("scissors")) {
 
             if(Scissors.RANDOM.nextInt(5) == 0 && channel.canTalk())

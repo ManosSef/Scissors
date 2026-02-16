@@ -52,9 +52,14 @@ public class Messages {
         "HOW DID PEOPLE MAKE A MEME OUT OF JUST TWO NUMBERS???"
     );
     static final List<String> SCISSORS_RESPONSES = List.of(
-        "RAHHH!",
+        "RAHHH!"
+    );
+    static final List<String> PING_RESPONSES = List.of(
         "You rang?",
-        "Hi there!"
+        "Hi there!",
+        "Ready to cut some paper today?",
+        "You'd better not want to throw a rock at me",
+        "At your service!"
     );
 
 }
