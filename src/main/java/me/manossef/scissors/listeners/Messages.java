@@ -43,7 +43,8 @@ public class Messages {
         "Do you really want to test me? *snips*",
         "My blades are very sharp. Consider this a threat",
         "You're probably one of those school nerds that have no friends",
-        "This feels worse than being beaten up by a rock"
+        "This feels worse than being beaten up by a rock",
+        "Honestly why did the GPPCT stop"
     );
     static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
@@ -52,7 +53,8 @@ public class Messages {
     );
     static final List<String> SCISSORS_RESPONSES = List.of(
         "RAHHH!",
-        "You rang?"
+        "You rang?",
+        "Hi there!"
     );
 
 }

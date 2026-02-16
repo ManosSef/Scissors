@@ -1,5 +1,6 @@
 package me.manossef.scissors.listeners;
 
+import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.SharedConstants;
 import net.dv8tion.jda.api.entities.Message;
@@ -24,16 +25,19 @@ public class MessageListeners extends ListenerAdapter {
         if(content.matches("^[0-9]+$")) {
 
             if(Scissors.RANDOM.nextInt(10) == 0 && channel.canTalk()
-                && !(channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting"))))
-                replyWithRandomMessage(message, content.equals("67") ? Messages.GPPCT_BRAINROT_RESPONSES : Messages.GPPCT_RESPONSES);
+                && !(channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting")))) {
+
+                replyWithRandomMessage(message, content.equals("67") ? Messages.GPPCT_BRAINROT_RESPONSES : Messages.GPPCT_RESPONSES, "GPPCT");
+
+            }
 
         }
         if(content.contains(Scissors.DISCORD_API.getSelfUser().getAsMention()))
-            replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES);
+            replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES, "scissors");
         else if(content.toLowerCase().contains("scissors")) {
 
             if(Scissors.RANDOM.nextInt(5) == 0 && channel.canTalk())
-                replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES);
+                replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES, "scissors");
 
         }
         if(content.toLowerCase().contains("paper"))
@@ -51,13 +55,14 @@ public class MessageListeners extends ListenerAdapter {
 
     }
 
-    private void replyWithRandomMessage(Message message, List<String> possibleMessages) {
+    private void replyWithRandomMessage(Message message, List<String> possibleMessages, String responseType) {
 
         message.getChannel().sendMessage(possibleMessages.get(Scissors.RANDOM.nextInt(possibleMessages.size())).formatted(message.getAuthor().getAsMention()))
             .setMessageReference(message)
             .mentionRepliedUser(false)
             .setAllowedMentions(Collections.emptyList())
             .queue();
+        DevGuild.logResponse("Posted a " + responseType + " response to https://discord.com/channels/" + message.getGuildId() + "/" + message.getChannelId() + "/" + message.getId());
 
     }
 
