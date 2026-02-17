@@ -19,6 +19,8 @@ public class SharedConstants {
 
     public static final String PROJECT_SCIS_ID = "10039";
 
-    public static final String CHECKED_ISSUES_FILE_NAME = "/storage/checked_issues.json";
+    public static final String FILE_DIRECTORY = "/storage/";
+    public static final String CHECKED_ISSUES_FILE_NAME = "checked_issues.json";
+    public static final String CONFIG_FILE_NAME = "config.json";
 
 }

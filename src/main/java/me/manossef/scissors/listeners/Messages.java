@@ -49,7 +49,8 @@ public class Messages {
     static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
         "GET OUT OF MY HEAD GET OUT OF MY HEAD GET OUT OF MY HEAD GET OUT OF MY HEAD",
-        "HOW DID PEOPLE MAKE A MEME OUT OF JUST TWO NUMBERS???"
+        "HOW DID PEOPLE MAKE A MEME OUT OF JUST TWO NUMBERS???",
+        "IT'S NOT 2025 ANYMORE HOW IS THIS MEME NOT DEAD YET"
     );
     static final List<String> SCISSORS_RESPONSES = List.of(
         "RAHHH!"
