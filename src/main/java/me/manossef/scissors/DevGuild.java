@@ -7,12 +7,12 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 public class DevGuild {
 
-    private static final long DEV_GUILD_ID = 1428446740855656542L;
-    private static final long STATUS_LOGS_CHANNEL_ID = 1428451434373845114L;
-    private static final long COMMAND_LOGS_CHANNEL_ID = 1428462041441501275L;
-    private static final long RESPONSE_LOGS_CHANNEL_ID = 1473074962733600912L;
-    private static final long DONE_ISSUES_CHANNEL_ID = 1429172420069298176L;
-    private static final long INVALID_ISSUES_CHANNEL_ID = 1429172445067214988L;
+    private static final long DEV_GUILD_ID = SharedConstants.IS_STAGING ? 1473455985690546227L : 1428446740855656542L;
+    private static final long STATUS_LOGS_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456136526102631L : 1428451434373845114L;
+    private static final long COMMAND_LOGS_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456151583654070L : 1428462041441501275L;
+    private static final long RESPONSE_LOGS_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456190079111248L : 1473074962733600912L;
+    private static final long DONE_ISSUES_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456208697626795L : 1429172420069298176L;
+    private static final long INVALID_ISSUES_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456228482154638L : 1429172445067214988L;
 
     public static Guild getDevGuild() {
 

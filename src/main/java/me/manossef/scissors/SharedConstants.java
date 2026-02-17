@@ -2,7 +2,7 @@ package me.manossef.scissors;
 
 public class SharedConstants {
 
-    public static final boolean DEBUG = false;
+    public static final boolean IS_STAGING = "staging".equalsIgnoreCase(System.getenv("SCISSORS_ENVIRONMENT"));
 
     public static final String TOKEN = System.getenv("SCISSORS_BOT_TOKEN");
     public static final String JIRA_EMAIL = System.getenv("JIRA_ALT_EMAIL");

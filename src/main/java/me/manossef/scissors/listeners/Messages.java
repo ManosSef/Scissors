@@ -44,7 +44,8 @@ public class Messages {
         "My blades are very sharp. Consider this a threat",
         "You're probably one of those school nerds that have no friends",
         "This feels worse than being beaten up by a rock",
-        "Honestly why did the GPPCT stop"
+        "Honestly why did the GPPCT stop",
+        "I'm not mad, just disappointed"
     );
     static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
