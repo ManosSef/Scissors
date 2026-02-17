@@ -109,6 +109,7 @@ public class Scissors {
 
         try {
 
+            new File(SharedConstants.FILE_DIRECTORY).mkdirs();
             BufferedWriter writer = new BufferedWriter(new FileWriter(SharedConstants.FILE_DIRECTORY + fileName));
             writer.write(GSON.toJson(object));
             writer.close();
