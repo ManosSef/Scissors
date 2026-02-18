@@ -1,7 +1,10 @@
 package me.manossef.scissors;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonWriter;
 import me.manossef.scissors.config.Configuration;
 import me.manossef.scissors.config.Settings;
 import me.manossef.scissors.jira.JiraAPI;
@@ -16,6 +19,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class Scissors {
@@ -110,13 +114,51 @@ public class Scissors {
         try {
 
             new File(SharedConstants.FILE_DIRECTORY).mkdirs();
-            BufferedWriter writer = new BufferedWriter(new FileWriter(SharedConstants.FILE_DIRECTORY + fileName));
-            writer.write(GSON.toJson(object));
+            JsonWriter writer = new JsonWriter(new FileWriter(SharedConstants.FILE_DIRECTORY + fileName));
+            writeValue(writer, GSON.toJsonTree(object));
             writer.close();
 
         } catch(IOException e) {
 
             System.err.println("Failed to save the " + fileName + " file.");
+
+        }
+
+    }
+
+    private static void writeValue(JsonWriter out, JsonElement value) throws IOException {
+
+        if(value == null || value.isJsonNull())
+            out.nullValue();
+        else if(value.isJsonPrimitive()) {
+
+            JsonPrimitive primitive = value.getAsJsonPrimitive();
+            if(primitive.isNumber())
+                out.value(primitive.getAsNumber());
+            else if(primitive.isBoolean())
+                out.value(primitive.getAsBoolean());
+            else
+                out.value(primitive.getAsString());
+
+        } else if(value.isJsonArray()) {
+
+            out.beginArray();
+            for(JsonElement element : value.getAsJsonArray())
+                writeValue(out, element);
+            out.endArray();
+
+        } else {
+
+            if(!value.isJsonObject())
+                throw new IllegalArgumentException("Couldn't write " + value.getClass());
+            out.beginObject();
+            for(Map.Entry<String, JsonElement> entry : value.getAsJsonObject().entrySet()) {
+
+                out.name(entry.getKey());
+                writeValue(out, entry.getValue());
+
+            }
+            out.endObject();
 
         }
 
