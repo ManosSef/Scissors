@@ -45,6 +45,7 @@ public class ConfigCommand {
                 );
 
             }
+            argument.then(optionArgument);
 
         }
         return argument;
