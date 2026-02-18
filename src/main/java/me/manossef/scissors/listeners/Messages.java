@@ -45,7 +45,8 @@ public class Messages {
         "You're probably one of those school nerds that have no friends",
         "This feels worse than being beaten up by a rock",
         "Honestly why did the GPPCT stop",
-        "I'm not mad, just disappointed"
+        "I'm not mad, just disappointed",
+        "Are you just excited because you just learned how to count?"
     );
     static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
