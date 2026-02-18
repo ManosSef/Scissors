@@ -107,6 +107,7 @@ public class ConfigCommand {
             default -> throw INVALID_CONTEXT.create();
 
         }
+        Scissors.saveConfiguration();
         return option.getType().equals(Integer.class) ? (int) value : (boolean) value ? 1 : 0;
 
     }
