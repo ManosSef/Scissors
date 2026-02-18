@@ -3,6 +3,8 @@ package me.manossef.scissors.listeners;
 import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.config.Configuration;
+import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -22,24 +24,23 @@ public class MessageListeners extends ListenerAdapter {
         if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         String content = message.getContentRaw();
         MessageChannelUnion channel = message.getChannel();
-        if(content.matches("^[0-9]+$")) {
+        Configuration config = Scissors.getConfiguration();
+        if(content.matches("^[0-9]+$") && (boolean) config.getOptionForChannel(Options.GPPCT_RESPONSES.option(), channel)) {
 
-            if(Scissors.RANDOM.nextInt(10) == 0 && channel.canTalk()
-                && !(channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting")))) {
-
+            boolean isDisallowedChannel = channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting"));
+            if(channel.canTalk() && Scissors.RANDOM.nextInt(100) < (int) config.getOptionForChannel(Options.GPPCT_RESPONSE_CHANCE.option(), channel)
+                && (!isDisallowedChannel || (boolean) config.getOptionForChannelOnly(Options.GPPCT_RESPONSES.option(), channel)))
                 replyWithRandomMessage(message, content.equals("67") ? Messages.GPPCT_BRAINROT_RESPONSES : Messages.GPPCT_RESPONSES, "GPPCT");
 
-            }
-
-        } else if(content.contains(Scissors.DISCORD_API.getSelfUser().getAsMention()))
+        } else if(content.contains(Scissors.DISCORD_API.getSelfUser().getAsMention()) && (boolean) config.getOptionForChannel(Options.PING_RESPONSES.option(), channel))
             replyWithRandomMessage(message, Messages.PING_RESPONSES, "ping");
-        else if(content.toLowerCase().contains("scissors")) {
+        else if(content.toLowerCase().contains("scissors") && (boolean) config.getOptionForChannel(Options.SCISSORS_RESPONSES.option(), channel)) {
 
-            if(Scissors.RANDOM.nextInt(5) == 0 && channel.canTalk())
+            if(channel.canTalk() && Scissors.RANDOM.nextInt(100) < (int) config.getOptionForChannel(Options.SCISSORS_RESPONSE_CHANCE.option(), channel))
                 replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES, "scissors");
 
         }
-        if(content.toLowerCase().contains("paper"))
+        if(content.toLowerCase().contains("paper") && (boolean) config.getOptionForChannel(Options.REACT_TO_PAPER.option(), channel))
             message.addReaction(Emoji.fromUnicode("✂️")).onErrorMap(e -> null).queue();
 
     }
