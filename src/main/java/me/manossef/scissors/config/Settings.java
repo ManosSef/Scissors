@@ -13,27 +13,23 @@ public class Settings {
 
     }
 
-    public Settings(Map<Option<?>, OptionValue<?>> values) {
-
-        this.values = values;
-
-    }
-
     public boolean isPresent(Option<?> option) {
 
         return values.containsKey(option);
 
     }
 
-    public <T> T get(Option<T> option) {
+    public <T> T get(Options option, Class<T> type) {
 
         if(option == null)
             throw new IllegalArgumentException("Option cannot be null");
-        if(values.get(option) == null)
-            return option.getDefault();
-        Object value = values.get(option).value();
-        if(!(value.getClass().equals(option.getType())))
-            throw new IllegalStateException("Option of type " + option.getType() + " with value of type " + value);
+        if(!option.option().getType().equals(type))
+            throw new IllegalArgumentException("Option is not of the given type");
+        if(values.get(option.option()) == null)
+            return (T) option.option().getDefault();
+        Object value = values.get(option.option()).value();
+        if(!(value.getClass().equals(option.option().getType())))
+            throw new IllegalStateException("Option of type " + option.option().getType() + " with value of type " + value);
         return (T) value;
 
     }

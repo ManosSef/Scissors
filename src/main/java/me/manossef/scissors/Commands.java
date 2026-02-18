@@ -75,6 +75,7 @@ public class Commands {
         NineCommand.register(dispatcher);
         CatFactCommand.register(dispatcher);
         CoinflipCommand.register(dispatcher);
+        ConfigCommand.register(dispatcher);
         EchoCommand.register(dispatcher);
         GameCommand.register(dispatcher);
         HelpCommand.register(dispatcher);
