@@ -11,7 +11,6 @@ public class Option<T> {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
-        Options.NAME_TO_OPTION.put(this.name, this);
 
     }
 
