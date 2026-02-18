@@ -40,10 +40,10 @@ public class Option<T> {
         IntOption(String name, Integer defaultValue, int min, int max) {
 
             super(name, Integer.class, defaultValue);
-            if(!validate(defaultValue))
-                throw new IllegalArgumentException("Default option value (" + defaultValue + ") out of bounds (" + min + ", " + max + ")");
             this.min = min;
             this.max = max;
+            if(!validate(defaultValue))
+                throw new IllegalArgumentException("Default option value (" + defaultValue + ") out of bounds (" + this.min + ", " + this.max + ")");
 
         }
 
