@@ -115,6 +115,7 @@ public class Scissors {
 
             new File(SharedConstants.FILE_DIRECTORY).mkdirs();
             JsonWriter writer = new JsonWriter(new FileWriter(SharedConstants.FILE_DIRECTORY + fileName));
+            writer.setIndent("  ");
             writeValue(writer, GSON.toJsonTree(object));
             writer.close();
 
