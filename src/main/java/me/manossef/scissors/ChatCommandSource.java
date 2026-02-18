@@ -23,19 +23,27 @@ public record ChatCommandSource(Message commandMessage, User user) {
 
     public void sendSuccess(String message) {
 
-        this.commandMessage.reply("✅ " + message).setAllowedMentions(Collections.emptyList()).queue();
+        this.commandMessage.reply(truncate("✅ " + message)).setAllowedMentions(Collections.emptyList()).queue();
 
     }
 
     public void sendFailure(String message) {
 
-        this.commandMessage.reply("❌ " + message).setAllowedMentions(Collections.emptyList()).queue();
+        this.commandMessage.reply(truncate("❌ " + message)).setAllowedMentions(Collections.emptyList()).queue();
 
     }
 
     public void sendError(String message) {
 
-        this.commandMessage.reply("\uD83D\uDC1E\uD83E\uDEB2\uD83D\uDD77 " + message).setAllowedMentions(Collections.emptyList()).queue();
+        this.commandMessage.reply(truncate("\uD83D\uDC1E\uD83E\uDEB2\uD83D\uDD77 " + message)).setAllowedMentions(Collections.emptyList()).queue();
+
+    }
+
+    private String truncate(String content) {
+
+        if(content.length() > 2000)
+            return content.substring(0, 1997) + "...";
+        return content;
 
     }
 
