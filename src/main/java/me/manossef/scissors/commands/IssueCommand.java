@@ -5,12 +5,11 @@ import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import kong.unirest.core.UnirestException;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
-
-import java.io.IOException;
 
 public class IssueCommand {
 
@@ -20,30 +19,26 @@ public class IssueCommand {
 
         dispatcher.register(Commands.literal("issue")
             .then(Commands.argument("number", IntegerArgumentType.integer(1))
-                .executes(context -> {
-
-                    try {
-
-                        return getIssue(context.getSource(), "SCIS-" + context.getArgument("number", Integer.class));
-
-                    } catch(IOException e) {
-
-                        throw Commands.IO_EXCEPTION.create();
-
-                    }
-
-                })
+                .executes(context -> getIssue(context.getSource(), "SCIS-" + context.getArgument("number", Integer.class)))
             )
         );
 
     }
 
-    private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException, IOException {
+    private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException {
 
-        Issue issue = Scissors.JIRA_API.getIssue(issueKey);
-        if(issue.id() == null) throw ISSUE_NOT_FOUND.create(issueKey);
-        source.commandMessage().reply(issue.makeEmbed()).queue();
-        return 1;
+        try {
+
+            Issue issue = Scissors.JIRA_API.getIssue(issueKey);
+            if(issue.id() == null) throw ISSUE_NOT_FOUND.create(issueKey);
+            source.commandMessage().reply(issue.makeEmbed()).queue();
+            return 1;
+
+        } catch(UnirestException e) {
+
+            throw Commands.IO_EXCEPTION.create();
+
+        }
 
     }
 

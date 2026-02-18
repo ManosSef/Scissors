@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import kong.unirest.core.UnirestException;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.squaredle.PuzzleData;
@@ -28,12 +29,20 @@ public class SquaredleCommand {
 
     private static int sendDailySquaredle(ChatCommandSource source, boolean xp) throws CommandSyntaxException {
 
-        TodayConfig todayConfig = TodayConfigReader.readTodayPuzzleConfig();
-        if(todayConfig == null) throw CONFIG_NOT_FOUND.create();
-        String date = todayConfig.currentDate();
-        PuzzleData puzzle = todayConfig.puzzles().get(date + (xp ? "-xp" : ""));
-        source.sendSuccess("**Daily " + (xp ? "xp " : "") + date.replace("/", "-") + "**\n" + PuzzleUtil.getMessageText(puzzle));
-        return 1;
+        try {
+
+            TodayConfig todayConfig = TodayConfigReader.readTodayPuzzleConfig();
+            if(todayConfig == null) throw CONFIG_NOT_FOUND.create();
+            String date = todayConfig.currentDate();
+            PuzzleData puzzle = todayConfig.puzzles().get(date + (xp ? "-xp" : ""));
+            source.sendSuccess("**Daily " + (xp ? "xp " : "") + date.replace("/", "-") + "**\n" + PuzzleUtil.getMessageText(puzzle));
+            return 1;
+
+        } catch(UnirestException e) {
+
+            throw Commands.IO_EXCEPTION.create();
+
+        }
 
     }
 

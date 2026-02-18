@@ -1,7 +1,9 @@
 package me.manossef.scissors.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import kong.unirest.core.Unirest;
+import kong.unirest.core.UnirestException;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
@@ -16,12 +18,20 @@ public class CatFactCommand {
 
     }
 
-    private static int getCatFact(ChatCommandSource source) {
+    private static int getCatFact(ChatCommandSource source) throws CommandSyntaxException {
 
-        String body = Unirest.get("https://catfact.ninja/fact").asString().getBody();
-        CatFact catFact = Scissors.GSON.fromJson(body, CatFact.class);
-        source.sendSuccess(catFact.fact);
-        return 1;
+        try {
+
+            String body = Unirest.get("https://catfact.ninja/fact").asString().getBody();
+            CatFact catFact = Scissors.GSON.fromJson(body, CatFact.class);
+            source.sendSuccess(catFact.fact);
+            return 1;
+
+        } catch(UnirestException e) {
+
+            throw Commands.IO_EXCEPTION.create();
+
+        }
 
     }
 

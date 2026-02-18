@@ -1,11 +1,11 @@
 package me.manossef.scissors.jira;
 
+import kong.unirest.core.UnirestException;
 import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.jira.objects.Issue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,9 +42,9 @@ public class JiraCheckLoop implements Runnable {
                 Scissors.saveCheckedIssues(newChecked);
                 Thread.sleep(600000L);
 
-            } catch(IOException e) {
+            } catch(UnirestException e) {
 
-                System.err.println("An IO exception occurred; ignoring and continuing as normal.");
+                System.err.println("Something went wrong; ignoring and continuing as normal.");
 
             } catch(InterruptedException e) {
 
@@ -56,7 +56,7 @@ public class JiraCheckLoop implements Runnable {
 
     }
 
-    private CheckedIssues checkIssues() throws IOException {
+    private CheckedIssues checkIssues() {
 
         Issue[] fixedIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution = Done ORDER BY created ASC", "id,key").issues();
         List<Integer> checkedFixed;

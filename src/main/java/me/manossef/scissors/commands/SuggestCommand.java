@@ -7,6 +7,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import kong.unirest.core.UnirestException;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
@@ -14,8 +15,6 @@ import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
-
-import java.io.IOException;
 
 public class SuggestCommand {
 
@@ -57,7 +56,7 @@ public class SuggestCommand {
 
                         return createIssue(context.getSource(), type, context.getArgument("summary", String.class));
 
-                    } catch(IOException e) {
+                    } catch(UnirestException e) {
 
                         throw Commands.IO_EXCEPTION.create();
 
@@ -78,7 +77,7 @@ public class SuggestCommand {
 
                         return createIssue(context.getSource(), type, context.getArgument("summary", String.class), context.getArgument("reporter", User.class));
 
-                    } catch(IOException e) {
+                    } catch(UnirestException e) {
 
                         throw Commands.IO_EXCEPTION.create();
 
@@ -89,13 +88,13 @@ public class SuggestCommand {
 
     }
 
-    private static int createIssue(ChatCommandSource source, IssueType type, String summary) throws CommandSyntaxException, IOException {
+    private static int createIssue(ChatCommandSource source, IssueType type, String summary) throws CommandSyntaxException {
 
         return createIssue(source, type, summary, source.user());
 
     }
 
-    private static int createIssue(ChatCommandSource source, IssueType type, String summary, User user) throws CommandSyntaxException, IOException {
+    private static int createIssue(ChatCommandSource source, IssueType type, String summary, User user) throws CommandSyntaxException {
 
         if(user == null) throw USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(
