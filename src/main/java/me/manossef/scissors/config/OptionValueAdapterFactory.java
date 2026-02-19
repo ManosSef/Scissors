@@ -61,7 +61,9 @@ public class OptionValueAdapterFactory implements TypeAdapterFactory {
                 }
                 if(value instanceof OptionValue<?> optionValue) {
 
-                    writer.beginObject().name("option").value(optionValue.option().properties().getName()).name("value").value(optionValue.value().toString());
+                    writer.beginObject().name("option");
+                    Scissors.GSON.getAdapter(Option.class).write(writer, optionValue.option());
+                    writer.name("value").value(optionValue.value().toString()).endObject();
                     return;
 
                 }
