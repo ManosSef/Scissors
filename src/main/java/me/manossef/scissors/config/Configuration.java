@@ -114,7 +114,7 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
 
     public boolean resetForChannel(Channel channel) {
 
-        return perGuild.remove(channel.getIdLong()) != null;
+        return perChannel.remove(channel.getIdLong()) != null;
 
     }
 
