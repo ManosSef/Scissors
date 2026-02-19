@@ -1,21 +1,28 @@
 package me.manossef.scissors.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Settings {
 
-    private final Map<Option, OptionValue<?>> values;
+    private final Set<OptionValue<?>> values;
 
     public Settings() {
 
-        this.values = new HashMap<>();
+        this.values = new TreeSet<>((o1, o2) -> Comparator.<String>naturalOrder().compare(o1.option().properties().getName(), o2.option().properties().getName()));
 
     }
 
     public boolean isPresent(Option option) {
 
-        return values.containsKey(option);
+        for(OptionValue<?> optionValue : values) {
+
+            if(optionValue.option().equals(option))
+                return true;
+
+        }
+        return false;
 
     }
 
@@ -25,9 +32,15 @@ public class Settings {
             throw new IllegalArgumentException("Option cannot be null");
         if(!option.properties().getType().equals(type))
             throw new IllegalArgumentException("Option is not of the given type");
-        if(values.get(option) == null)
+        Object value = null;
+        for(OptionValue<?> optionValue : values) {
+
+            if(optionValue.option().equals(option))
+                value = optionValue.value();
+
+        }
+        if(value == null)
             return (T) option.properties().getDefault();
-        Object value = values.get(option).value();
         if(!(value.getClass().equals(option.properties().getType())))
             throw new IllegalStateException("Option of type " + option.properties().getType() + " with value of type " + value);
         return (T) value;
@@ -40,7 +53,8 @@ public class Settings {
             throw new IllegalArgumentException("Option cannot be null");
         if(value == null)
             throw new IllegalArgumentException("Option value cannot be null");
-        values.put(option, new OptionValue<>(option, value));
+        values.removeIf(optionValue -> optionValue.option().equals(option));
+        values.add(new OptionValue<>(option, value));
 
     }
 
