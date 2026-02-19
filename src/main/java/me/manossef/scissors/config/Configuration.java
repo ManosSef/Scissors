@@ -43,7 +43,7 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
                 return settings.get(option, type);
 
         }
-        if(MessageListeners.isDisallowedForGPPCT(channel))
+        if(option.equals(Option.GPPCT_RESPONSES) && MessageListeners.isDisallowedForGPPCT(channel))
             return (T) Boolean.FALSE;
         if(channel.getType().isGuild()) {
 
