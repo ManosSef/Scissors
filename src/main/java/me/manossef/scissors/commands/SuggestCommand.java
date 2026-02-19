@@ -8,10 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import kong.unirest.core.UnirestException;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
-import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.*;
 import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
@@ -99,7 +96,7 @@ public class SuggestCommand {
         if(user == null) throw USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
-            "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: https://discord.com/channels/" + source.commandMessage().getGuildId() + "/" + source.commandMessage().getChannelId() + "/" + source.commandMessage().getId(),
+            "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: " + Util.getMessageLink(source.commandMessage()),
             Scissors.JIRA_API.getIssuetype(type.id),
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
             user.getId()

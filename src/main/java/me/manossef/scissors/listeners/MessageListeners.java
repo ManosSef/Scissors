@@ -3,6 +3,7 @@ package me.manossef.scissors.listeners;
 import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.Util;
 import me.manossef.scissors.config.Configuration;
 import me.manossef.scissors.config.Option;
 import net.dv8tion.jda.api.entities.Message;
@@ -62,7 +63,7 @@ public class MessageListeners extends ListenerAdapter {
             .mentionRepliedUser(false)
             .setAllowedMentions(Collections.emptyList())
             .queue();
-        DevGuild.logResponse("Posted a " + responseType + " response to https://discord.com/channels/" + message.getGuildId() + "/" + message.getChannelId() + "/" + message.getId());
+        DevGuild.logResponse("Posted a " + responseType + " response to " + Util.getMessageLink(message));
 
     }
 
