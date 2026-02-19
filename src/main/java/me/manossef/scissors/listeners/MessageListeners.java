@@ -26,6 +26,7 @@ public class MessageListeners extends ListenerAdapter {
         Message message = event.getMessage();
         if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         String content = message.getContentRaw();
+        if(content.startsWith(SharedConstants.COMMAND_PREFIX)) return;
         MessageChannelUnion channel = message.getChannel();
         Configuration config = Scissors.getConfiguration();
         if(content.matches("^[0-9]+$") && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel)) {
