@@ -27,6 +27,9 @@ public class OptionValueAdapterFactory implements TypeAdapterFactory {
                     return null;
 
                 }
+                if(reader.peek() != JsonToken.BEGIN_OBJECT)
+                    return null;
+                reader.beginObject();
                 Option option = null;
                 Boolean booleanValue = null;
                 Integer intValue = null;
@@ -45,6 +48,7 @@ public class OptionValueAdapterFactory implements TypeAdapterFactory {
                     }
 
                 }
+                reader.endObject();
                 if(option == null || (booleanValue == null && intValue == null))
                     return null;
                 return (T) new OptionValue<>(option, option.properties().getType().equals(Boolean.class) ? booleanValue : intValue);
