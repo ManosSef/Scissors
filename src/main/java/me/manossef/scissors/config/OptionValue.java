@@ -4,6 +4,8 @@ public record OptionValue<T>(Option option, T value) {
 
     public OptionValue {
 
+        if(option == null)
+            throw new IllegalArgumentException("Option cannot be null");
         if(value != null && option.properties() instanceof OptionProperties.IntOptionProperties properties) {
 
             int intValue = (int) value;

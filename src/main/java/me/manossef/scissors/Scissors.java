@@ -2,10 +2,7 @@ package me.manossef.scissors;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonWriter;
-import me.manossef.scissors.config.Configuration;
-import me.manossef.scissors.config.Option;
-import me.manossef.scissors.config.OptionAdapter;
-import me.manossef.scissors.config.Settings;
+import me.manossef.scissors.config.*;
 import me.manossef.scissors.jira.JiraAPI;
 import me.manossef.scissors.jira.JiraCheckLoop;
 import me.manossef.scissors.listeners.CommandListener;
@@ -28,7 +25,7 @@ public class Scissors {
         .addEventListeners(new Startup(), new CommandListener(), new MessageListeners())
         .build();
     public static final JiraAPI JIRA_API = new JiraAPI("https://manossef.atlassian.net/rest/api/2/");
-    public static final Gson GSON = new GsonBuilder().registerTypeAdapter(Option.class, new OptionAdapter()).create();
+    public static final Gson GSON = new GsonBuilder().registerTypeAdapter(Option.class, new OptionAdapter()).registerTypeAdapterFactory(new OptionValueAdapterFactory()).create();
     public static final Random RANDOM = new Random();
 
     private static Configuration config;
