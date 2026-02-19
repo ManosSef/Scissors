@@ -6,6 +6,8 @@ import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.config.Configuration;
 import me.manossef.scissors.config.Option;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.attribute.ICategorizableChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -27,11 +29,7 @@ public class MessageListeners extends ListenerAdapter {
         Configuration config = Scissors.getConfiguration();
         if(content.matches("^[0-9]+$") && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel)) {
 
-            boolean isDisallowedChannel = channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting"));
-            Boolean optionForChannelOnly = config.getOptionForChannelOnly(Option.GPPCT_RESPONSES, Boolean.class, channel);
-            boolean isChannelExplicitlyAllowed = optionForChannelOnly != null && optionForChannelOnly;
-            if(channel.canTalk() && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.GPPCT_RESPONSE_CHANCE, Integer.class, channel)
-                && (!isDisallowedChannel || isChannelExplicitlyAllowed))
+            if(channel.canTalk() && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.GPPCT_RESPONSE_CHANCE, Integer.class, channel))
                 replyWithRandomMessage(message, content.equals("67") ? Messages.GPPCT_BRAINROT_RESPONSES : Messages.GPPCT_RESPONSES, "GPPCT");
 
         } else if(content.contains(Scissors.DISCORD_API.getSelfUser().getAsMention()) && config.getOptionForChannel(Option.PING_RESPONSES, Boolean.class, channel))
@@ -65,6 +63,13 @@ public class MessageListeners extends ListenerAdapter {
             .setAllowedMentions(Collections.emptyList())
             .queue();
         DevGuild.logResponse("Posted a " + responseType + " response to https://discord.com/channels/" + message.getGuildId() + "/" + message.getChannelId() + "/" + message.getId());
+
+    }
+
+    public static boolean isDisallowedForGPPCT(Channel channel) {
+
+        return channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") ||
+            (channel instanceof ICategorizableChannel iCategorizableChannel && iCategorizableChannel.getParentCategory() != null && iCategorizableChannel.getParentCategory().getName().toLowerCase().contains("counting"));
 
     }
 

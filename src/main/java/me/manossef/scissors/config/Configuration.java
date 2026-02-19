@@ -1,5 +1,6 @@
 package me.manossef.scissors.config;
 
+import me.manossef.scissors.listeners.MessageListeners;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
@@ -42,6 +43,8 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
                 return settings.get(option, type);
 
         }
+        if(MessageListeners.isDisallowedForGPPCT(channel))
+            return (T) Boolean.FALSE;
         if(channel.getType().isGuild()) {
 
             GuildChannel guildChannel = (GuildChannel) channel;
