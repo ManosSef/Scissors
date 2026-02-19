@@ -1,5 +1,8 @@
 package me.manossef.scissors.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum Options {
 
     GPPCT_RESPONSES(BooleanOptions.GPPCT_RESPONSES),
@@ -9,11 +12,27 @@ public enum Options {
     SCISSORS_RESPONSE_CHANCE(IntOptions.SCISSORS_RESPONSE_CHANCE),
     REACT_TO_PAPER(BooleanOptions.REACT_TO_PAPER);
 
+    private static final Map<String, Option<?>> NAME_TO_OPTION = mapNamesToOptions();
     private final TypedOptions typedOption;
 
     Options(TypedOptions option) {
 
         this.typedOption = option;
+
+    }
+
+    private static Map<String, Option<?>> mapNamesToOptions() {
+
+        Map<String, Option<?>> map = new HashMap<>();
+        for(Options option : values())
+            map.put(option.option().getName(), option.option());
+        return map;
+
+    }
+
+    public static Option<?> fromName(String name) {
+
+        return NAME_TO_OPTION.get(name);
 
     }
 
