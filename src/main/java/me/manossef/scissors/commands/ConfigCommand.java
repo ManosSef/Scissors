@@ -12,10 +12,12 @@ import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.OptionProperties;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 
 public class ConfigCommand {
 
     private static final SimpleCommandExceptionType INVALID_CONTEXT = new SimpleCommandExceptionType(new LiteralMessage("Invalid option context"));
+    private static final SimpleCommandExceptionType NOT_IN_GUILD = new SimpleCommandExceptionType(new LiteralMessage("This channel is not in a server"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
@@ -55,7 +57,7 @@ public class ConfigCommand {
 
     }
 
-    private static int resetOptions(ChatCommandSource source, OptionContext optionContext) {
+    private static int resetOptions(ChatCommandSource source, OptionContext optionContext) throws CommandSyntaxException {
 
         switch(optionContext) {
 
@@ -67,6 +69,8 @@ public class ConfigCommand {
             }
             case PER_GUILD -> {
 
+                if(!(source.commandMessage().getChannel() instanceof GuildChannel))
+                    throw NOT_IN_GUILD.create();
                 Scissors.getConfiguration().resetForGuild(source.commandMessage().getGuild());
                 source.sendSuccess("Removed the explicit values of all options for this server");
 
@@ -97,6 +101,8 @@ public class ConfigCommand {
             }
             case PER_GUILD -> {
 
+                if(!(source.commandMessage().getChannel() instanceof GuildChannel))
+                    throw NOT_IN_GUILD.create();
                 value = Scissors.getConfiguration().getOptionForGuild(option, type, source.commandMessage().getGuild());
                 source.sendSuccess("The current effective value of the option \"" + option.properties().getName() + "\" for this server is " + value);
 
@@ -126,6 +132,8 @@ public class ConfigCommand {
             }
             case PER_GUILD -> {
 
+                if(!(source.commandMessage().getChannel() instanceof GuildChannel))
+                    throw NOT_IN_GUILD.create();
                 Scissors.getConfiguration().setOptionForGuild(option, value, source.commandMessage().getGuild());
                 source.sendSuccess("Set the value of the option \"" + option.properties().getName() + "\" for this server to " + value);
 
