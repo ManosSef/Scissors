@@ -18,6 +18,9 @@ public class ConfigCommand {
 
     private static final SimpleCommandExceptionType INVALID_CONTEXT = new SimpleCommandExceptionType(new LiteralMessage("Invalid option context"));
     private static final SimpleCommandExceptionType NOT_IN_GUILD = new SimpleCommandExceptionType(new LiteralMessage("This channel is not in a server"));
+    private static final SimpleCommandExceptionType ALREADY_DEFAULT_GLOBAL = new SimpleCommandExceptionType(new LiteralMessage("Nothing changed; the global values of all options are already the default ones"));
+    private static final SimpleCommandExceptionType ALREADY_DEFAULT_GUILD = new SimpleCommandExceptionType(new LiteralMessage("Nothing changed; no explicit values for any option have been set for this server"));
+    private static final SimpleCommandExceptionType ALREADY_DEFAULT_CHANNEL = new SimpleCommandExceptionType(new LiteralMessage("Nothing changed; no explicit values for any option have been set for this channel"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
@@ -63,22 +66,28 @@ public class ConfigCommand {
 
             case GLOBAL -> {
 
-                Scissors.getConfiguration().resetGlobal();
-                source.sendSuccess("Reset the global values of all options to the default ones");
+                if(Scissors.getConfiguration().resetGlobal())
+                    source.sendSuccess("Reset the global values of all options to the default ones");
+                else
+                    throw ALREADY_DEFAULT_GLOBAL.create();
 
             }
             case PER_GUILD -> {
 
                 if(!(source.commandMessage().getChannel() instanceof GuildChannel))
                     throw NOT_IN_GUILD.create();
-                Scissors.getConfiguration().resetForGuild(source.commandMessage().getGuild());
-                source.sendSuccess("Removed the explicit values of all options for this server");
+                if(Scissors.getConfiguration().resetForGuild(source.commandMessage().getGuild()))
+                    source.sendSuccess("Removed the explicit values of all options for this server");
+                else
+                    throw ALREADY_DEFAULT_GUILD.create();
 
             }
             case PER_CHANNEL -> {
 
-                Scissors.getConfiguration().resetForChannel(source.commandMessage().getChannel());
-                source.sendSuccess("Removed the explicit values of all options for this channel");
+                if(Scissors.getConfiguration().resetForChannel(source.commandMessage().getChannel()))
+                    source.sendSuccess("Removed the explicit values of all options for this channel");
+                else
+                    throw ALREADY_DEFAULT_CHANNEL.create();
 
             }
 

@@ -100,21 +100,21 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
 
     }
 
-    public void resetGlobal() {
+    public boolean resetGlobal() {
 
-        global.resetToDefault();
-
-    }
-
-    public void resetForGuild(Guild guild) {
-
-        perGuild.remove(guild.getIdLong());
+        return global.resetToDefault();
 
     }
 
-    public void resetForChannel(Channel channel) {
+    public boolean resetForGuild(Guild guild) {
 
-        perGuild.remove(channel.getIdLong());
+        return perGuild.remove(guild.getIdLong()) != null;
+
+    }
+
+    public boolean resetForChannel(Channel channel) {
+
+        return perGuild.remove(channel.getIdLong()) != null;
 
     }
 

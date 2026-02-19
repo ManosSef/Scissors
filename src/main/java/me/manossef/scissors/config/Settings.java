@@ -58,9 +58,12 @@ public class Settings {
 
     }
 
-    public void resetToDefault() {
+    public boolean resetToDefault() {
 
+        if(values.isEmpty())
+            return false;
         values.clear();
+        return true;
 
     }
 
