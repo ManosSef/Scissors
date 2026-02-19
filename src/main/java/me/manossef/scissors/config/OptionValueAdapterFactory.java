@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+import me.manossef.scissors.Scissors;
 
 import java.io.IOException;
 
@@ -26,14 +27,14 @@ public class OptionValueAdapterFactory implements TypeAdapterFactory {
                     return null;
 
                 }
-                String option = null;
+                Option option = null;
                 Boolean booleanValue = null;
                 Integer intValue = null;
                 while(reader.hasNext()) {
 
                     String name = reader.nextName();
                     if(name.equals("option"))
-                        option = reader.nextString();
+                        option = Scissors.GSON.getAdapter(Option.class).read(reader);
                     else if(name.equals("value")) {
 
                         if(reader.peek() == JsonToken.BOOLEAN)
@@ -46,7 +47,7 @@ public class OptionValueAdapterFactory implements TypeAdapterFactory {
                 }
                 if(option == null || (booleanValue == null && intValue == null))
                     return null;
-                return (T) new OptionValue<>(Option.fromName(option), intValue == null ? booleanValue : intValue);
+                return (T) new OptionValue<>(option, option.properties().getType().equals(Boolean.class) ? booleanValue : intValue);
 
             }
 
