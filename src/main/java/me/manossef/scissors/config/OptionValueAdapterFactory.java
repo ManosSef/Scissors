@@ -63,7 +63,12 @@ public class OptionValueAdapterFactory implements TypeAdapterFactory {
 
                     writer.beginObject().name("option");
                     Scissors.GSON.getAdapter(Option.class).write(writer, optionValue.option());
-                    writer.name("value").value(optionValue.value().toString()).endObject();
+                    writer.name("value");
+                    if(optionValue.value() instanceof Boolean booleanValue)
+                        writer.value(booleanValue);
+                    else if(optionValue.value() instanceof Integer integer)
+                        writer.value(integer);
+                    writer.endObject();
                     return;
 
                 }
