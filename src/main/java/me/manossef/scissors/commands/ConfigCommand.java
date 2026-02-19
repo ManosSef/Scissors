@@ -29,6 +29,9 @@ public class ConfigCommand {
 
     private static ArgumentBuilder<ChatCommandSource, ?> optionsArguments(ArgumentBuilder<ChatCommandSource, ?> argument, OptionContext optionContext) {
 
+        argument.then(Commands.literal("reset")
+            .executes(context -> resetOptions(context.getSource(), optionContext))
+        );
         for(Option option : Option.values()) {
 
             ArgumentBuilder<ChatCommandSource, ?> optionArgument = Commands.literal(option.properties().getName())
@@ -49,6 +52,34 @@ public class ConfigCommand {
 
         }
         return argument;
+
+    }
+
+    private static int resetOptions(ChatCommandSource source, OptionContext optionContext) {
+
+        switch(optionContext) {
+
+            case GLOBAL -> {
+
+                Scissors.getConfiguration().resetGlobal();
+                source.sendSuccess("Reset the global values of all options to the default ones");
+
+            }
+            case PER_GUILD -> {
+
+                Scissors.getConfiguration().resetForGuild(source.commandMessage().getGuild());
+                source.sendSuccess("Removed the explicit values of all options for this server");
+
+            }
+            case PER_CHANNEL -> {
+
+                Scissors.getConfiguration().resetForChannel(source.commandMessage().getChannel());
+                source.sendSuccess("Removed the explicit values of all options for this channel");
+
+            }
+
+        }
+        return 1;
 
     }
 
