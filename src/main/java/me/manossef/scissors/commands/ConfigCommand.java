@@ -79,6 +79,7 @@ public class ConfigCommand {
             }
 
         }
+        Scissors.saveConfiguration();
         return 1;
 
     }
