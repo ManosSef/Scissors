@@ -8,22 +8,22 @@ import java.util.Map;
 
 public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<Long, Settings> perChannel) {
 
-    public <T> T getGlobalOption(Options option, Class<T> type) {
+    public <T> T getGlobalOption(Option option, Class<T> type) {
 
-        if(!option.option().getType().equals(type))
+        if(!option.properties().getType().equals(type))
             throw new IllegalArgumentException("Option is not of the given type");
         return global.get(option, type);
 
     }
 
-    public <T> T getOptionForGuild(Options option, Class<T> type, Guild guild) {
+    public <T> T getOptionForGuild(Option option, Class<T> type, Guild guild) {
 
-        if(!option.option().getType().equals(type))
+        if(!option.properties().getType().equals(type))
             throw new IllegalArgumentException("Option is not of the given type");
         if(perGuild.containsKey(guild.getIdLong())) {
 
             Settings settings = perGuild.get(guild.getIdLong());
-            if(settings.isPresent(option.option()))
+            if(settings.isPresent(option))
                 return settings.get(option, type);
 
         }
@@ -31,14 +31,14 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
 
     }
 
-    public <T> T getOptionForChannel(Options option, Class<T> type, Channel channel) {
+    public <T> T getOptionForChannel(Option option, Class<T> type, Channel channel) {
 
-        if(!option.option().getType().equals(type))
+        if(!option.properties().getType().equals(type))
             throw new IllegalArgumentException("Option is not of the given type");
         if(perChannel.containsKey(channel.getIdLong())) {
 
             Settings settings = perChannel.get(channel.getIdLong());
-            if(settings.isPresent(option.option()))
+            if(settings.isPresent(option))
                 return settings.get(option, type);
 
         }
@@ -48,7 +48,7 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
             if(perGuild.containsKey(guildChannel.getGuild().getIdLong())) {
 
                 Settings settings = perGuild.get(guildChannel.getGuild().getIdLong());
-                if(settings.isPresent(option.option()))
+                if(settings.isPresent(option))
                     return settings.get(option, type);
 
             }
@@ -58,14 +58,14 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
 
     }
 
-    public <T> T getOptionForChannelOnly(Options option, Class<T> type, Channel channel) {
+    public <T> T getOptionForChannelOnly(Option option, Class<T> type, Channel channel) {
 
-        if(!option.option().getType().equals(type))
+        if(!option.properties().getType().equals(type))
             throw new IllegalArgumentException("Option is not of the given type");
         if(perChannel.containsKey(channel.getIdLong())) {
 
             Settings settings = perChannel.get(channel.getIdLong());
-            if(settings.isPresent(option.option()))
+            if(settings.isPresent(option))
                 return settings.get(option, type);
 
         }
@@ -73,13 +73,13 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
 
     }
 
-    public <T> void setGlobalOption(Option<T> option, T value) {
+    public <T> void setGlobalOption(Option option, T value) {
 
         global.set(option, value);
 
     }
 
-    public <T> void setOptionForGuild(Option<T> option, T value, Guild guild) {
+    public <T> void setOptionForGuild(Option option, T value, Guild guild) {
 
         long id = guild.getIdLong();
         if(!perGuild.containsKey(id))
@@ -88,7 +88,7 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
 
     }
 
-    public <T> void setOptionForChannel(Option<T> option, T value, Channel channel) {
+    public <T> void setOptionForChannel(Option option, T value, Channel channel) {
 
         long id = channel.getIdLong();
         if(!perChannel.containsKey(id))

@@ -1,14 +1,14 @@
 package me.manossef.scissors.config;
 
-public record OptionValue<T>(Option<T> option, T value) {
+public record OptionValue<T>(Option option, T value) {
 
     public OptionValue {
 
-        if(value != null && option instanceof Option.IntOption intOption) {
+        if(value != null && option.properties() instanceof OptionProperties.IntOptionProperties properties) {
 
             int intValue = (int) value;
-            if(!intOption.validate(intValue))
-                throw new IllegalArgumentException("Option value (" + intValue + ") out of bounds (" + intOption.getMin() + ", " + intOption.getMax() + ")");
+            if(!properties.validate(intValue))
+                throw new IllegalArgumentException("Option value (" + intValue + ") out of bounds (" + properties.getMin() + ", " + properties.getMax() + ")");
 
         }
 

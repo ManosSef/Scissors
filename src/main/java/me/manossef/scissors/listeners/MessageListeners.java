@@ -4,7 +4,7 @@ import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.config.Configuration;
-import me.manossef.scissors.config.Options;
+import me.manossef.scissors.config.Option;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -25,24 +25,24 @@ public class MessageListeners extends ListenerAdapter {
         String content = message.getContentRaw();
         MessageChannelUnion channel = message.getChannel();
         Configuration config = Scissors.getConfiguration();
-        if(content.matches("^[0-9]+$") && config.getOptionForChannel(Options.GPPCT_RESPONSES, Boolean.class, channel)) {
+        if(content.matches("^[0-9]+$") && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel)) {
 
             boolean isDisallowedChannel = channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") || (message.getCategory() != null && message.getCategory().getName().toLowerCase().contains("counting"));
-            Boolean optionForChannelOnly = config.getOptionForChannelOnly(Options.GPPCT_RESPONSES, Boolean.class, channel);
+            Boolean optionForChannelOnly = config.getOptionForChannelOnly(Option.GPPCT_RESPONSES, Boolean.class, channel);
             boolean isChannelExplicitlyAllowed = optionForChannelOnly != null && optionForChannelOnly;
-            if(channel.canTalk() && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Options.GPPCT_RESPONSE_CHANCE, Integer.class, channel)
+            if(channel.canTalk() && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.GPPCT_RESPONSE_CHANCE, Integer.class, channel)
                 && (!isDisallowedChannel || isChannelExplicitlyAllowed))
                 replyWithRandomMessage(message, content.equals("67") ? Messages.GPPCT_BRAINROT_RESPONSES : Messages.GPPCT_RESPONSES, "GPPCT");
 
-        } else if(content.contains(Scissors.DISCORD_API.getSelfUser().getAsMention()) && config.getOptionForChannel(Options.PING_RESPONSES, Boolean.class, channel))
+        } else if(content.contains(Scissors.DISCORD_API.getSelfUser().getAsMention()) && config.getOptionForChannel(Option.PING_RESPONSES, Boolean.class, channel))
             replyWithRandomMessage(message, Messages.PING_RESPONSES, "ping");
-        else if(content.toLowerCase().contains("scissors") && config.getOptionForChannel(Options.SCISSORS_RESPONSES, Boolean.class, channel)) {
+        else if(content.toLowerCase().contains("scissors") && config.getOptionForChannel(Option.SCISSORS_RESPONSES, Boolean.class, channel)) {
 
-            if(channel.canTalk() && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Options.SCISSORS_RESPONSE_CHANCE, Integer.class, channel))
+            if(channel.canTalk() && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.SCISSORS_RESPONSE_CHANCE, Integer.class, channel))
                 replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES, "scissors");
 
         }
-        if(content.toLowerCase().contains("paper") && config.getOptionForChannel(Options.REACT_TO_PAPER, Boolean.class, channel))
+        if(content.toLowerCase().contains("paper") && config.getOptionForChannel(Option.REACT_TO_PAPER, Boolean.class, channel))
             message.addReaction(Emoji.fromUnicode("✂️")).onErrorMap(e -> null).queue();
 
     }

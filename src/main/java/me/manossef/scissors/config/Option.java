@@ -1,67 +1,120 @@
 package me.manossef.scissors.config;
 
-public class Option<T> {
+import java.util.HashMap;
+import java.util.Map;
 
-    private final String name;
-    private final Class<T> type;
-    private final T defaultValue;
+public enum Option {
 
-    Option(String name, Class<T> type, T defaultValue) {
+    GPPCT_RESPONSES(BooleanOption.GPPCT_RESPONSES),
+    GPPCT_RESPONSE_CHANCE(IntOption.GPPCT_RESPONSE_CHANCE),
+    PING_RESPONSES(BooleanOption.PING_RESPONSES),
+    SCISSORS_RESPONSES(BooleanOption.SCISSORS_RESPONSES),
+    SCISSORS_RESPONSE_CHANCE(IntOption.SCISSORS_RESPONSE_CHANCE),
+    REACT_TO_PAPER(BooleanOption.REACT_TO_PAPER);
 
-        this.name = name;
-        this.type = type;
-        this.defaultValue = defaultValue;
+    private static final Map<String, Option> NAME_TO_OPTION = mapNamesToOptions();
+    private final TypedOption typedOption;
 
-    }
+    Option(TypedOption option) {
 
-    public String getName() {
-
-        return this.name;
-
-    }
-
-    public Class<T> getType() {
-
-        return this.type;
+        this.typedOption = option;
 
     }
 
-    public T getDefault() {
+    private static Map<String, Option> mapNamesToOptions() {
 
-        return this.defaultValue;
+        Map<String, Option> map = new HashMap<>();
+        for(Option option : values())
+            map.put(option.properties().getName(), option);
+        return map;
 
     }
 
-    public static class IntOption extends Option<Integer> {
+    public static Option fromName(String name) {
 
-        private final int min;
-        private final int max;
+        return NAME_TO_OPTION.get(name);
 
-        IntOption(String name, Integer defaultValue, int min, int max) {
+    }
 
-            super(name, Integer.class, defaultValue);
-            this.min = min;
-            this.max = max;
-            if(!validate(defaultValue))
-                throw new IllegalArgumentException("Default option value (" + defaultValue + ") out of bounds (" + this.min + ", " + this.max + ")");
+    public OptionProperties<?> properties() {
+
+        return this.typedOption.properties();
+
+    }
+
+    public boolean isBoolean() {
+
+        return this.typedOption instanceof BooleanOption;
+
+    }
+
+    public boolean isInteger() {
+
+        return this.typedOption instanceof IntOption;
+
+    }
+
+    public OptionProperties<Boolean> getAsBoolean() {
+
+        if(this.typedOption instanceof BooleanOption)
+            return ((BooleanOption) typedOption).properties();
+        return null;
+
+    }
+
+    public OptionProperties<Integer> getAsInteger() {
+
+        if(this.typedOption instanceof IntOption)
+            return ((IntOption) typedOption).properties();
+        return null;
+
+    }
+
+    private interface TypedOption {
+
+        OptionProperties<?> properties();
+
+    }
+
+    public enum BooleanOption implements TypedOption {
+
+        GPPCT_RESPONSES(new OptionProperties<>("gppctResponses", Boolean.class, true)),
+        PING_RESPONSES(new OptionProperties<>("pingResponses", Boolean.class, true)),
+        SCISSORS_RESPONSES(new OptionProperties<>("scissorsResponses", Boolean.class, true)),
+        REACT_TO_PAPER(new OptionProperties<>("reactToPaper", Boolean.class, true));
+
+        private final OptionProperties<Boolean> properties;
+
+        BooleanOption(OptionProperties<Boolean> properties) {
+
+            this.properties = properties;
 
         }
 
-        public int getMin() {
+        public OptionProperties<Boolean> properties() {
 
-            return this.min;
-
-        }
-
-        public int getMax() {
-
-            return this.max;
+            return this.properties;
 
         }
 
-        public boolean validate(int value) {
+    }
 
-            return value >= min && value <= max;
+    public enum IntOption implements TypedOption {
+
+        GPPCT_RESPONSE_CHANCE(new OptionProperties.IntOptionProperties("gppctResponseChance", 10, 0, 100)),
+        SCISSORS_RESPONSE_CHANCE(new OptionProperties.IntOptionProperties("scissorsResponseChance", 20, 0, 100));
+
+        private final OptionProperties<Integer> properties;
+
+        IntOption(OptionProperties<Integer> properties) {
+
+            this.properties = properties;
+
+        }
+
+        public OptionProperties<Integer> properties() {
+
+            return this.properties;
 
         }
 

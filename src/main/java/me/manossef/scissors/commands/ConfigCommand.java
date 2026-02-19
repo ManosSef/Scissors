@@ -11,7 +11,7 @@ import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.config.Option;
-import me.manossef.scissors.config.Options;
+import me.manossef.scissors.config.OptionProperties;
 
 public class ConfigCommand {
 
@@ -29,19 +29,19 @@ public class ConfigCommand {
 
     private static ArgumentBuilder<ChatCommandSource, ?> optionsArguments(ArgumentBuilder<ChatCommandSource, ?> argument, OptionContext optionContext) {
 
-        for(Options option : Options.values()) {
+        for(Option option : Option.values()) {
 
-            ArgumentBuilder<ChatCommandSource, ?> optionArgument = Commands.literal(option.option().getName())
-                .executes(context -> getOptionValue(context.getSource(), option, option.option().getType(), optionContext));
+            ArgumentBuilder<ChatCommandSource, ?> optionArgument = Commands.literal(option.properties().getName())
+                .executes(context -> getOptionValue(context.getSource(), option, option.properties().getType(), optionContext));
             if(option.isBoolean())
                 optionArgument.then(Commands.argument("value", BoolArgumentType.bool())
-                    .executes(context -> setOptionValue(context.getSource(), option.getAsBoolean(), BoolArgumentType.getBool(context, "value"), optionContext))
+                    .executes(context -> setOptionValue(context.getSource(), option, BoolArgumentType.getBool(context, "value"), optionContext))
                 );
             if(option.isInteger()) {
 
-                Option.IntOption intOption = (Option.IntOption) option.option();
+                OptionProperties.IntOptionProperties intOption = (OptionProperties.IntOptionProperties) option.properties();
                 optionArgument.then(Commands.argument("value", IntegerArgumentType.integer(intOption.getMin(), intOption.getMax()))
-                    .executes(context -> setOptionValue(context.getSource(), option.getAsInteger(), IntegerArgumentType.getInteger(context, "value"), optionContext))
+                    .executes(context -> setOptionValue(context.getSource(), option, IntegerArgumentType.getInteger(context, "value"), optionContext))
                 );
 
             }
@@ -52,7 +52,7 @@ public class ConfigCommand {
 
     }
 
-    private static <T> int getOptionValue(ChatCommandSource source, Options option, Class<T> type, OptionContext optionContext) throws CommandSyntaxException {
+    private static <T> int getOptionValue(ChatCommandSource source, Option option, Class<T> type, OptionContext optionContext) throws CommandSyntaxException {
 
         T value;
         switch(optionContext) {
@@ -60,19 +60,19 @@ public class ConfigCommand {
             case GLOBAL -> {
 
                 value = Scissors.getConfiguration().getGlobalOption(option, type);
-                source.sendSuccess("The current global value of the option \"" + option.option().getName() + "\" is " + value);
+                source.sendSuccess("The current global value of the option \"" + option.properties().getName() + "\" is " + value);
 
             }
             case PER_GUILD -> {
 
                 value = Scissors.getConfiguration().getOptionForGuild(option, type, source.commandMessage().getGuild());
-                source.sendSuccess("The current effective value of the option \"" + option.option().getName() + "\" for this server is " + value);
+                source.sendSuccess("The current effective value of the option \"" + option.properties().getName() + "\" for this server is " + value);
 
             }
             case PER_CHANNEL -> {
 
                 value = Scissors.getConfiguration().getOptionForChannel(option, type, source.commandMessage().getChannel());
-                source.sendSuccess("The current effective value of the option \"" + option.option().getName() + "\" for this channel is " + value);
+                source.sendSuccess("The current effective value of the option \"" + option.properties().getName() + "\" for this channel is " + value);
 
             }
             default -> throw INVALID_CONTEXT.create();
@@ -82,33 +82,33 @@ public class ConfigCommand {
 
     }
 
-    private static <T> int setOptionValue(ChatCommandSource source, Option<T> option, T value, OptionContext optionContext) throws CommandSyntaxException {
+    private static <T> int setOptionValue(ChatCommandSource source, Option option, T value, OptionContext optionContext) throws CommandSyntaxException {
 
         switch(optionContext) {
 
             case GLOBAL -> {
 
                 Scissors.getConfiguration().setGlobalOption(option, value);
-                source.sendSuccess("Set the global value of the option \"" + option.getName() + "\" to " + value);
+                source.sendSuccess("Set the global value of the option \"" + option.properties().getName() + "\" to " + value);
 
             }
             case PER_GUILD -> {
 
                 Scissors.getConfiguration().setOptionForGuild(option, value, source.commandMessage().getGuild());
-                source.sendSuccess("Set the value of the option \"" + option.getName() + "\" for this server to " + value);
+                source.sendSuccess("Set the value of the option \"" + option.properties().getName() + "\" for this server to " + value);
 
             }
             case PER_CHANNEL -> {
 
                 Scissors.getConfiguration().setOptionForChannel(option, value, source.commandMessage().getChannel());
-                source.sendSuccess("Set the value of the option \"" + option.getName() + "\" for this channel to " + value);
+                source.sendSuccess("Set the value of the option \"" + option.properties().getName() + "\" for this channel to " + value);
 
             }
             default -> throw INVALID_CONTEXT.create();
 
         }
         Scissors.saveConfiguration();
-        return option.getType().equals(Integer.class) ? (int) value : (boolean) value ? 1 : 0;
+        return option.isInteger() ? (int) value : (boolean) value ? 1 : 0;
 
     }
 
