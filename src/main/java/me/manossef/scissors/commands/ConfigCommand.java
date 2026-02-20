@@ -28,7 +28,7 @@ public class ConfigCommand {
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
         dispatcher.register(Commands.literal("config")
-            .then(optionsArguments(Commands.literal("global"), OptionContext.GLOBAL))
+            .then(optionsArguments(Commands.literal("global"), OptionContext.GLOBAL).requires(Commands.devRestricted()))
             .then(optionsArguments(Commands.literal("server"), OptionContext.PER_GUILD))
             .then(optionsArguments(Commands.literal("channel"), OptionContext.PER_CHANNEL))
         );
