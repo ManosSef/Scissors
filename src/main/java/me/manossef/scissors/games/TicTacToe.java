@@ -14,6 +14,8 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 import java.util.Objects;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+
 public class TicTacToe extends Game {
 
     private static final CustomEmoji TICTACTOE_EMOJI = Emoji.fromCustom("tictactoe", 1436395840276135936L, true);
@@ -96,10 +98,10 @@ public class TicTacToe extends Game {
         Status status = this.getStatus();
         String statusText = switch(status) {
 
-            case DRAW -> "\n**It's a tie!**";
+            case DRAW -> "\n" + bold("It's a tie!");
             case ONGOING -> "";
-            case PLAYER_1_WON -> "\n**" + this.getPlayer1().getAsMention() + " won!**";
-            case PLAYER_2_WON -> "\n**" + this.getPlayer2().getAsMention() + " won!**";
+            case PLAYER_1_WON -> "\n" + bold(this.getPlayer1().getAsMention() + " won!");
+            case PLAYER_2_WON -> "\n" + bold(this.getPlayer2().getAsMention() + " won!");
 
         };
         this.message.editMessage(MessageEditData.fromEmbeds(

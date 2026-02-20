@@ -2,10 +2,12 @@ package me.manossef.scissors.listeners;
 
 import java.util.List;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
+
 public class Messages {
 
     static final List<String> GPPCT_RESPONSES = List.of(
-        "As part of the Great Purge of Pointless Counting Threads (GPPCT), this channel has been closed due to the following criteria: **Not a counting channel.**",
+        "As part of the Great Purge of Pointless Counting Threads (GPPCT), this channel has been closed due to the following criteria: " + bold("Not a counting channel."),
         "RAHHH! No counting!",
         "I don't even get where's the fun in counting channels",
         "Be careful not to stationary zero too much or you might end up with zero brain cells",
@@ -25,7 +27,7 @@ public class Messages {
         "I'm gonna call the GPPCT police",
         "You know what, I guess you can keep doing it, it's not like I can stop you",
         "This isn't #counting, is it?",
-        "Oh my goodness! Is that... a... a... *number*?",
+        "Oh my goodness! Is that... a... a... " + italics("number") + "?",
         "Is that your age?",
         "\uD83D\uDE21",
         "Don't you have anything better to do?",
@@ -36,17 +38,18 @@ public class Messages {
         "?warn %s Spam",
         "Would you like me to summon the admins?",
         "Are you testing my nerves or something?",
-        "A number?! At this time of year? At this time of day? In this part of the country? ~~Localized entirely within your kitchen?!~~",
+        "A number?! At this time of year? At this time of day? In this part of the country? " + strike("Localized entirely within your kitchen?!"),
         "How did my creator not go crazy from having to deal with this",
         "You're the reason I crash this often",
         "I'm not a fan of your schadenfreude",
-        "Do you really want to test me? *snips*",
+        "Do you really want to test me? " + italics("snips"),
         "My blades are very sharp. Consider this a threat",
         "You're probably one of those school nerds that have no friends",
         "This feels worse than being beaten up by a rock",
         "Honestly why did the GPPCT stop",
         "I'm not mad, just disappointed",
-        "Are you just excited because you just learned how to count?"
+        "Are you just excited because you just learned how to count?",
+        "Do you just randomly shout random numbers in real life too?"
     );
     static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",

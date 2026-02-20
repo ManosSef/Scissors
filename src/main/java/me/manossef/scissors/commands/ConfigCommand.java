@@ -14,6 +14,9 @@ import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.OptionProperties;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
+
 public class ConfigCommand {
 
     private static final SimpleCommandExceptionType INVALID_CONTEXT = new SimpleCommandExceptionType(new LiteralMessage("Invalid option context"));
@@ -105,7 +108,7 @@ public class ConfigCommand {
             case GLOBAL -> {
 
                 value = Scissors.getConfiguration().getGlobalOption(option, type);
-                source.sendSuccess("The current global value of the option \"" + option.properties().getName() + "\" is " + value);
+                source.sendSuccess("The current global value of the option " + monospace(option.properties().getName()) + " is " + bold(value.toString()));
 
             }
             case PER_GUILD -> {
@@ -113,13 +116,13 @@ public class ConfigCommand {
                 if(!(source.commandMessage().getChannel() instanceof GuildChannel))
                     throw NOT_IN_GUILD.create();
                 value = Scissors.getConfiguration().getOptionForGuild(option, type, source.commandMessage().getGuild());
-                source.sendSuccess("The current effective value of the option \"" + option.properties().getName() + "\" for this server is " + value);
+                source.sendSuccess("The current effective value of the option " + monospace(option.properties().getName()) + " for this server is " + bold(value.toString()));
 
             }
             case PER_CHANNEL -> {
 
                 value = Scissors.getConfiguration().getOptionForChannel(option, type, source.commandMessage().getChannel());
-                source.sendSuccess("The current effective value of the option \"" + option.properties().getName() + "\" for this channel is " + value);
+                source.sendSuccess("The current effective value of the option " + monospace(option.properties().getName()) + " for this channel is " + bold(value.toString()));
 
             }
             default -> throw INVALID_CONTEXT.create();
@@ -136,7 +139,7 @@ public class ConfigCommand {
             case GLOBAL -> {
 
                 Scissors.getConfiguration().setGlobalOption(option, value);
-                source.sendSuccess("Set the global value of the option \"" + option.properties().getName() + "\" to " + value);
+                source.sendSuccess("Set the global value of the option " + monospace(option.properties().getName()) + " to " + bold(value.toString()));
 
             }
             case PER_GUILD -> {
@@ -144,13 +147,13 @@ public class ConfigCommand {
                 if(!(source.commandMessage().getChannel() instanceof GuildChannel))
                     throw NOT_IN_GUILD.create();
                 Scissors.getConfiguration().setOptionForGuild(option, value, source.commandMessage().getGuild());
-                source.sendSuccess("Set the value of the option \"" + option.properties().getName() + "\" for this server to " + value);
+                source.sendSuccess("Set the value of the option " + monospace(option.properties().getName()) + " for this server to " + bold(value.toString()));
 
             }
             case PER_CHANNEL -> {
 
                 Scissors.getConfiguration().setOptionForChannel(option, value, source.commandMessage().getChannel());
-                source.sendSuccess("Set the value of the option \"" + option.properties().getName() + "\" for this channel to " + value);
+                source.sendSuccess("Set the value of the option " + monospace(option.properties().getName()) + " for this channel to " + bold(value.toString()));
 
             }
             default -> throw INVALID_CONTEXT.create();

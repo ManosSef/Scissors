@@ -12,6 +12,8 @@ import me.manossef.scissors.squaredle.PuzzleUtil;
 import me.manossef.scissors.squaredle.TodayConfig;
 import me.manossef.scissors.squaredle.TodayConfigReader;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+
 public class SquaredleCommand {
 
     private static final SimpleCommandExceptionType CONFIG_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("Failed to get the daily Squaredle puzzle configuration"));
@@ -35,7 +37,7 @@ public class SquaredleCommand {
             if(todayConfig == null) throw CONFIG_NOT_FOUND.create();
             String date = todayConfig.currentDate();
             PuzzleData puzzle = todayConfig.puzzles().get(date + (xp ? "-xp" : ""));
-            source.sendSuccess("**Daily " + (xp ? "xp " : "") + date.replace("/", "-") + "**\n" + PuzzleUtil.getMessageText(puzzle));
+            source.sendSuccess(bold("Daily " + (xp ? "xp " : "") + date.replace("/", "-")) + "\n" + PuzzleUtil.getMessageText(puzzle));
             return 1;
 
         } catch(UnirestException e) {

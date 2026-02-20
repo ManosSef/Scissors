@@ -9,6 +9,9 @@ import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.games.RockPaperScissors;
 import net.dv8tion.jda.api.entities.User;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.italics;
+
 public class RockPaperScissorsCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
@@ -36,7 +39,7 @@ public class RockPaperScissorsCommand {
         int random = Scissors.RANDOM.nextInt(-1, 2);
         switch(random) {
 
-            case 0 -> source.sendSuccess("I chose **" + move.getName() + "**! It's a tie! Try again.");
+            case 0 -> source.sendSuccess("I chose " + bold(move.getName()) + "! It's a tie! Try again.");
             case -1 -> {
 
                 RockPaperScissors.Move botMove = switch(move) {
@@ -46,7 +49,7 @@ public class RockPaperScissorsCommand {
                     case SCISSORS -> RockPaperScissors.Move.PAPER;
 
                 };
-                source.sendSuccess("I chose **" + botMove.getName() + "**! You win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " *What?! How did I lose with scissors? This must be a glitch...*" : ""));
+                source.sendSuccess("I chose " + bold(botMove.getName()) + "! You win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " " + italics("What?! How did I lose with scissors? This must be a glitch...") : ""));
 
             }
             case 1 -> {
@@ -58,7 +61,7 @@ public class RockPaperScissorsCommand {
                     case SCISSORS -> RockPaperScissors.Move.ROCK;
 
                 };
-                source.sendSuccess("I chose **" + botMove.getName() + "**! I win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " *Yay! I win with scissors again! I mean, that was expected.*" : ""));
+                source.sendSuccess("I chose " + bold(botMove.getName()) + "! I win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " " + italics("Yay! I win with scissors again! I mean, that was expected.") : ""));
 
             }
 

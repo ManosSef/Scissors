@@ -11,6 +11,8 @@ import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+
 public class RollCommand {
 
     private static final SimpleCommandExceptionType MAX_LESS_THAN_1 = new SimpleCommandExceptionType(new LiteralMessage("The maximum value cannot be less than 1"));
@@ -62,7 +64,7 @@ public class RollCommand {
 
         if(max < min) throw MAX_LESS_THAN_MIN.create();
         int random = Scissors.RANDOM.nextInt(min, max + 1);
-        source.sendSuccess("You rolled " + random);
+        source.sendSuccess("You rolled " + bold(String.valueOf(random)));
         return random;
 
     }
@@ -78,7 +80,7 @@ public class RollCommand {
 
         if(max <= min) throw MAX_FLOAT_LESS_THAN_MIN.create();
         float random = Scissors.RANDOM.nextFloat(min, max);
-        source.sendSuccess("You rolled " + random);
+        source.sendSuccess("You rolled " + bold(String.valueOf(random)));
         return (int) random;
 
     }
@@ -94,7 +96,7 @@ public class RollCommand {
 
         if(max <= min) throw MAX_FLOAT_LESS_THAN_MIN.create();
         double random = Scissors.RANDOM.nextDouble(min, max);
-        source.sendSuccess("You rolled " + random);
+        source.sendSuccess("You rolled " + bold(String.valueOf(random)));
         return (int) random;
 
     }

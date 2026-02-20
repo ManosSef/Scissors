@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+
 public class RockPaperScissors extends Game {
 
     private Message message;
@@ -96,21 +98,23 @@ public class RockPaperScissors extends Game {
         if(status == Status.ONGOING) {
 
             if(player1Move != null)
-                description.append("**").append(this.getPlayer1().getAsMention()).append(" has chosen their move!**\n");
+                description.append(bold(this.getPlayer1().getAsMention() + " has chosen their move!")).append("\n");
             if(player2Move != null)
-                description.append("**").append(this.getPlayer2().getAsMention()).append(" has chosen their move!**\n");
+                description.append(bold(this.getPlayer2().getAsMention() + " has chosen their move!")).append("\n");
             description.append("Choose your move:");
 
         } else {
 
-            description.append("**").append(this.getPlayer1().getAsMention()).append(" has chosen ").append(this.player1Move.getName()).append(" and ").append(this.getPlayer2().getAsMention()).append(" has chosen ").append(this.player2Move.getName()).append("!\n");
+            StringBuilder result = new StringBuilder();
+            result.append(this.getPlayer1().getAsMention()).append(" has chosen ").append(this.player1Move.getName()).append(" and ").append(this.getPlayer2().getAsMention()).append(" has chosen ").append(this.player2Move.getName()).append("!\n");
             switch(status) {
 
-                case PLAYER_1_WON -> description.append(this.getPlayer1().getAsMention()).append(" won!**");
-                case PLAYER_2_WON -> description.append(this.getPlayer2().getAsMention()).append(" won!**");
-                case DRAW -> description.append("It's a tie!**");
+                case PLAYER_1_WON -> result.append(this.getPlayer1().getAsMention()).append(" won!");
+                case PLAYER_2_WON -> result.append(this.getPlayer2().getAsMention()).append(" won!");
+                case DRAW -> result.append("It's a tie!");
 
             }
+            description.append(bold(result.toString()));
             this.end();
 
         }

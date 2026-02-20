@@ -95,4 +95,19 @@ public class Util {
 
     }
 
+    public static boolean isLong(String input) {
+
+        try {
+
+            Long.parseLong(input);
+            return true;
+
+        } catch(NumberFormatException e) {
+
+            return false;
+
+        }
+
+    }
+
 }

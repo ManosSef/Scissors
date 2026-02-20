@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.Util;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.Arrays;
@@ -26,7 +27,7 @@ public class UserArgument implements ArgumentType<User> {
     public User parse(StringReader reader) throws CommandSyntaxException {
 
         String remaining = reader.getRemaining().split(" ")[0];
-        if(this.isLong(remaining)) {
+        if(Util.isLong(remaining)) {
 
             reader.setCursor(reader.getCursor() + remaining.length());
             return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(remaining)).complete();
@@ -35,14 +36,14 @@ public class UserArgument implements ArgumentType<User> {
         if(remaining.startsWith("<@") && remaining.endsWith(">")) {
 
             String middle = remaining.substring(2, remaining.length() - 1);
-            if(this.isLong(middle)) {
+            if(Util.isLong(middle)) {
 
                 reader.setCursor(reader.getCursor() + remaining.length());
                 return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(middle)).complete();
 
             }
             String legacyMiddle = middle.replaceFirst("!", "");
-            if(middle.startsWith("!") && this.isLong(legacyMiddle)) {
+            if(middle.startsWith("!") && Util.isLong(legacyMiddle)) {
 
                 reader.setCursor(reader.getCursor() + remaining.length());
                 return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(legacyMiddle)).complete();
@@ -57,21 +58,6 @@ public class UserArgument implements ArgumentType<User> {
     public Collection<String> getExamples() {
 
         return EXAMPLES;
-
-    }
-
-    private boolean isLong(String input) {
-
-        try {
-
-            Long.parseLong(input);
-            return true;
-
-        } catch(NumberFormatException e) {
-
-            return false;
-
-        }
 
     }
 

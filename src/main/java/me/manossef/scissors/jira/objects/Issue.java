@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+
 public record Issue(String id, String key, Fields fields, String[] errorMessages) {
 
     public record Fields(Issuetype issuetype, Project project, Resolution resolution, String created, Priority priority,
@@ -53,7 +55,7 @@ public record Issue(String id, String key, Fields fields, String[] errorMessages
 
         List<MessageEmbed.Field> embedFields = new ArrayList<>();
         embedFields.add(new MessageEmbed.Field("Issue Type", this.fields.issuetype.name, true));
-        embedFields.add(new MessageEmbed.Field("Resolution", this.fields.resolution == null ? "Unresolved" : "Resolved as **" + this.fields.resolution.name + "**", true));
+        embedFields.add(new MessageEmbed.Field("Resolution", this.fields.resolution == null ? "Unresolved" : "Resolved as " + bold(this.fields.resolution.name), true));
         if(this.fields.doneInCommit() != null) embedFields.add(new MessageEmbed.Field("Done in Commit", this.fields.doneInCommit(), true));
         int color = this.fields.resolution == null ? 0xB3B3B3 : this.fields.resolution.name.equals("Done") ? 0x69DF7D : 0xDE6868;
         return MessageCreateData.fromEmbeds(new MessageEmbed(null, "[" + this.key + "] " + this.fields.summary, "Reported by <@" + this.fields.reporterUserID() + ">", EmbedType.RICH, null, color, null, null, null, null, null, null, embedFields));

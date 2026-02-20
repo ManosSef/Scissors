@@ -13,6 +13,8 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 import java.util.function.Predicate;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
+
 public class Commands {
 
     public static final SimpleCommandExceptionType IO_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Something went wrong; please try again"));
@@ -38,21 +40,21 @@ public class Commands {
         try {
 
             int result = DISPATCHER.execute(command, source);
-            DevGuild.logCommand(username + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and succeeded with return value " + result);
+            DevGuild.logCommand(username + " (" + user.getId() + ") executed command " + monospace(command) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and succeeded with return value " + result);
 
         } catch(CommandSyntaxException e) {
 
             source.sendFailure(e.getMessage());
-            DevGuild.logCommand(username + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and failed");
+            DevGuild.logCommand(username + " (" + user.getId() + ") executed command " + monospace(command) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and failed");
 
         } catch(Exception e) {
 
             source.sendError(e.getMessage());
             StringBuilder stackTrace = new StringBuilder();
             for(StackTraceElement element : e.getStackTrace())
-                stackTrace.append("\t`at ").append(element.toString()).append("`\n");
-            DevGuild.logCommand(username + " (" + user.getId() + ") executed command `" + command.replace("`", "\\u0060") + "` in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception: `" +
-                e.getClass().getName() + ": " + e.getMessage() + "`\n" + stackTrace);
+                stackTrace.append("\t").append(monospace("at " + element.toString())).append("\n");
+            DevGuild.logCommand(username + " (" + user.getId() + ") executed command " + monospace(command) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception: " +
+                monospace(e.getClass().getName() + ": " + e.getMessage()) + "\n" + stackTrace);
 
         }
 
