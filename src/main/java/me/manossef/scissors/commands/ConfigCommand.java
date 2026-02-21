@@ -198,8 +198,7 @@ public class ConfigCommand {
         Member member = channel.getGuild().retrieveMemberById(user.getIdLong()).complete();
         if(member == null)
             throw IMPOSSIBLE_ERROR.create();
-
-        return member.hasPermission(Permission.MANAGE_CHANNEL);
+        return member.hasPermission(channel, Permission.MANAGE_CHANNEL);
 
     }
 
