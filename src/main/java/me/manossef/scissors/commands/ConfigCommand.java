@@ -10,8 +10,13 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.OptionProperties;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
@@ -24,6 +29,9 @@ public class ConfigCommand {
     private static final SimpleCommandExceptionType ALREADY_DEFAULT_GLOBAL = new SimpleCommandExceptionType(new LiteralMessage("Nothing changed; the global values of all options are already the default ones"));
     private static final SimpleCommandExceptionType ALREADY_DEFAULT_GUILD = new SimpleCommandExceptionType(new LiteralMessage("Nothing changed; no explicit values for any option have been set for this server"));
     private static final SimpleCommandExceptionType ALREADY_DEFAULT_CHANNEL = new SimpleCommandExceptionType(new LiteralMessage("Nothing changed; no explicit values for any option have been set for this channel"));
+    private static final SimpleCommandExceptionType IMPOSSIBLE_ERROR = new SimpleCommandExceptionType(new LiteralMessage("This error should not have happened! Discord must be freaking out!"));
+    private static final SimpleCommandExceptionType NO_PERMS_IN_GUILD = new SimpleCommandExceptionType(new LiteralMessage("You need to have the \"Manage Server\" or \"Administrator\" permission to edit the bot's options for this server"));
+    private static final SimpleCommandExceptionType NO_PERMS_IN_CHANNEL = new SimpleCommandExceptionType(new LiteralMessage("You need to have the \"Manage Channel\" or \"Administrator\" permission to edit the bot's options for this channel"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
@@ -77,8 +85,10 @@ public class ConfigCommand {
             }
             case PER_GUILD -> {
 
-                if(!(source.commandMessage().getChannel() instanceof GuildChannel))
+                if(!(source.commandMessage().getChannel() instanceof GuildChannel guildChannel))
                     throw NOT_IN_GUILD.create();
+                if(!canEditPerGuild(source.user(), guildChannel.getGuild()))
+                    throw NO_PERMS_IN_GUILD.create();
                 if(Scissors.getConfiguration().resetForGuild(source.commandMessage().getGuild()))
                     source.sendSuccess("Removed the explicit values of all options for this server");
                 else
@@ -87,6 +97,8 @@ public class ConfigCommand {
             }
             case PER_CHANNEL -> {
 
+                if(source.commandMessage().getChannel() instanceof GuildChannel guildChannel && !canEditPerChannel(source.user(), guildChannel))
+                    throw NO_PERMS_IN_CHANNEL.create();
                 if(Scissors.getConfiguration().resetForChannel(source.commandMessage().getChannel()))
                     source.sendSuccess("Removed the explicit values of all options for this channel");
                 else
@@ -144,14 +156,18 @@ public class ConfigCommand {
             }
             case PER_GUILD -> {
 
-                if(!(source.commandMessage().getChannel() instanceof GuildChannel))
+                if(!(source.commandMessage().getChannel() instanceof GuildChannel guildChannel))
                     throw NOT_IN_GUILD.create();
+                if(!canEditPerGuild(source.user(), guildChannel.getGuild()))
+                    throw NO_PERMS_IN_GUILD.create();
                 Scissors.getConfiguration().setOptionForGuild(option, value, source.commandMessage().getGuild());
                 source.sendSuccess("Set the value of the option " + monospace(option.properties().getName()) + " for this server to " + bold(value.toString()));
 
             }
             case PER_CHANNEL -> {
 
+                if(source.commandMessage().getChannel() instanceof GuildChannel guildChannel && !canEditPerChannel(source.user(), guildChannel))
+                    throw NO_PERMS_IN_CHANNEL.create();
                 Scissors.getConfiguration().setOptionForChannel(option, value, source.commandMessage().getChannel());
                 source.sendSuccess("Set the value of the option " + monospace(option.properties().getName()) + " for this channel to " + bold(value.toString()));
 
@@ -161,6 +177,29 @@ public class ConfigCommand {
         }
         Scissors.saveConfiguration();
         return option.isInteger() ? (int) value : (boolean) value ? 1 : 0;
+
+    }
+
+    private static boolean canEditPerGuild(User user, Guild guild) throws CommandSyntaxException {
+
+        if(user.getIdLong() == SharedConstants.MY_USER_ID)
+            return true;
+        Member member = guild.retrieveMemberById(user.getIdLong()).complete();
+        if(member == null)
+            throw IMPOSSIBLE_ERROR.create();
+        return member.hasPermission(Permission.MANAGE_SERVER);
+
+    }
+
+    private static boolean canEditPerChannel(User user, GuildChannel channel) throws CommandSyntaxException {
+
+        if(user.getIdLong() == SharedConstants.MY_USER_ID)
+            return true;
+        Member member = channel.getGuild().retrieveMemberById(user.getIdLong()).complete();
+        if(member == null)
+            throw IMPOSSIBLE_ERROR.create();
+
+        return member.hasPermission(Permission.MANAGE_CHANNEL);
 
     }
 
