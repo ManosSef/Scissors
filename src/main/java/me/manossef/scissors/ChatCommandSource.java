@@ -49,8 +49,12 @@ public record ChatCommandSource(Message commandMessage, User user) {
 
     private String truncate(String content) {
 
-        if(content.length() > 2000)
+        if(content.length() > 2000) {
+
+            if(SharedConstants.IS_STAGING) System.err.println("Could not send entire command response: " + content);
             return content.substring(0, 1997) + "...";
+
+        }
         return content;
 
     }
