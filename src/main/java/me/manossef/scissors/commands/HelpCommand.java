@@ -70,12 +70,12 @@ public class HelpCommand {
     private static int showHelpForCommand(ChatCommandSource source, String baseLiteral, String helpText, String[] aliases) {
 
         StringBuilder builder = new StringBuilder();
-        builder.append(monospace(baseLiteral));
+        builder.append(monospace(SharedConstants.COMMAND_PREFIX + baseLiteral));
         if(aliases.length > 0) {
 
             builder.append("\n\nAliases: ");
             for(String alias : aliases)
-                builder.append(monospace(alias)).append(", ");
+                builder.append(monospace(SharedConstants.COMMAND_PREFIX + alias)).append(", ");
             builder.delete(builder.length() - 2, builder.length());
 
         }
