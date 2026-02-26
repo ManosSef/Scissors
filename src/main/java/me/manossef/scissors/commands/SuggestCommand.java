@@ -13,6 +13,8 @@ import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
+
 public class SuggestCommand {
 
     private static final DynamicNCommandExceptionType ISSUE_CREATION_FAILED = new DynamicNCommandExceptionType(errors -> {
@@ -27,7 +29,8 @@ public class SuggestCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        dispatcher.register(Commands.literal("suggest")
+        String baseLiteral = "suggest";
+        dispatcher.register(Commands.literal(baseLiteral)
             .then(argumentsForIssueType("bug", IssueType.BUG))
             .then(argumentsForIssueType("feature", IssueType.FEATURE))
             .then(argumentsForIssueType("improvement", IssueType.IMPROVEMENT))
@@ -40,6 +43,20 @@ public class SuggestCommand {
                 .then(argumentsForIssueTypeWithUser("task", IssueType.TASK))
             )
         );
+        HelpCommand.addLine(baseLiteral, "Posts a suggestion for the bot.");
+        HelpCommand.addLiteral(baseLiteral, String.format("""
+                Posts a suggestion or bug report for the bot. A work item with the provided summary is created in the bot's internal Jira instance for <@%s> to eventually take a look at.
+                
+                Here are the available syntaxes for this command:
+                - %s: Creates a work item with the "Bug" issue type. This should be used to report bugs.
+                - %s: Creates a work item with the "New Feature" issue type. This should be used to suggest new features to be added to the bot.
+                - %s: Creates a work item with the "Improvement" issue type. This should be used to suggest improvements to the bot's existing features.
+                
+                Fails if the provided summary is longer than 255 characters, or if anything else goes wrong while trying to submit the work item.""",
+            SharedConstants.MY_USER_ID,
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " bug <summary>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " feature <summary>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " improvement <summary>")));
 
     }
 

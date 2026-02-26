@@ -10,8 +10,10 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.SharedConstants;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class RollCommand {
 
@@ -22,7 +24,8 @@ public class RollCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        dispatcher.register(Commands.literal("roll")
+        String baseLiteral = "roll";
+        dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.argument("max", IntegerArgumentType.integer())
                 .executes(context -> roll(context.getSource(), context.getArgument("max", Integer.class)))
             )
@@ -50,6 +53,21 @@ public class RollCommand {
                 )
             )
         );
+        HelpCommand.addLine(baseLiteral, "Rolls a random number from a range.");
+        HelpCommand.addLiteral(baseLiteral, String.format("""
+                Rolls a random number from a specific range.
+                
+                Here are the available syntaxes for this command:
+                - %3$s: If %2$s is an integer, rolls an integer from 1 to %2$s (inclusive). Otherwise, rolls a decimal number from 0 to %2$s with at most 7 decimal digits.
+                - %4$s: Rolls a number from %1$s to %2$s. If both %1$s and %2$s are integers, only rolls integers. Otherwise, rolls any decimal number in the range with at most 7 decimal digits.
+                - %5$s: Rolls a decimal number from 0 to %2$s with at most 17 decimal digits.
+                - %6$s: Rolls a decimal number from %1$s to %2$s with at most 17 decimal digits.""",
+            monospace("<min>"),
+            monospace("<max>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <max>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <min> <max>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " double <max>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " double <min> <max>")));
 
     }
 

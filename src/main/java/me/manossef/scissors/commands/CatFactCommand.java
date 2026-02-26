@@ -12,9 +12,12 @@ public class CatFactCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        dispatcher.register(Commands.literal("catfact")
+        String baseLiteral = "catfact";
+        dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> getCatFact(context.getSource()))
         );
+        HelpCommand.addLine(baseLiteral, "Replies with a random fact about cats.");
+        HelpCommand.addLiteral(baseLiteral, "Replies with a random fact about cats. Facts are sourced from https://catfact.ninja/fact.");
 
     }
 

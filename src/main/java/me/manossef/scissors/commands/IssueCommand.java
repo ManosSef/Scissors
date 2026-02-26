@@ -9,7 +9,10 @@ import kong.unirest.core.UnirestException;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.jira.objects.Issue;
+
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class IssueCommand {
 
@@ -17,11 +20,24 @@ public class IssueCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        dispatcher.register(Commands.literal("issue")
+        String baseLiteral = "issue";
+        dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.argument("number", IntegerArgumentType.integer(1))
                 .executes(context -> getIssue(context.getSource(), "SCIS-" + context.getArgument("number", Integer.class)))
             )
         );
+        HelpCommand.addLine(baseLiteral, "Fetches a work item from the bot's internal Jira instance and shows information about it.");
+        HelpCommand.addLiteral(baseLiteral, String.format("""
+                Fetches a work item from the bot's internal Jira instance and displays information about it with an embed. The work item to be fetched has the key %s, where %s is the specified number.
+                
+                The embed is colored gray if the work item is unresolved, green if it's resolved as "Done" and red if it's resolved with any other resolution.
+                
+                Syntax: %s
+                
+                Fails if there is no work item with the specified number.""",
+            monospace("SCIS-<#>"),
+            monospace("<#>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <number>")));
 
     }
 

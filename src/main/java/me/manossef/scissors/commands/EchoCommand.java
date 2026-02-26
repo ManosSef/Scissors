@@ -7,12 +7,15 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
+import me.manossef.scissors.SharedConstants;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.util.Collections;
+
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class EchoCommand {
 
@@ -22,11 +25,20 @@ public class EchoCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        dispatcher.register(Commands.literal("echo")
+        String baseLiteral = "echo";
+        dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.argument("text", StringArgumentType.greedyString())
                 .executes(context -> echo(context.getSource(), context.getArgument("text", String.class)))
             )
         );
+        HelpCommand.addLine(baseLiteral, "Posts a message as the bot.");
+        HelpCommand.addLiteral(baseLiteral, String.format("""
+                Deletes your command message and posts a new message with the provided text as the bot.
+                
+                Syntax: %s
+                
+                Fails when the bot doesn't have permission to delete messages. Always fails when used in a DM.""",
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <text>")));
 
     }
 

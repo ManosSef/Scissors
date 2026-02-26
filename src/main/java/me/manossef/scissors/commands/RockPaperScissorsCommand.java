@@ -5,18 +5,19 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.games.RockPaperScissors;
 import net.dv8tion.jda.api.entities.User;
 
-import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
-import static net.dv8tion.jda.api.utils.MarkdownUtil.italics;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 
 public class RockPaperScissorsCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        LiteralCommandNode<ChatCommandSource> node = dispatcher.register(Commands.literal("rockpaperscissors")
+        String baseLiteral = "rockpaperscissors";
+        LiteralCommandNode<ChatCommandSource> node = dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.literal("paper")
                 .executes(context -> rockPaperScissors(context.getSource(), RockPaperScissors.Move.PAPER))
             )
@@ -30,7 +31,18 @@ public class RockPaperScissorsCommand {
                 .executes(context -> GameCommand.startRockPaperScissorsGame(context.getSource(), context.getArgument("opponent", User.class)))
             )
         );
-        dispatcher.register(Commands.literal("rps").redirect(node));
+        String alias = "rps";
+        dispatcher.register(Commands.literal(alias).redirect(node));
+        HelpCommand.addLine(baseLiteral, "Plays rock paper scissors with the bot or starts a game of rock paper scissors with another user.", alias);
+        HelpCommand.addLiteral(baseLiteral, String.format("""
+                Plays rock paper scissors with the bot or starts a game of rock paper scissors with another user.
+                
+                Here are all available syntaxes for this command:
+                - %s: Rock paper scissors where your move is the specified move and the bot's move is random. Replies with the winner.
+                - %s: Starts a game of rock paper scissors between you and the specified user, as if %s was run.""",
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " (rock|paper|scissors)"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <opponent>"),
+            monospace(SharedConstants.COMMAND_PREFIX + "game rps <opponent>")), alias);
 
     }
 

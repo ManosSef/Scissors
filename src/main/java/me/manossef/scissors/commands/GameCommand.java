@@ -6,10 +6,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
+import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.games.RockPaperScissors;
 import me.manossef.scissors.games.TicTacToe;
 import net.dv8tion.jda.api.entities.User;
+
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class GameCommand {
 
@@ -19,7 +22,8 @@ public class GameCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        dispatcher.register(Commands.literal("game")
+        String baseLiteral = "game";
+        dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.literal("rps")
                 .then(Commands.argument("opponent", UserArgument.user())
                     .executes(context -> startRockPaperScissorsGame(context.getSource(), context.getArgument("opponent", User.class)))
@@ -31,6 +35,20 @@ public class GameCommand {
                 )
             )
         );
+        HelpCommand.addLine(baseLiteral, "Starts a rock paper scissors or tic-tac-toe game between you and another user.");
+        HelpCommand.addLiteral(baseLiteral, String.format("""
+                Starts a game of either rock paper scissors or tic-tac-toe between you and the specified user.
+                
+                Here are the available syntaxes for this command:
+                - %s: Starts a game of rock paper scissors between you and the specified user.
+                - %s: Starts a game of tic-tac-toe between you and the specified user.
+                
+                For the %s argument, you can use a user ID or a mention (ping) of the user in question.
+                
+                Fails if the specified user does not exist in the server, is the same as the user running the command, or is a bot.""",
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " rps <opponent>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " tictactoe <opponent>"),
+            monospace("<opponent>")));
 
     }
 

@@ -35,11 +35,52 @@ public class ConfigCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        dispatcher.register(Commands.literal("config")
+        String baseLiteral = "config";
+        dispatcher.register(Commands.literal(baseLiteral)
             .then(optionsArguments(Commands.literal("global"), OptionContext.GLOBAL).requires(Commands.devRestricted()))
             .then(optionsArguments(Commands.literal("server"), OptionContext.PER_GUILD))
             .then(optionsArguments(Commands.literal("channel"), OptionContext.PER_CHANNEL))
         );
+        HelpCommand.addLine(baseLiteral, "Queries or edits the bot's settings.");
+        HelpCommand.addLiteral(baseLiteral, String.format("""
+                Queries or edits the bot's configuration options.
+                
+                Option values can apply either to a whole server or to a specific channel. When applied to a server, an option value takes effect only on channels that don't have a value for that option explicitly applied to them. In other words, the \
+                effective value of an option for a channel is the value explicitly applied to it if any, or the value applied to the server if any, or the default value. Option values persist across restarts of the bot.
+                
+                Here are all available syntaxes for this command:
+                - %3$s: Returns the effective value of the specified option for the server/channel the command was run in.
+                - %4$s: Sets the value of the specified option for the server/channel the command was run in to the specified value.
+                - %5$s: Resets the values of all options for the server/channel the command was run in to the default ones.
+                
+                Use %6$s as the first argument to affect the server, and %7$s to affect the channel the command was run in.
+                
+                %8$s commands always fail if run in a DM.
+                
+                You need the "Manage Server" permission to run %8$s commands, and the "Manage Channel" permission in the respective channel to run %9$s commands.
+                
+                Here are all available options:
+                - %10$s: Whether counting responses are posted. The value is either %1$s or %2$s.
+                - %11$s: The chance (from 0 to 100) that a response to each new message with only a number is posted.
+                - %12%s: Whether responses to pings are posted. The value is either %1$s or %2$s.
+                - %13$s: Whether responses to mentions of scissors are posted. The value is either %1$s or %2$s.
+                - %14$s: The chance (from 0 to 100) that a response to each new message with a mention of scissors is posted.
+                - %15$s: Whether the bot reacts to mentions of paper with the scissors emoji. The value is either %1$s or %2$s.""",
+            monospace("true"),
+            monospace("false"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " (server|channel) <option>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " (server|channel) <option> <value>"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " (server|channel) reset"),
+            monospace("server"),
+            monospace("channel"),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " server ..."),
+            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " channel ..."),
+            monospace(Option.GPPCT_RESPONSES.properties().getName()),
+            monospace(Option.GPPCT_RESPONSE_CHANCE.properties().getName()),
+            monospace(Option.PING_RESPONSES.properties().getName()),
+            monospace(Option.SCISSORS_RESPONSES.properties().getName()),
+            monospace(Option.SCISSORS_RESPONSE_CHANCE.properties().getName()),
+            monospace(Option.REACT_TO_PAPER.properties().getName())));
 
     }
 

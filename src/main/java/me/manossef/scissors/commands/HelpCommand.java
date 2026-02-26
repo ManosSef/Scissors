@@ -1,31 +1,87 @@
 package me.manossef.scissors.commands;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.SharedConstants;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class HelpCommand {
 
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    private static final String BASE_LITERAL = "help";
+    private static final LiteralArgumentBuilder<ChatCommandSource> baseArgument = Commands.literal(BASE_LITERAL)
+        .executes(context -> showHelpMessage(context.getSource()));
+    private static final List<String> lines = new ArrayList<>();
 
-        dispatcher.register(Commands.literal("help")
-            .executes(context -> help(context.getSource(), dispatcher))
-        );
+    public static void addLine(String baseLiteral, String line, String... aliases) {
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(monospace(SharedConstants.COMMAND_PREFIX + baseLiteral));
+        for(String alias : aliases)
+            builder.append("/").append(monospace(SharedConstants.COMMAND_PREFIX + alias));
+        builder.append(" - ").append(line);
+        lines.add(builder.toString());
 
     }
 
-    private static int help(ChatCommandSource source, CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void addLiteral(String baseLiteral, String text, String... aliases) {
 
-        String[] usage = dispatcher.getAllUsage(dispatcher.getRoot(), source, true);
+        Command<ChatCommandSource> command = context -> showHelpForCommand(context.getSource(), baseLiteral, text, aliases);
+        baseArgument.then(Commands.literal(baseLiteral).executes(command));
+        for(String alias : aliases)
+            baseArgument.then(Commands.literal(alias).executes(command));
+
+    }
+
+    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+
+        addLine(BASE_LITERAL, "Shows all available commands or explains a command.");
+        addLiteral(BASE_LITERAL, String.format("""
+                Lists all available commands or explains what a command does and how to use it in detail.
+                
+                Here are all available syntaxes for this command:
+                - %s: Lists all available commands, explaining what each one does in one sentence.
+                - %s: Explains the specified command in detail. Lists all available syntaxes for it, describes what each one does, and mentions any situations in which the command fails.""",
+            monospace(SharedConstants.COMMAND_PREFIX + BASE_LITERAL),
+            monospace(SharedConstants.COMMAND_PREFIX + BASE_LITERAL + " <command>")));
+        lines.sort(Comparator.naturalOrder());
+        dispatcher.register(baseArgument);
+
+    }
+
+    private static int showHelpMessage(ChatCommandSource source) {
+
         StringBuilder builder = new StringBuilder();
-        for(String line : usage)
-            if(Character.isLowerCase(line.charAt(0)))
-                builder.append("- ").append(monospace(SharedConstants.COMMAND_PREFIX + line + "\n"));
-        source.sendSuccess("All commands:\n" + builder);
-        return usage.length;
+        builder.append("All available commands are listed below. To learn more about a command, use ").append(monospace(SharedConstants.COMMAND_PREFIX + "help <command>")).append(".");
+        for(String line : lines)
+            builder.append("\n- ").append(line);
+        source.sendSuccess(builder.toString());
+        return lines.size();
+
+    }
+
+    private static int showHelpForCommand(ChatCommandSource source, String baseLiteral, String helpText, String[] aliases) {
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(monospace(baseLiteral));
+        if(aliases.length > 0) {
+
+            builder.append("\n\nAliases: ");
+            for(String alias : aliases)
+                builder.append(monospace(alias)).append(", ");
+            builder.delete(builder.length() - 2, builder.length());
+
+        }
+        builder.append("\n\n").append(helpText);
+        source.sendSuccess(builder.toString());
+        return 1;
 
     }
 

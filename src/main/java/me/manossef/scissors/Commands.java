@@ -80,7 +80,6 @@ public class Commands {
         ConfigCommand.register(dispatcher);
         EchoCommand.register(dispatcher);
         GameCommand.register(dispatcher);
-        HelpCommand.register(dispatcher);
         InfoCommand.register(dispatcher);
         IssueCommand.register(dispatcher);
         PingCommand.register(dispatcher);
@@ -89,6 +88,8 @@ public class Commands {
         SquaredleCommand.register(dispatcher);
         SuggestCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
+        RawHelpCommand.register(dispatcher);
+        HelpCommand.register(dispatcher);
 
     }
 

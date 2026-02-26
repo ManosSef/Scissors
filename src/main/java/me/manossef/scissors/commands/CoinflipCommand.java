@@ -11,9 +11,12 @@ public class CoinflipCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        dispatcher.register(Commands.literal("coinflip")
+        String baseLiteral = "coinflip";
+        dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> flipCoin(context.getSource()))
         );
+        HelpCommand.addLine(baseLiteral, "Flips a coin.");
+        HelpCommand.addLiteral(baseLiteral, "Flips a coin and returns either " + bold("heads") + " or " + bold("tails") + ".");
 
     }
 
