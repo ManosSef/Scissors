@@ -45,8 +45,8 @@ public class ConfigCommand {
         HelpCommand.addLiteral(baseLiteral, String.format("""
                 Queries or edits the bot's configuration options.
                 
-                Option values can apply either to a whole server or to a specific channel. When applied to a server, an option value takes effect only on channels that don't have a value for that option explicitly applied to them. In other words, the \
-                effective value of an option for a channel is the value explicitly applied to it if any, or the value applied to the server if any, or the default value. Option values persist across restarts of the bot.
+                Option values can apply either to a whole server or to a specific channel. The effective value of an option for a channel is the value explicitly applied to it if any, or the value applied to the server if any, or the default value. \
+                Option values persist across restarts of the bot.
                 
                 Here are all available syntaxes for this command:
                 - %3$s: Returns the effective value of the specified option for the server/channel the command was run in.
@@ -62,7 +62,7 @@ public class ConfigCommand {
                 Here are all available options:
                 - %10$s: Whether counting responses are posted. The value is either %1$s or %2$s.
                 - %11$s: The chance (from 0 to 100) that a response to each new message with only a number is posted.
-                - %12%s: Whether responses to pings are posted. The value is either %1$s or %2$s.
+                - %12$s: Whether responses to pings are posted. The value is either %1$s or %2$s.
                 - %13$s: Whether responses to mentions of scissors are posted. The value is either %1$s or %2$s.
                 - %14$s: The chance (from 0 to 100) that a response to each new message with a mention of scissors is posted.
                 - %15$s: Whether the bot reacts to mentions of paper with the scissors emoji. The value is either %1$s or %2$s.""",
