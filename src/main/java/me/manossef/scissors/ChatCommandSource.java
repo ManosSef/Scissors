@@ -1,7 +1,9 @@
 package me.manossef.scissors;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
 import java.util.Collections;
 
@@ -24,6 +26,12 @@ public record ChatCommandSource(Message commandMessage, User user) {
     public void sendSuccess(String message) {
 
         this.commandMessage.reply(truncate("✅ " + message)).setAllowedMentions(Collections.emptyList()).queue();
+
+    }
+
+    public void sendSuccess(String message, MessageEmbed... embeds) {
+
+        this.commandMessage.reply(new MessageCreateBuilder().setContent(truncate("✅ " + message)).setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
 
     }
 

@@ -31,7 +31,7 @@ public class IssueCommand {
 
             Issue issue = Scissors.JIRA_API.getIssue(issueKey);
             if(issue.id() == null) throw ISSUE_NOT_FOUND.create(issueKey);
-            source.commandMessage().reply(issue.makeEmbed()).queue();
+            source.sendSuccess("Successfully found issue " + issueKey + ":", issue.makeEmbed());
             return 1;
 
         } catch(UnirestException e) {

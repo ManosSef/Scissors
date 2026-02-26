@@ -5,6 +5,7 @@ import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.jira.objects.Issue;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +33,12 @@ public class JiraCheckLoop implements Runnable {
                 uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
                 if(SharedConstants.IS_STAGING) System.out.println("To post in #done-issues: " + uncheckedFixed);
                 for(Integer number : uncheckedFixed)
-                    DevGuild.logDoneIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
+                    DevGuild.logDoneIssue(MessageCreateData.fromEmbeds(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed()));
                 List<Integer> uncheckedInvalid = new ArrayList<>(newChecked.checkedInvalid);
                 uncheckedInvalid.removeAll(this.checkedIssues.checkedInvalid);
                 if(SharedConstants.IS_STAGING) System.out.println("To post in #invalid-issues: " + uncheckedInvalid);
                 for(Integer number : uncheckedInvalid)
-                    DevGuild.logInvalidIssue(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed());
+                    DevGuild.logInvalidIssue(MessageCreateData.fromEmbeds(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed()));
                 this.checkedIssues = newChecked;
                 Scissors.saveCheckedIssues(newChecked);
                 Thread.sleep(600000L);
