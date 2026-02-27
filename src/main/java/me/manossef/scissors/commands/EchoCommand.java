@@ -22,6 +22,7 @@ public class EchoCommand {
     private static final SimpleCommandExceptionType CANNOT_DELETE = new SimpleCommandExceptionType(new LiteralMessage("Cannot delete this type of message"));
     private static final SimpleCommandExceptionType NOT_IN_GUILD = new SimpleCommandExceptionType(new LiteralMessage("Cannot delete messages in channels outside servers"));
     private static final SimpleCommandExceptionType NO_PERMISSION = new SimpleCommandExceptionType(new LiteralMessage("Cannot delete messages in this channel; no permission"));
+    private static final SimpleCommandExceptionType TOO_LONG = new SimpleCommandExceptionType(new LiteralMessage("Cannot send messages longer than 2000 characters"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
@@ -48,6 +49,7 @@ public class EchoCommand {
         if(!commandMessage.getType().canDelete()) throw CANNOT_DELETE.create();
         MessageChannelUnion channel = commandMessage.getChannel();
         if(!(channel instanceof GuildChannel)) throw NOT_IN_GUILD.create();
+        if(message.length() > 2000) throw TOO_LONG.create();
         try {
 
             commandMessage.delete().queue();
