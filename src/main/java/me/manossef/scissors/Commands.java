@@ -89,6 +89,7 @@ public class Commands {
         SuggestCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
         RawHelpCommand.register(dispatcher);
+        StopAllGamesCommand.register(dispatcher);
         HelpCommand.register(dispatcher);
 
     }
