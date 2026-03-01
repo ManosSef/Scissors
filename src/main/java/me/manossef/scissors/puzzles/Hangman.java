@@ -81,13 +81,13 @@ public class Hangman extends Puzzle {
         Message referencedMessage = message.getReferencedMessage();
         if(referencedMessage == null) return;
         if(referencedMessage.getIdLong() != this.message.getIdLong()) return;
-        if(referencedMessage.getAuthor().isBot() || referencedMessage.getAuthor().isSystem()) return;
-        String content = referencedMessage.getContentRaw();
+        if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
+        String content = message.getContentRaw();
         if(!content.matches("[A-Za-z]+")) return;
         if(content.length() == 1) this.guessLetter(content);
         else this.guessWord(content);
         this.updateMessage();
-        if(this.isSolved()) this.end();
+        if(this.isSolved() || this.isLost()) this.end();
 
     }
 
