@@ -1,0 +1,10 @@
+bar
+foo
+later
+list
+real
+replace
+serendipity
+test
+with
+word

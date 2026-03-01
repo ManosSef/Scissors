@@ -74,12 +74,12 @@ public class Commands {
 
     private static void registerCommands(CommandDispatcher<ChatCommandSource> dispatcher) {
 
-        NineCommand.register(dispatcher);
         CatFactCommand.register(dispatcher);
         CoinflipCommand.register(dispatcher);
         ConfigCommand.register(dispatcher);
         EchoCommand.register(dispatcher);
         GameCommand.register(dispatcher);
+        HangmanCommand.register(dispatcher);
         InfoCommand.register(dispatcher);
         IssueCommand.register(dispatcher);
         PingCommand.register(dispatcher);
@@ -87,6 +87,7 @@ public class Commands {
         RollCommand.register(dispatcher);
         SquaredleCommand.register(dispatcher);
         SuggestCommand.register(dispatcher);
+        NineCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
         RawHelpCommand.register(dispatcher);
         StopAllGamesCommand.register(dispatcher);
