@@ -11,9 +11,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -155,7 +153,8 @@ public class Hangman extends Puzzle {
         try {
 
             WORDS.clear();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Scissors.class.getResourceAsStream("hangman_words.txt"))));
+            Reader fileReader = SharedConstants.IS_STAGING ? new FileReader("staging_resources/hangman_words.txt") : new InputStreamReader(Objects.requireNonNull(Scissors.class.getResourceAsStream("hangman_words.txt")));
+            BufferedReader reader = new BufferedReader(fileReader);
             String line;
             while((line = reader.readLine()) != null) WORDS.add(line.toLowerCase());
             reader.close();
