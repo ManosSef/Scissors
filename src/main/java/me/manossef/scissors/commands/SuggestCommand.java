@@ -23,7 +23,7 @@ public class SuggestCommand {
     private static final DynamicNCommandExceptionType ISSUE_CREATION_FAILED = new DynamicNCommandExceptionType(errors -> {
 
         StringBuilder builder = new StringBuilder();
-        for(Object error : errors) builder.append("\n-").append(error);
+        for(Object error : errors) builder.append("\n- ").append(error);
         return new LiteralMessage("The following error(s) occurred while trying to create the issue: " + builder);
 
     });
