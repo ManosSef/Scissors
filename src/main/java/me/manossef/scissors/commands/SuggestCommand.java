@@ -6,7 +6,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import kong.unirest.core.UnirestException;
 import me.manossef.scissors.*;
 import me.manossef.scissors.arguments.UserArgument;
@@ -25,7 +24,6 @@ public class SuggestCommand {
         return new LiteralMessage("Failed to create issue: " + builder);
 
     });
-    private static final SimpleCommandExceptionType USER_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No user was found"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
@@ -110,7 +108,7 @@ public class SuggestCommand {
 
     private static int createIssue(ChatCommandSource source, IssueType type, String summary, User user) throws CommandSyntaxException {
 
-        if(user == null) throw USER_NOT_FOUND.create();
+        if(user == null) throw Commands.USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
             "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: " + Util.getMessageLink(source.commandMessage()),
