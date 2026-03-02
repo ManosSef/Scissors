@@ -48,7 +48,7 @@ public record JiraAPI(String baseUrl) {
 
         JsonNode node = post("issue", Scissors.GSON.toJson(new Issue(null, null, new Issue.Fields(
             issuetype, project, null, null, null, null, summary, description, null, null, reporterUserID
-        ), null)));
+        ), null, null)));
         return Scissors.GSON.fromJson(node.toString(), Issue.class);
 
     }

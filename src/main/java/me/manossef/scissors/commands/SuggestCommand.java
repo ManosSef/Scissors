@@ -12,6 +12,10 @@ import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class SuggestCommand {
@@ -19,9 +23,8 @@ public class SuggestCommand {
     private static final DynamicNCommandExceptionType ISSUE_CREATION_FAILED = new DynamicNCommandExceptionType(errors -> {
 
         StringBuilder builder = new StringBuilder();
-        for(Object error : errors) builder.append(error).append(", ");
-        if(builder.length() >= 2) builder.delete(builder.length() - 2, builder.length());
-        return new LiteralMessage("Failed to create issue: " + builder);
+        for(Object error : errors) builder.append("\n-").append(error);
+        return new LiteralMessage("The following error(s) occurred while trying to create the issue: " + builder);
 
     });
 
@@ -116,7 +119,14 @@ public class SuggestCommand {
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
             user.getId()
         );
-        if(issue.id() == null) throw ISSUE_CREATION_FAILED.create(null, (Object[]) issue.errorMessages());
+        if(issue.id() == null) {
+
+            List<String> errors = new ArrayList<>();
+            if(issue.errorMessages() != null) errors.addAll(Arrays.stream(issue.errorMessages()).toList());
+            if(issue.errors() != null) errors.addAll(issue.errors().values());
+            throw ISSUE_CREATION_FAILED.create(null, errors.toArray());
+
+        }
         source.sendSuccess("Successfully created issue " + issue.key() + ". Thanks for the feedback!");
         return 1;
 

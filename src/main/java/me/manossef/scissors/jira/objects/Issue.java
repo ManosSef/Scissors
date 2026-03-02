@@ -5,10 +5,11 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
-public record Issue(String id, String key, Fields fields, String[] errorMessages) {
+public record Issue(String id, String key, Fields fields, String[] errorMessages, Map<String, String> errors) {
 
     public record Fields(Issuetype issuetype, Project project, Resolution resolution, String created, Priority priority,
                          Status status, String summary, String description, IssueLink[] issuelinks,
