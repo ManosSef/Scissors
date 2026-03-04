@@ -79,7 +79,6 @@ public class Commands {
         CoinflipCommand.register(dispatcher);
         ConfigCommand.register(dispatcher);
         EchoCommand.register(dispatcher);
-        GameCommand.register(dispatcher);
         HangmanCommand.register(dispatcher);
         InfoCommand.register(dispatcher);
         IssueCommand.register(dispatcher);
@@ -88,6 +87,7 @@ public class Commands {
         RollCommand.register(dispatcher);
         SquaredleCommand.register(dispatcher);
         SuggestCommand.register(dispatcher);
+        TicTacToeCommand.register(dispatcher);
         NineCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
         RawHelpCommand.register(dispatcher);

@@ -1,6 +1,9 @@
 package me.manossef.scissors.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.LiteralMessage;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
@@ -13,6 +16,9 @@ import net.dv8tion.jda.api.entities.User;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 
 public class RockPaperScissorsCommand {
+
+    private static final SimpleCommandExceptionType SAME_USER = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with yourself"));
+    private static final SimpleCommandExceptionType NO_BOTS = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with a bot"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
@@ -28,7 +34,7 @@ public class RockPaperScissorsCommand {
                 .executes(context -> rockPaperScissors(context.getSource(), RockPaperScissors.Move.SCISSORS))
             )
             .then(Commands.argument("opponent", UserArgument.user())
-                .executes(context -> GameCommand.startRockPaperScissorsGame(context.getSource(), context.getArgument("opponent", User.class)))
+                .executes(context -> startRockPaperScissorsGame(context.getSource(), context.getArgument("opponent", User.class)))
             )
         );
         String alias = "rps";
@@ -39,10 +45,12 @@ public class RockPaperScissorsCommand {
                 
                 Here are all available syntaxes for this command:
                 - %s: Rock paper scissors where your move is the specified move and the bot's move is random. Replies with the winner.
-                - %s: Starts a game of rock paper scissors between you and the specified user, as if %s was run.""",
+                - %s: Starts a game of rock paper scissors between you and the specified user. Fails if the specified user does not exist in the server, is the same as the user running the command, or is a bot.
+                
+                For the %s argument, you can use a user ID or a mention (ping) of the user in question.""",
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " (rock|paper|scissors)"),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <opponent>"),
-            monospace(SharedConstants.COMMAND_PREFIX + "game rps <opponent>")), alias);
+            monospace("<opponent>")), alias);
 
     }
 
@@ -79,6 +87,17 @@ public class RockPaperScissorsCommand {
 
         }
         return random;
+
+    }
+
+    private static int startRockPaperScissorsGame(ChatCommandSource source, User user) throws CommandSyntaxException {
+
+        if(user == null) throw Commands.USER_NOT_FOUND.create();
+        if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
+        if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();
+        source.sendSuccess("Starting a game of rock paper scissors with " + user.getAsMention());
+        new RockPaperScissors(source.user(), user, source.commandMessage().getChannel());
+        return 1;
 
     }
 
