@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
-import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 
 public class Hangman extends Puzzle {
 
@@ -52,8 +51,8 @@ public class Hangman extends Puzzle {
         for(int i = 0; i < word.length(); i++) revealedLetters[i] = '_';
         mistakesLeft = MAX_MISTAKES;
         guesses = new ArrayList<>();
-        this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(revealedLetters).toUpperCase().replace("_", "\\_") + "\nMistakes left: " + mistakesLeft
-            + "\nPrevious guesses: " + guesses, EmbedType.RICH, null, 0x5865F2, null, null, null, null, null, null, null))).queue();
+        this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(revealedLetters).toUpperCase().replace("_", "\\_") + "\n" + this.getHangmanDrawing()
+            + "\nPrevious guesses: " + guesses.toString().replace("[\\[\\]]", ""), EmbedType.RICH, null, 0x5865F2, null, null, null, null, null, null, null))).queue();
 
     }
 
@@ -124,9 +123,9 @@ public class Hangman extends Puzzle {
 
     private void updateMessage() {
 
-        this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(revealedLetters).toUpperCase().replace("_", "\\_") + "\nMistakes left: " + mistakesLeft
-            + "\nPrevious guesses: " + guesses + (this.isSolved() ? "\n" + bold("Solved!") : this.isLost() ? "\n" + bold("Failed! The answer was " + this.word.toUpperCase()) : ""), EmbedType.RICH, null, 0x5865F2,
-            null, null, null, null, null, null, null))).queue();
+        this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(revealedLetters).toUpperCase().replace("_", "\\_") + "\n" + this.getHangmanDrawing()
+            + "\nPrevious guesses: " + guesses.toString().replace("[\\[\\]]", "") + (this.isSolved() ? "\n" + bold("Solved!") : this.isLost() ? "\n" + bold("Failed! The answer was " + this.word.toUpperCase()) : ""),
+            EmbedType.RICH, null, 0x5865F2, null, null, null, null, null, null, null))).queue();
 
     }
 
@@ -165,6 +164,121 @@ public class Hangman extends Puzzle {
             DevGuild.logStatus("Failed to initialize the list of words for hangman games. All " + monospace(SharedConstants.COMMAND_PREFIX + "hangman") + " commands will fail during this session.");
 
         }
+
+    }
+
+    private String getHangmanDrawing() {
+
+        return switch(mistakesLeft) {
+
+            case 0 -> codeblock("""
+                ___________
+                    |      |
+                   ___     |
+                  /   \\    |
+                 |     |   |
+                  \\___/    |
+                    |      |
+                \\   |   /  |
+                 \\__|__/   |
+                    |      |
+                    |      |
+                   / \\     |
+                  /   \\    |
+                 /     \\   |""");
+            case 1 -> codeblock("""
+                ___________
+                    |      |
+                   ___     |
+                  /   \\    |
+                 |     |   |
+                  \\___/    |
+                    |      |
+                \\   |   /  |
+                 \\__|__/   |
+                    |      |
+                    |      |
+                   /       |
+                  /        |
+                 /         |""");
+            case 2 -> codeblock("""
+                ___________
+                    |      |
+                   ___     |
+                  /   \\    |
+                 |     |   |
+                  \\___/    |
+                    |      |
+                \\   |   /  |
+                 \\__|__/   |
+                    |      |
+                    |      |
+                           |
+                           |
+                           |""");
+            case 3 -> codeblock("""
+                ___________
+                    |      |
+                   ___     |
+                  /   \\    |
+                 |     |   |
+                  \\___/    |
+                    |      |
+                \\   |      |
+                 \\__|      |
+                    |      |
+                    |      |
+                           |
+                           |
+                           |""");
+            case 4 -> codeblock("""
+                ___________
+                    |      |
+                   ___     |
+                  /   \\    |
+                 |     |   |
+                  \\___/    |
+                    |      |
+                    |      |
+                    |      |
+                    |      |
+                    |      |
+                           |
+                           |
+                           |""");
+            case 5 -> codeblock("""
+                ___________
+                    |      |
+                   ___     |
+                  /   \\    |
+                 |     |   |
+                  \\___/    |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |""");
+            case 6 -> codeblock("""
+                ___________
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |
+                           |""");
+            default -> throw new IllegalArgumentException();
+
+        };
 
     }
 
