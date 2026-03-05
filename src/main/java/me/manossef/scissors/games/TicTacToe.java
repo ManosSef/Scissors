@@ -3,7 +3,10 @@ package me.manossef.scissors.games;
 import me.manossef.scissors.Scissors;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.EmbedType;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -76,26 +79,35 @@ public class TicTacToe extends Game {
             return;
         if(Objects.requireNonNull(event.getInteraction().getMember()).getIdLong() == this.getPlayer2().getIdLong() && !this.player1MovedLast)
             return;
-        this.makeMove(event.getInteraction().getMember(), Integer.parseInt(String.valueOf(event.getCustomId().charAt(1))), Integer.parseInt(String.valueOf(event.getCustomId().charAt(2))));
+        this.makeMove(event.getInteraction().getMember().getUser(), Integer.parseInt(String.valueOf(event.getCustomId().charAt(1))), Integer.parseInt(String.valueOf(event.getCustomId().charAt(2))));
 
     }
 
-    private void makeMove(Member member, int row, int column) {
+    private void makeMove(User user, int row, int column) {
 
         if(grid[row][column] != ' ') return;
         char mark;
-        if(member.getIdLong() == this.getPlayer1().getIdLong()) mark = 'X';
-        else if(member.getIdLong() == this.getPlayer2().getIdLong()) mark = 'O';
+        if(user.getIdLong() == this.getPlayer1().getIdLong()) mark = 'X';
+        else if(user.getIdLong() == this.getPlayer2().getIdLong()) mark = 'O';
         else return;
         grid[row][column] = mark;
         this.player1MovedLast = !this.player1MovedLast;
         this.update();
+        if(this.isBotGame() && TicTacToeEngine.getStatus(this.grid) == Status.ONGOING && this.player1MovedLast)
+            this.makeBotMove();
+
+    }
+
+    private void makeBotMove() {
+
+        TicTacToeEngine.Slot move = TicTacToeEngine.getMove(this.grid);
+        this.makeMove(Scissors.DISCORD_API.getSelfUser(), move.row(), move.column());
 
     }
 
     private void update() {
 
-        Status status = this.getStatus();
+        Status status = TicTacToeEngine.getStatus(grid);
         String statusText = switch(status) {
 
             case DRAW -> "\n" + bold("It's a tie!");
@@ -113,61 +125,6 @@ public class TicTacToe extends Game {
             ActionRow.of(Button.success("120", TICTACTOE_EMOJI).withDisabled(grid[2][0] != ' '), Button.success("121", TICTACTOE_EMOJI).withDisabled(grid[2][1] != ' '), Button.success("122", TICTACTOE_EMOJI).withDisabled(grid[2][2] != ' '))
         ).queue();
         if(status != Status.ONGOING) this.end();
-
-    }
-
-    private Status getStatus() {
-
-        if(grid[0][0] == grid[0][1] && grid[0][1] == grid[0][2]) {
-
-            if(grid[0][0] == 'X') return Status.PLAYER_1_WON;
-            if(grid[0][0] == 'O') return Status.PLAYER_2_WON;
-
-        }
-        if(grid[1][0] == grid[1][1] && grid[1][1] == grid[1][2]) {
-
-            if(grid[1][0] == 'X') return Status.PLAYER_1_WON;
-            if(grid[1][0] == 'O') return Status.PLAYER_2_WON;
-
-        }
-        if(grid[2][0] == grid[2][1] && grid[2][1] == grid[2][2]) {
-
-            if(grid[2][0] == 'X') return Status.PLAYER_1_WON;
-            if(grid[2][0] == 'O') return Status.PLAYER_2_WON;
-
-        }
-        if(grid[0][0] == grid[1][0] && grid[1][0] == grid[2][0]) {
-
-            if(grid[0][0] == 'X') return Status.PLAYER_1_WON;
-            if(grid[0][0] == 'O') return Status.PLAYER_2_WON;
-
-        }
-        if(grid[0][1] == grid[1][1] && grid[1][1] == grid[2][1]) {
-
-            if(grid[0][1] == 'X') return Status.PLAYER_1_WON;
-            if(grid[0][1] == 'O') return Status.PLAYER_2_WON;
-
-        }
-        if(grid[0][2] == grid[1][2] && grid[1][2] == grid[2][2]) {
-
-            if(grid[0][2] == 'X') return Status.PLAYER_1_WON;
-            if(grid[0][2] == 'O') return Status.PLAYER_2_WON;
-
-        }
-        if(grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2]) {
-
-            if(grid[0][0] == 'X') return Status.PLAYER_1_WON;
-            if(grid[0][0] == 'O') return Status.PLAYER_2_WON;
-
-        }
-        if(grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0]) {
-
-            if(grid[0][2] == 'X') return Status.PLAYER_1_WON;
-            if(grid[0][2] == 'O') return Status.PLAYER_2_WON;
-
-        }
-        for(char[] row : grid) for(char c : row) if(c == ' ') return Status.ONGOING;
-        return Status.DRAW;
 
     }
 
@@ -193,6 +150,12 @@ public class TicTacToe extends Game {
             default -> throw new IllegalArgumentException("Tic-tac-toe can only use X, O and space");
 
         };
+
+    }
+
+    private boolean isBotGame() {
+
+        return this.getPlayer2().getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong();
 
     }
 
