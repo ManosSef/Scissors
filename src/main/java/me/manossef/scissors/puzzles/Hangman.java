@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
@@ -174,8 +173,8 @@ public class Hangman extends Puzzle {
 
         return switch(mistakesLeft) {
 
-            case 0 -> codeblock("""
-                ___________
+            case 0 -> """
+                ```___________
                     |      |
                    ___     |
                   /   \\    |
@@ -188,9 +187,9 @@ public class Hangman extends Puzzle {
                     |      |
                    / \\     |
                   /   \\    |
-                 /     \\   |""");
-            case 1 -> codeblock("""
-                ___________
+                 /     \\   |```""";
+            case 1 -> """
+                ```___________
                     |      |
                    ___     |
                   /   \\    |
@@ -203,9 +202,9 @@ public class Hangman extends Puzzle {
                     |      |
                    /       |
                   /        |
-                 /         |""");
-            case 2 -> codeblock("""
-                ___________
+                 /         |```""";
+            case 2 -> """
+                ```___________
                     |      |
                    ___     |
                   /   \\    |
@@ -218,9 +217,9 @@ public class Hangman extends Puzzle {
                     |      |
                            |
                            |
-                           |""");
-            case 3 -> codeblock("""
-                ___________
+                           |```""";
+            case 3 -> """
+                ```___________
                     |      |
                    ___     |
                   /   \\    |
@@ -233,9 +232,9 @@ public class Hangman extends Puzzle {
                     |      |
                            |
                            |
-                           |""");
-            case 4 -> codeblock("""
-                ___________
+                           |```""";
+            case 4 -> """
+                ```___________
                     |      |
                    ___     |
                   /   \\    |
@@ -248,9 +247,9 @@ public class Hangman extends Puzzle {
                     |      |
                            |
                            |
-                           |""");
-            case 5 -> codeblock("""
-                ___________
+                           |```""";
+            case 5 -> """
+                ```___________
                     |      |
                    ___     |
                   /   \\    |
@@ -263,9 +262,9 @@ public class Hangman extends Puzzle {
                            |
                            |
                            |
-                           |""");
-            case 6 -> codeblock("""
-                ___________
+                           |```""";
+            case 6 -> """
+                ```___________
                            |
                            |
                            |
@@ -278,17 +277,10 @@ public class Hangman extends Puzzle {
                            |
                            |
                            |
-                           |""");
+                           |```""";
             default -> throw new IllegalArgumentException();
 
         };
-
-    }
-
-    private static String codeblock(String input) {
-
-        String sanitized = MarkdownSanitizer.escape(input, ~MarkdownSanitizer.BLOCK & ~MarkdownSanitizer.ITALICS_U);
-        return "```" + sanitized + "```";
 
     }
 
