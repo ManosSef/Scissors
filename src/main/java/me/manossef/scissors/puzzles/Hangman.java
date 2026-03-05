@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
@@ -16,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class Hangman extends Puzzle {
 
@@ -280,6 +282,13 @@ public class Hangman extends Puzzle {
             default -> throw new IllegalArgumentException();
 
         };
+
+    }
+
+    private static String codeblock(String input) {
+
+        String sanitized = MarkdownSanitizer.escape(input, ~MarkdownSanitizer.BLOCK & ~MarkdownSanitizer.ITALICS_U);
+        return "```" + sanitized + "```";
 
     }
 
