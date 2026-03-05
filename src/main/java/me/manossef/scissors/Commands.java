@@ -35,6 +35,7 @@ public class Commands {
     public static void dispatch(Message message, User user) {
 
         String command = message.getContentRaw().replaceFirst(SharedConstants.COMMAND_PREFIX, "").strip();
+        if(command.isEmpty()) return;
         MessageChannel channel = message.getChannel();
         source = source.withMessage(message).withUser(user);
         String username = user.getName().replace("_", "\\_");
