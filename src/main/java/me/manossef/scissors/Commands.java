@@ -41,12 +41,12 @@ public class Commands {
         try {
 
             int result = DISPATCHER.execute(command, source);
-            DevGuild.logCommand(username + " (" + user.getId() + ") executed command " + monospace(command) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and succeeded with return value " + result);
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " (" + channel.getId() + ") and succeeded with return value " + result));
 
         } catch(CommandSyntaxException e) {
 
             source.sendFailure(e.getMessage());
-            DevGuild.logCommand(username + " (" + user.getId() + ") executed command " + monospace(command) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and failed");
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " (" + channel.getId() + ") and failed"));
 
         } catch(Exception e) {
 
@@ -54,10 +54,26 @@ public class Commands {
             StringBuilder stackTrace = new StringBuilder();
             for(StackTraceElement element : e.getStackTrace())
                 stackTrace.append("\t").append(monospace("at " + element.toString())).append("\n");
-            DevGuild.logCommand(username + " (" + user.getId() + ") executed command " + monospace(command) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception: " +
+            DevGuild.logCommand(username + " (" + user.getId() + ") executed command " + shorten(monospace(command), 100) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception: " +
                 monospace(e.getClass().getName() + ": " + e.getMessage()) + "\n" + stackTrace);
 
         }
+
+    }
+
+    private static String shortenMiddle(String start, String middle, String end) {
+
+        return start + shorten(middle, 2000 - start.length() - end.length()) + end;
+
+    }
+
+    private static String shorten(String string, int length) {
+
+        if(length > string.length() - 3) return string;
+        int remaining = length - 3;
+        int fromStart = remaining / 2 + (remaining % 2 == 0 ? 0 : 1);
+        int fromEnd = remaining / 2;
+        return string.substring(0, fromStart) + "..." + string.substring(string.length() - fromEnd);
 
     }
 
