@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
-import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 
 public class Hangman extends Puzzle {
 
@@ -173,8 +172,8 @@ public class Hangman extends Puzzle {
 
         return switch(mistakesLeft) {
 
-            case 0 -> """
-                ```___________
+            case 0 -> codeblock("""
+                \n___________
                     |      |
                    ___     |
                   /   \\    |
@@ -187,9 +186,9 @@ public class Hangman extends Puzzle {
                     |      |
                    / \\     |
                   /   \\    |
-                 /     \\   |```""";
-            case 1 -> """
-                ```___________
+                 /     \\   |""");
+            case 1 -> codeblock("""
+                \n___________
                     |      |
                    ___     |
                   /   \\    |
@@ -202,9 +201,9 @@ public class Hangman extends Puzzle {
                     |      |
                    /       |
                   /        |
-                 /         |```""";
-            case 2 -> """
-                ```___________
+                 /         |""");
+            case 2 -> codeblock("""
+                \n___________
                     |      |
                    ___     |
                   /   \\    |
@@ -217,9 +216,9 @@ public class Hangman extends Puzzle {
                     |      |
                            |
                            |
-                           |```""";
-            case 3 -> """
-                ```___________
+                           |""");
+            case 3 -> codeblock("""
+                \n___________
                     |      |
                    ___     |
                   /   \\    |
@@ -232,9 +231,9 @@ public class Hangman extends Puzzle {
                     |      |
                            |
                            |
-                           |```""";
-            case 4 -> """
-                ```___________
+                           |""");
+            case 4 -> codeblock("""
+                \n___________
                     |      |
                    ___     |
                   /   \\    |
@@ -247,9 +246,9 @@ public class Hangman extends Puzzle {
                     |      |
                            |
                            |
-                           |```""";
-            case 5 -> """
-                ```___________
+                           |""");
+            case 5 -> codeblock("""
+                \n___________
                     |      |
                    ___     |
                   /   \\    |
@@ -262,9 +261,9 @@ public class Hangman extends Puzzle {
                            |
                            |
                            |
-                           |```""";
-            case 6 -> """
-                ```___________
+                           |""");
+            case 6 -> codeblock("""
+                \n___________
                            |
                            |
                            |
@@ -277,7 +276,7 @@ public class Hangman extends Puzzle {
                            |
                            |
                            |
-                           |```""";
+                           |""");
             default -> throw new IllegalArgumentException();
 
         };
