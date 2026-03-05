@@ -13,7 +13,7 @@ public class TicTacToeEngine {
         List<Slot> emptySlots = new ArrayList<>();
         for(int i = 0; i < 3; i++)
             for(int j = 0; j < 3; j++)
-                if(grid[i][j] != ' ') emptySlots.add(new Slot(i, j));
+                if(grid[i][j] == ' ') emptySlots.add(new Slot(i, j));
         for(Slot slot : emptySlots)
             if(isWinning(grid, slot)) return slot;
         for(Slot slot : emptySlots)
