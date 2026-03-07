@@ -62,8 +62,8 @@ public class Wordle extends Puzzle {
 
         this.answer = answer;
         this.guesses = new ArrayList<>();
-        this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Wordle", "Reply to this message with a 5-letter word to guess it!", EmbedType.RICH, null, 0x5865F2, null,
-            null, null, null, null, null, null))).queue();
+        this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Wordle", "⬛⬛⬛⬛⬛\n".repeat(MAX_GUESSES) + "Reply to this message with a 5-letter word to guess it!", EmbedType.RICH,
+            null, 0x5865F2, null, null, null, null, null, null, null))).queue();
 
     }
 
@@ -118,10 +118,10 @@ public class Wordle extends Puzzle {
                 builder.append(this.formatGuess(guess)).append("\n");
 
         }
-        if(builder.length() > 1) builder.delete(builder.length() - 1, builder.length());
-        if(this.isSolved()) builder.append("\n").append(bold(this.getFinalComment()));
-        else if(this.isLost()) builder.append("\n").append(bold("Failed! The answer was " + this.answer.toUpperCase()));
-        if(builder.isEmpty()) builder.append("Reply to this message with a 5-letter word to guess it!");
+        builder.append("⬛⬛⬛⬛⬛\n".repeat(MAX_GUESSES - this.guesses.size()));
+        if(this.isSolved()) builder.append(bold(this.getFinalComment()));
+        else if(this.isLost()) builder.append(bold("Failed! The answer was " + this.answer.toUpperCase()));
+        if(this.guesses.isEmpty()) builder.append("Reply to this message with a 5-letter word to guess it!");
         this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Wordle", builder.toString(), EmbedType.RICH, null, 0x5865F2, null, null, null, null, null,
             null, null))).queue();
 
