@@ -18,7 +18,8 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 public class RockPaperScissorsCommand {
 
     private static final SimpleCommandExceptionType SAME_USER = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with yourself"));
-    private static final SimpleCommandExceptionType NO_BOTS = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with a bot"));
+    private static final SimpleCommandExceptionType NO_BOTS = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with that bot"));
+    private static final SimpleCommandExceptionType NO_SCISSORS = new SimpleCommandExceptionType(new LiteralMessage("Use " + monospace(SharedConstants.COMMAND_PREFIX + "rockpaperscissors (rock|paper|scissors)") + " to play with the bot!"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
@@ -93,6 +94,7 @@ public class RockPaperScissorsCommand {
     private static int startRockPaperScissorsGame(ChatCommandSource source, User user) throws CommandSyntaxException {
 
         if(user == null) throw Commands.USER_NOT_FOUND.create();
+        if(user.getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong()) throw NO_SCISSORS.create();
         if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
         if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();
         source.sendSuccess("Starting a game of rock paper scissors with " + user.getAsMention());
