@@ -58,8 +58,8 @@ public class RollCommand {
                 Rolls a random number from a specific range.
                 
                 Here are the available syntaxes for this command:
-                - %3$s: If %2$s is an integer, rolls an integer from 1 to %2$s (inclusive). Otherwise, rolls a decimal number from 0 to %2$s with at most 7 decimal digits.
-                - %4$s: Rolls a number from %1$s to %2$s. If both %1$s and %2$s are integers, only rolls integers. Otherwise, rolls any decimal number in the range with at most 7 decimal digits.
+                - %3$s: If %2$s is an integer, rolls an integer from 1 to %2$s (inclusive). Otherwise, rolls a decimal number from 0 to %2$s with at most 9 decimal digits.
+                - %4$s: Rolls a number from %1$s to %2$s. If both %1$s and %2$s are integers, only rolls integers. Otherwise, rolls any decimal number in the range with at most 9 decimal digits.
                 - %5$s: Rolls a decimal number from 0 to %2$s with at most 17 decimal digits.
                 - %6$s: Rolls a decimal number from %1$s to %2$s with at most 17 decimal digits.""",
             monospace("<min>"),
