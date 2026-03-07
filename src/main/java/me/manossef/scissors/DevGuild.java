@@ -73,6 +73,7 @@ public class DevGuild {
 
     public static void embedMessage(MessageCreateData message, MessageChannel channel) {
 
+        if(channel == null) return;
         channel.sendMessage(message).queue();
 
     }
