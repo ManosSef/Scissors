@@ -102,7 +102,7 @@ public class Util {
         try {
 
             list.clear();
-            Reader fileReader = SharedConstants.IS_STAGING ? new FileReader("staging_resources/" + fileName) : new InputStreamReader(Objects.requireNonNull(Scissors.class.getResourceAsStream(fileName)));
+            Reader fileReader = SharedConstants.IS_STAGING ? new FileReader("staging_resources/" + fileName) : new InputStreamReader(Objects.requireNonNull(Scissors.class.getResourceAsStream("/" + fileName)));
             BufferedReader reader = new BufferedReader(fileReader);
             String line;
             while((line = reader.readLine()) != null) list.add(line.toLowerCase());
