@@ -59,6 +59,7 @@ public class DevGuild {
 
     public static void logMessage(String message, MessageChannel channel) {
 
+        if(channel == null) return;
         if(message.length() > 2000) {
 
             channel.sendMessage(message.substring(0, 1997) + "...").queue();
