@@ -6,8 +6,10 @@ import me.manossef.scissors.Util;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
@@ -82,7 +84,16 @@ public class Hangman extends Puzzle {
         if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         String content = message.getContentRaw();
         if(!content.matches("[A-Za-z]+")) return;
-        if(message.getType().canDelete()) message.delete().onErrorMap(e -> null).queue();
+        if(message.getType().canDelete() && message.getChannel() instanceof GuildChannel) {
+
+            try {
+
+                message.delete().queue();
+
+            } catch(InsufficientPermissionException ignored) {
+            }
+
+        }
         if(content.length() == 1) this.guessLetter(content);
         else this.guessWord(content);
         this.updateMessage();

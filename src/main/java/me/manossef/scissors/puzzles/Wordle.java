@@ -6,8 +6,10 @@ import me.manossef.scissors.Util;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
@@ -94,7 +96,16 @@ public class Wordle extends Puzzle {
         if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         String content = message.getContentRaw();
         if(!WORDS.contains(content.toLowerCase())) return;
-        if(message.getType().canDelete()) message.delete().onErrorMap(e -> null).queue();
+        if(message.getType().canDelete() && message.getChannel() instanceof GuildChannel) {
+
+            try {
+
+                message.delete().queue();
+
+            } catch(InsufficientPermissionException ignored) {
+            }
+
+        }
         this.guessWord(content);
         this.updateMessage();
         if(this.isSolved() || this.isLost()) this.end();
