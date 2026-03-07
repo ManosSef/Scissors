@@ -62,8 +62,8 @@ public class Wordle extends Puzzle {
 
         this.answer = answer;
         this.guesses = new ArrayList<>();
-        this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Wordle", "", EmbedType.RICH, null, 0x5865F2, null, null, null, null, null,
-            null, null))).queue();
+        this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Wordle", "Reply to this message with a 5-letter word to guess it!", EmbedType.RICH, null, 0x5865F2, null,
+            null, null, null, null, null, null))).queue();
 
     }
 
