@@ -82,7 +82,7 @@ public class Hangman extends Puzzle {
         if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         String content = message.getContentRaw();
         if(!content.matches("[A-Za-z]+")) return;
-        if(message.getType().canDelete()) message.delete().queue();
+        if(message.getType().canDelete()) message.delete().onErrorMap(e -> null).queue();
         if(content.length() == 1) this.guessLetter(content);
         else this.guessWord(content);
         this.updateMessage();

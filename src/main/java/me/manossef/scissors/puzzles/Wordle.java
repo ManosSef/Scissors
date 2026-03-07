@@ -94,7 +94,7 @@ public class Wordle extends Puzzle {
         if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         String content = message.getContentRaw();
         if(!WORDS.contains(content.toLowerCase())) return;
-        if(message.getType().canDelete()) message.delete().queue();
+        if(message.getType().canDelete()) message.delete().onErrorMap(e -> null).queue();
         this.guessWord(content);
         this.updateMessage();
         if(this.isSolved() || this.isLost()) this.end();
