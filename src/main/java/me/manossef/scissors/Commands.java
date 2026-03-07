@@ -105,6 +105,7 @@ public class Commands {
         SquaredleCommand.register(dispatcher);
         SuggestCommand.register(dispatcher);
         TicTacToeCommand.register(dispatcher);
+        WordleCommand.register(dispatcher);
         NineCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
         RawHelpCommand.register(dispatcher);

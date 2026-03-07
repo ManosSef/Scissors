@@ -7,7 +7,9 @@ import com.google.gson.stream.JsonWriter;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.io.*;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Util {
 
@@ -90,6 +92,26 @@ public class Util {
         } catch(IOException e) {
 
             System.err.println("Failed to save the " + fileName + " file.");
+
+        }
+
+    }
+
+    public static void loadWords(String fileName, List<String> list, String logError) {
+
+        try {
+
+            list.clear();
+            Reader fileReader = SharedConstants.IS_STAGING ? new FileReader("staging_resources/" + fileName) : new InputStreamReader(Objects.requireNonNull(Scissors.class.getResourceAsStream(fileName)));
+            BufferedReader reader = new BufferedReader(fileReader);
+            String line;
+            while((line = reader.readLine()) != null) list.add(line.toLowerCase());
+            reader.close();
+
+        } catch(IOException e) {
+
+            e.printStackTrace();
+            DevGuild.logStatus(logError);
 
         }
 
