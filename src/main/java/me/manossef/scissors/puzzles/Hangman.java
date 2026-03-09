@@ -52,7 +52,7 @@ public class Hangman extends Puzzle {
         this.mistakesLeft = MAX_MISTAKES;
         this.guesses = new ArrayList<>();
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(this.revealedLetters).toUpperCase().replace("_", "\\_") + "\n" + this.getHangmanDrawing()
-            + "\nPrevious guesses: " + this.guesses.toString().replaceAll("[\\[\\]]", "").toUpperCase() + "\nReply to this message with a letter or word to guess it!", EmbedType.RICH, null, 0x5865F2, null,
+            + "\n\nReply to this message with a letter or word to guess it!", EmbedType.RICH, null, 0x5865F2, null,
             null, null, null, null, null, null))).queue();
 
     }
