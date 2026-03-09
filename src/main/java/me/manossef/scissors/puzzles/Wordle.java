@@ -132,7 +132,7 @@ public class Wordle extends Puzzle {
         builder.append("⬛⬛⬛⬛⬛\n".repeat(MAX_GUESSES - this.guesses.size()));
         if(this.isSolved()) builder.append(bold(this.getFinalComment()));
         else if(this.isLost()) builder.append(bold("Failed! The answer was " + this.answer.toUpperCase()));
-        if(this.guesses.isEmpty()) builder.append("Reply to this message with a 5-letter word to guess it!");
+        else builder.append("Reply to this message with a 5-letter word to guess it!");
         this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Wordle", builder.toString(), EmbedType.RICH, null, 0x5865F2, null, null, null, null, null,
             null, null))).queue();
 
