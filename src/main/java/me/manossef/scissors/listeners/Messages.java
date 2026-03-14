@@ -67,5 +67,8 @@ public class Messages {
         "You'd better not want to throw a rock at me",
         "At your service!"
     );
+    static final List<String> MEME_RESPONSES = List.of(
+        "May I see it?"
+    );
 
 }
