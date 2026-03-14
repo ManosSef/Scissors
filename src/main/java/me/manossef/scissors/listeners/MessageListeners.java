@@ -100,7 +100,7 @@ public class MessageListeners extends ListenerAdapter {
         MessageChannelUnion channel = message.getChannel();
         return referencedMessage.getAuthor().getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong()
             && referencedMessage.getContentRaw().equals("A number?! At this time of year? At this time of day? In this part of the country? " + strike("Localized entirely within your kitchen?!"))
-            && referencedMessage.getReferencedMessage() != null
+            && referencedMessage.getMessageReference() != null
             && message.getContentRaw().toLowerCase().replaceAll("[^a-z]+", "").equals("yes")
             && channel.canTalk()
             && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel);
