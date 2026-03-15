@@ -150,7 +150,7 @@ public class Hangman extends Puzzle {
 
     private String getMistakesSentence() {
 
-        return "You lose if you make " + this.mistakesLeft + (this.mistakesLeft == this.difficulty.getMaxMistakes() ? "" : " more") + (this.mistakesLeft == 1 ? " mistake!" : "mistakes!");
+        return "You lose if you make " + this.mistakesLeft + (this.mistakesLeft == this.difficulty.getMaxMistakes() ? "" : " more") + (this.mistakesLeft == 1 ? " mistake!" : " mistakes!");
 
     }
 

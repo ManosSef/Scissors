@@ -29,7 +29,7 @@ public class HangmanCommand {
         );
         HelpCommand.addLine(baseLiteral, "Starts a game of hangman.");
         HelpCommand.addLiteral(baseLiteral, String.format("""
-            Starts a game of hangman. A message that will keep track of your progress is posted after this command is run. Replying to that message with a letter or a word will guess that letter or word, causing the bot to edit the message \
+                Starts a game of hangman. A message that will keep track of your progress is posted after this command is run. Replying to that message with a letter or a word will guess that letter or word, causing the bot to edit the message \
                 to reveal any appearances of the guessed letter or whether the guessed word is correct.
                 
                 Here are all available syntaxes for this command:
