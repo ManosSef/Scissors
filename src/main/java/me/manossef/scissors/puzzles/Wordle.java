@@ -127,7 +127,7 @@ public class Wordle extends Puzzle {
             for(int i = 0; i < 5; i++) {
 
                 if(colors[i] == WordleColor.GREEN) this.knownGreens[i] = true;
-                if(colors[i] != WordleColor.NONE) this.knownYellows.add(this.answer.charAt(i));
+                if(colors[i] != WordleColor.NONE) this.knownYellows.add(guess.charAt(i));
 
             }
 
@@ -152,6 +152,7 @@ public class Wordle extends Puzzle {
         List<Character> yellows = new ArrayList<>(this.knownYellows);
         for(Character letter : this.knownYellows) {
 
+            if(!yellows.contains(letter)) continue;
             int count = 0;
             while(yellows.remove(letter)) count++;
             int found = 0;
