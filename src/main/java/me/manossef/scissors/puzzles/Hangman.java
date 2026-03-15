@@ -21,7 +21,6 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 public class Hangman extends Puzzle {
 
     private static final List<String> WORDS = new ArrayList<>();
-    private static final int MAX_MISTAKES = 6;
 
     static {
 
@@ -34,11 +33,19 @@ public class Hangman extends Puzzle {
     private char[] revealedLetters;
     private int mistakesLeft;
     private List<String> guesses;
+    private Difficulty difficulty;
 
     public Hangman(MessageChannel channel) {
 
+        this(channel, Difficulty.NORMAL);
+
+    }
+
+    public Hangman(MessageChannel channel, Difficulty difficulty) {
+
         super(channel);
         if(!canStart()) return;
+        this.difficulty = difficulty;
         Scissors.DISCORD_API.addEventListener(this);
         this.start();
 
@@ -49,10 +56,10 @@ public class Hangman extends Puzzle {
         this.word = WORDS.get(Scissors.RANDOM.nextInt(WORDS.size()));
         this.revealedLetters = new char[this.word.length()];
         for(int i = 0; i < word.length(); i++) this.revealedLetters[i] = '_';
-        this.mistakesLeft = MAX_MISTAKES;
+        this.mistakesLeft = this.difficulty.getMaxMistakes();
         this.guesses = new ArrayList<>();
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(this.revealedLetters).toUpperCase().replace("_", "\\_") + "\n" + this.getHangmanDrawing()
-            + "\n\nReply to this message with a letter or word to guess it!", EmbedType.RICH, null, 0x5865F2, null,
+            + "\n\nReply to this message with a letter or word to guess it!\n" + this.getMistakesSentence(), EmbedType.RICH, null, 0x5865F2, null,
             null, null, null, null, null, null))).queue();
 
     }
@@ -136,8 +143,14 @@ public class Hangman extends Puzzle {
 
         this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(this.revealedLetters).toUpperCase().replace("_", "\\_") + "\n" + this.getHangmanDrawing()
             + (this.guesses.isEmpty() ? "" : "\nPrevious guesses: " + this.guesses.toString().replaceAll("[\\[\\]]", "").toUpperCase()) + (this.isSolved() ? "\n\n" + bold("Solved!") : this.isLost()
-            ? "\n\n" + bold("Failed! The answer was " + this.word.toUpperCase()) : "\n\nReply to this message with a letter or word to guess it!"), EmbedType.RICH, null, 0x5865F2, null, null, null,
-            null, null, null, null))).queue();
+            ? "\n\n" + bold("Failed! The answer was " + this.word.toUpperCase()) : "\n\nReply to this message with a letter or word to guess it!\n" + this.getMistakesSentence()), EmbedType.RICH, null,
+            0x5865F2, null, null, null, null, null, null, null))).queue();
+
+    }
+
+    private String getMistakesSentence() {
+
+        return "You lose if you make " + this.mistakesLeft + (this.mistakesLeft == this.difficulty.getMaxMistakes() ? "" : " more") + (this.mistakesLeft == 1 ? " mistake!" : "mistakes!");
 
     }
 
@@ -161,7 +174,8 @@ public class Hangman extends Puzzle {
 
     private String getHangmanDrawing() {
 
-        return switch(this.mistakesLeft) {
+        int drawing = this.mistakesLeft * (6 / this.difficulty.getMaxMistakes());
+        return switch(drawing) {
 
             case 0 -> codeblock("""
                 \n___________
@@ -271,6 +285,28 @@ public class Hangman extends Puzzle {
             default -> throw new IllegalStateException();
 
         };
+
+    }
+
+    public enum Difficulty {
+
+        NORMAL(6),
+        HARD(3),
+        IMPOSSIBLE(1);
+
+        private final int mistakes;
+
+        Difficulty(int mistakes) {
+
+            this.mistakes = mistakes;
+
+        }
+
+        public int getMaxMistakes() {
+
+            return this.mistakes;
+
+        }
 
     }
 
