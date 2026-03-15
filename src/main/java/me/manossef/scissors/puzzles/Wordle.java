@@ -137,7 +137,7 @@ public class Wordle extends Puzzle {
 
     private boolean checkHardMode(Message message) {
 
-        if(this.hardMode) return true;
+        if(!this.hardMode) return true;
         String guess = message.getContentRaw().toLowerCase();
         for(int i = 0; i < 5; i++) {
 
