@@ -35,37 +35,39 @@ public class Wordle extends Puzzle {
     private Message message;
     private String answer;
     private List<String> guesses;
+    private boolean hardMode;
+    private boolean[] knownGreens;
+    private List<Character> knownYellows;
 
-    public Wordle(MessageChannel channel) {
+    public Wordle(MessageChannel channel, boolean hardMode) {
+
+        this(channel, hardMode, ANSWERS.get(Scissors.RANDOM.nextInt(ANSWERS.size())));
+
+    }
+
+    public Wordle(MessageChannel channel, boolean hardMode, String answer) {
 
         super(channel);
         if(!canStart()) return;
+        this.hardMode = hardMode;
+        this.answer = answer;
         Scissors.DISCORD_API.addEventListener(this);
         this.start();
 
     }
 
-    public Wordle(MessageChannel channel, String answer) {
-
-        super(channel);
-        if(!canStart()) return;
-        Scissors.DISCORD_API.addEventListener(this);
-        this.start(answer);
-
-    }
-
     public void start() {
 
-        this.start(ANSWERS.get(Scissors.RANDOM.nextInt(ANSWERS.size())));
-
-    }
-
-    public void start(String answer) {
-
-        this.answer = answer;
         this.guesses = new ArrayList<>();
-        this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Wordle", "⬛⬛⬛⬛⬛\n".repeat(MAX_GUESSES) + "Reply to this message with a 5-letter word to guess it!", EmbedType.RICH,
-            null, 0x5865F2, null, null, null, null, null, null, null))).queue();
+        if(this.hardMode) {
+
+            this.knownGreens = new boolean[5];
+            this.knownYellows = new ArrayList<>();
+
+        }
+        this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Wordle" + (this.hardMode ? " (hard mode)" : ""),
+            "⬛⬛⬛⬛⬛\n".repeat(MAX_GUESSES) + "Reply to this message with a 5-letter word to guess it!", EmbedType.RICH, null, 0x5865F2, null, null, null,
+            null, null, null, null))).queue();
 
     }
 
@@ -85,7 +87,7 @@ public class Wordle extends Puzzle {
             if(message.getEmbeds().isEmpty()) return;
             String title = message.getEmbeds().get(0).getTitle();
             if(title == null) return;
-            if(!title.equals("Wordle")) return;
+            if(!title.contains("Wordle")) return;
             this.message = message;
             return;
 
@@ -96,6 +98,7 @@ public class Wordle extends Puzzle {
         if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         String content = message.getContentRaw();
         if(!WORDS.contains(content.toLowerCase())) return;
+        if(!checkHardMode(message)) return;
         if(message.getType().canDelete() && message.getChannel() instanceof GuildChannel) {
 
             try {
@@ -117,6 +120,52 @@ public class Wordle extends Puzzle {
         String guess = word.toLowerCase();
         if(this.guesses.contains(guess)) return;
         this.guesses.add(guess);
+        if(this.hardMode) {
+
+            WordleColor[] colors = this.getColors(guess);
+            this.knownYellows.clear();
+            for(int i = 0; i < 5; i++) {
+
+                if(colors[i] == WordleColor.GREEN) this.knownGreens[i] = true;
+                if(colors[i] != WordleColor.NONE) this.knownYellows.add(this.answer.charAt(i));
+
+            }
+
+        }
+
+    }
+
+    private boolean checkHardMode(Message message) {
+
+        if(this.hardMode) return true;
+        String guess = message.getContentRaw().toLowerCase();
+        for(int i = 0; i < 5; i++) {
+
+            if(this.knownGreens[i] && guess.charAt(i) != this.answer.charAt(i)) {
+
+                message.reply("Your guess must have the letter " + this.answer.charAt(i) + " at position " + i).queue();
+                return false;
+
+            }
+
+        }
+        List<Character> yellows = new ArrayList<>(this.knownYellows);
+        for(Character letter : this.knownYellows) {
+
+            int count = 0;
+            while(yellows.remove(letter)) count++;
+            int found = 0;
+            for(char ch : guess.toCharArray())
+                if(letter == ch) found++;
+            if(found < count) {
+
+                message.reply("Your guess must contain at least " + count + " of the letter " + letter).queue();
+                return false;
+
+            }
+
+        }
+        return true;
 
     }
 
@@ -133,12 +182,32 @@ public class Wordle extends Puzzle {
         if(this.isSolved()) builder.append(bold(this.getFinalComment()));
         else if(this.isLost()) builder.append(bold("Failed! The answer was " + this.answer.toUpperCase()));
         else builder.append("Reply to this message with a 5-letter word to guess it!");
-        this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Wordle", builder.toString(), EmbedType.RICH, null, 0x5865F2, null, null, null, null, null,
-            null, null))).queue();
+        this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Wordle" + (this.hardMode ? " (hard mode)" : ""), builder.toString(), EmbedType.RICH, null, 0x5865F2, null, null,
+            null, null, null, null, null))).queue();
 
     }
 
     private String formatGuess(String guess) {
+
+        WordleColor[] colors = this.getColors(guess);
+        StringBuilder builder = new StringBuilder();
+        for(WordleColor color : colors) {
+
+            builder.append(switch(color) {
+
+                case GREEN -> "\uD83D\uDFE9";
+                case YELLOW -> "\uD83D\uDFE8";
+                case NONE -> "⬛";
+
+            });
+
+        }
+        builder.append(" ").append(guess.toUpperCase());
+        return builder.toString();
+
+    }
+
+    private WordleColor[] getColors(String guess) {
 
         WordleColor[] colors = new WordleColor[5];
         for(int i = 0; i < 5; i++)
@@ -162,20 +231,7 @@ public class Wordle extends Puzzle {
         for(int i = 0; i < 5; i++)
             if(colors[i] == null)
                 colors[i] = WordleColor.NONE;
-        StringBuilder builder = new StringBuilder();
-        for(WordleColor color : colors) {
-
-            builder.append(switch(color) {
-
-                case GREEN -> "\uD83D\uDFE9";
-                case YELLOW -> "\uD83D\uDFE8";
-                case NONE -> "⬛";
-
-            });
-
-        }
-        builder.append(" ").append(guess.toUpperCase());
-        return builder.toString();
+        return colors;
 
     }
 
