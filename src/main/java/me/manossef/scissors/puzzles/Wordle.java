@@ -143,7 +143,7 @@ public class Wordle extends Puzzle {
 
             if(this.knownGreens[i] && guess.charAt(i) != this.answer.charAt(i)) {
 
-                message.reply("Your guess must have the letter " + this.answer.charAt(i) + " at position " + i).queue();
+                message.reply("Your guess must have the letter " + Character.toUpperCase(this.answer.charAt(i)) + " at position " + (i + 1)).queue();
                 return false;
 
             }
@@ -159,7 +159,7 @@ public class Wordle extends Puzzle {
                 if(letter == ch) found++;
             if(found < count) {
 
-                message.reply("Your guess must contain at least " + count + " of the letter " + letter).queue();
+                message.reply("Your guess must contain at least " + count + " of the letter " + Character.toUpperCase(letter)).queue();
                 return false;
 
             }
