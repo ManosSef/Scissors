@@ -19,7 +19,7 @@ public class DevGuild {
         Guild devGuild = Scissors.DISCORD_API.getGuildById(DEV_GUILD_ID);
         if(devGuild == null) {
 
-            System.err.println("Could not find dev guild.");
+            Scissors.LOGGER.error("Could not find dev guild.");
             return null;
 
         }
@@ -63,7 +63,7 @@ public class DevGuild {
         if(message.length() > 2000) {
 
             channel.sendMessage(message.substring(0, 1997) + "...").queue();
-            System.err.println("Could not log entire message: " + message);
+            Scissors.LOGGER.warn("Could not log entire message: {}", message);
             return;
 
         }
@@ -115,13 +115,13 @@ public class DevGuild {
         GuildChannel logsChannel = DevGuild.getDevGuild().getGuildChannelById(id);
         if(logsChannel == null) {
 
-            System.err.println("Could not find #" + name + " in dev guild.");
+            Scissors.LOGGER.error("Could not find #{} in dev guild.", name);
             return null;
 
         }
         if(!(logsChannel instanceof MessageChannel messageChannel)) {
 
-            System.err.println("Found #" + name + " in dev guild, but it isn't a message channel.");
+            Scissors.LOGGER.error("Found #{} in dev guild, but it isn't a message channel.", name);
             return null;
 
         }

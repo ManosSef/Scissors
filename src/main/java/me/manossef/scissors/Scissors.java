@@ -11,6 +11,8 @@ import me.manossef.scissors.listeners.Startup;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class Scissors {
     public static final JiraAPI JIRA_API = new JiraAPI("https://manossef.atlassian.net/rest/api/2/");
     public static final Gson GSON = new GsonBuilder().registerTypeAdapter(Option.class, new OptionAdapter()).registerTypeAdapterFactory(new OptionValueAdapterFactory()).create();
     public static final Random RANDOM = new Random();
+    public static final Logger LOGGER = LoggerFactory.getLogger(Scissors.class);
 
     private static Configuration config;
 
@@ -40,13 +43,13 @@ public class Scissors {
             JiraCheckLoop.CheckedIssues checkedIssues = getCheckedIssues();
             if(checkedIssues == null)
                 checkedIssues = new JiraCheckLoop.CheckedIssues(new ArrayList<>(), new ArrayList<>());
-            if(SharedConstants.IS_STAGING) System.out.println("Retrieved previous checked issues: " + checkedIssues);
+            if(SharedConstants.IS_STAGING) LOGGER.info("Retrieved previous checked issues: {}", checkedIssues);
             Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues));
             jiraCheckLoop.start();
 
         } catch(InterruptedException e) {
 
-            System.err.println("The thread was interrupted!");
+            LOGGER.error("The thread was interrupted!");
 
         }
 

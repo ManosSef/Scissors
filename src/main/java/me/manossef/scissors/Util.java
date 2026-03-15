@@ -72,7 +72,7 @@ public class Util {
 
         } catch(IOException | JsonSyntaxException e) {
 
-            System.err.println("Failed to read the " + fileName + " file.");
+            Scissors.LOGGER.error("Failed to read the {} file.", fileName);
             return null;
 
         }
@@ -91,7 +91,7 @@ public class Util {
 
         } catch(IOException e) {
 
-            System.err.println("Failed to save the " + fileName + " file.");
+            Scissors.LOGGER.error("Failed to save the {} file.", fileName);
 
         }
 
@@ -110,7 +110,7 @@ public class Util {
 
         } catch(IOException e) {
 
-            e.printStackTrace();
+            Scissors.LOGGER.error("Failed to load the list of words from the {} file.", fileName, e);
             DevGuild.logStatus(logError);
 
         }

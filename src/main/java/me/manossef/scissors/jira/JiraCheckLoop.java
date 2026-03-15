@@ -31,12 +31,12 @@ public class JiraCheckLoop implements Runnable {
                 CheckedIssues newChecked = this.checkIssues();
                 List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
                 uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
-                if(SharedConstants.IS_STAGING) System.out.println("To post in #done-issues: " + uncheckedFixed);
+                if(SharedConstants.IS_STAGING) Scissors.LOGGER.info("To post in #done-issues: {}", uncheckedFixed);
                 for(Integer number : uncheckedFixed)
                     DevGuild.logDoneIssue(MessageCreateData.fromEmbeds(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed()));
                 List<Integer> uncheckedInvalid = new ArrayList<>(newChecked.checkedInvalid);
                 uncheckedInvalid.removeAll(this.checkedIssues.checkedInvalid);
-                if(SharedConstants.IS_STAGING) System.out.println("To post in #invalid-issues: " + uncheckedInvalid);
+                if(SharedConstants.IS_STAGING) Scissors.LOGGER.info("To post in #invalid-issues: {}", uncheckedInvalid);
                 for(Integer number : uncheckedInvalid)
                     DevGuild.logInvalidIssue(MessageCreateData.fromEmbeds(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed()));
                 this.checkedIssues = newChecked;
@@ -45,11 +45,11 @@ public class JiraCheckLoop implements Runnable {
 
             } catch(UnirestException e) {
 
-                System.err.println("Something went wrong; ignoring and continuing as normal.");
+                Scissors.LOGGER.warn("Something went wrong; ignoring and continuing as normal.");
 
             } catch(InterruptedException e) {
 
-                System.err.println("The thread was interrupted!");
+                Scissors.LOGGER.error("The thread was interrupted!");
 
             }
 
@@ -76,7 +76,7 @@ public class JiraCheckLoop implements Runnable {
             .toList();
         else checkedInvalid = this.checkedIssues.checkedInvalid;
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
-        if(SharedConstants.IS_STAGING) System.out.println("Checked issues, found: " + found);
+        if(SharedConstants.IS_STAGING) Scissors.LOGGER.info("Checked issues, found: {}", found);
         return found;
 
     }
