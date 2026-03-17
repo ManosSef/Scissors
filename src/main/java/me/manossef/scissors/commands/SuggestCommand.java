@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import kong.unirest.core.UnirestException;
 import me.manossef.scissors.*;
 import me.manossef.scissors.arguments.UserArgument;
@@ -27,11 +28,15 @@ public class SuggestCommand {
         return new LiteralMessage("The following error(s) occurred while trying to create the issue: " + builder);
 
     });
+    private static final SimpleCommandExceptionType NO_ISSUE_TYPE = new SimpleCommandExceptionType(new LiteralMessage(
+        "Please add " + monospace("bug") + ", " + monospace("feature") + " or " + monospace("improvement") + " after " + monospace(SharedConstants.COMMAND_PREFIX + "suggest") + " depending on what you're suggesting"
+    ));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
 
         String baseLiteral = "suggest";
         dispatcher.register(Commands.literal(baseLiteral)
+            .executes(context -> sendIssueTypeHint())
             .then(argumentsForIssueType("bug", IssueType.BUG))
             .then(argumentsForIssueType("feature", IssueType.FEATURE))
             .then(argumentsForIssueType("improvement", IssueType.IMPROVEMENT))
@@ -42,6 +47,9 @@ public class SuggestCommand {
                 .then(argumentsForIssueTypeWithUser("feature", IssueType.FEATURE))
                 .then(argumentsForIssueTypeWithUser("improvement", IssueType.IMPROVEMENT))
                 .then(argumentsForIssueTypeWithUser("task", IssueType.TASK))
+            )
+            .then(Commands.argument("summary", StringArgumentType.greedyString())
+                .executes(context -> sendIssueTypeHint())
             )
         );
         HelpCommand.addLine(baseLiteral, "Posts a suggestion for the bot.");
@@ -129,6 +137,12 @@ public class SuggestCommand {
         }
         source.sendSuccess("Successfully created issue " + issue.key() + ". Thanks for the feedback!");
         return 1;
+
+    }
+
+    private static int sendIssueTypeHint() throws CommandSyntaxException {
+
+        throw NO_ISSUE_TYPE.create();
 
     }
 
