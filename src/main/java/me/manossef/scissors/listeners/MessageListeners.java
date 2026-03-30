@@ -55,12 +55,18 @@ public class MessageListeners extends ListenerAdapter {
 
     private void replyWithRandomMessage(Message message, List<String> possibleMessages, String responseType) {
 
-        message.getChannel().sendMessage(possibleMessages.get(Scissors.RANDOM.nextInt(possibleMessages.size())).formatted(message.getAuthor().getAsMention()))
-            .setMessageReference(message)
-            .mentionRepliedUser(false)
-            .setAllowedMentions(Collections.emptyList())
-            .queue();
-        DevGuild.logResponse("Posted a " + responseType + " response to " + Util.getMessageLink(message));
+        if(message.getChannel().canTalk()) {
+
+            message.getChannel().sendMessage(possibleMessages.get(Scissors.RANDOM.nextInt(possibleMessages.size())).formatted(message.getAuthor().getAsMention()))
+                .setMessageReference(message)
+                .mentionRepliedUser(false)
+                .setAllowedMentions(Collections.emptyList())
+                .queue();
+            DevGuild.logResponse("Posted a " + responseType + " response to " + Util.getMessageLink(message));
+            return;
+
+        }
+        DevGuild.logResponse("Could not post a " + responseType + " response to " + Util.getMessageLink(message) + "; no permission to talk");
 
     }
 
