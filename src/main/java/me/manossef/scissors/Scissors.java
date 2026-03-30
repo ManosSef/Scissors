@@ -1,5 +1,8 @@
 package me.manossef.scissors;
 
+import ch.qos.logback.classic.AsyncAppender;
+import ch.qos.logback.classic.LoggerContext;
+import com.github.napstr.logback.DiscordAppender;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.manossef.scissors.config.*;
@@ -35,6 +38,7 @@ public class Scissors {
 
         try {
 
+            startWebhookLogger();
             DISCORD_API.awaitReady();
             config = getConfigFromFile();
             if(config == null)
@@ -82,6 +86,15 @@ public class Scissors {
     public static void saveCheckedIssues(JiraCheckLoop.CheckedIssues checkedIssues) {
 
         Util.saveJsonToFile(SharedConstants.CHECKED_ISSUES_FILE_NAME, checkedIssues);
+
+    }
+
+    private static void startWebhookLogger() {
+
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        AsyncAppender discordAsync = (AsyncAppender) lc.getLogger(Logger.ROOT_LOGGER_NAME).getAppender("ASYNC_DISCORD");
+        DiscordAppender discordAppender = (DiscordAppender) discordAsync.getAppender("DISCORD");
+        discordAppender.setWebhookUri(System.getenv("SCISSORS_LOGGER_WEBHOOK"));
 
     }
 
