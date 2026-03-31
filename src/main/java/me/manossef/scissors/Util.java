@@ -153,7 +153,7 @@ public class Util {
             for(String error : issue.errors().values()) builder.append(error).append(", ");
             Scissors.LOGGER.error("Failed to create issue: {}", builder.substring(0, builder.length() - 2));
 
-        }
+        } else Scissors.LOGGER.info("Created issue {}", issue.key());
 
     }
 
