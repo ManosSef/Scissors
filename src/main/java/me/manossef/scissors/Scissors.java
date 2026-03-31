@@ -50,6 +50,7 @@ public class Scissors {
         } catch(InterruptedException e) {
 
             LOGGER.error("The thread was interrupted!");
+            Thread.currentThread().interrupt();
 
         }
 

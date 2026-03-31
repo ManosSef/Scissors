@@ -50,6 +50,7 @@ public class JiraCheckLoop implements Runnable {
             } catch(InterruptedException e) {
 
                 Scissors.LOGGER.error("The thread was interrupted!");
+                Thread.currentThread().interrupt();
 
             }
 
