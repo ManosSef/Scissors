@@ -112,6 +112,8 @@ public class Commands {
         RawHelpCommand.register(dispatcher);
         StopAllGamesCommand.register(dispatcher);
         HelpCommand.register(dispatcher);
+        if(SharedConstants.IS_STAGING)
+            ManualErrorCommand.register(dispatcher);
 
     }
 
