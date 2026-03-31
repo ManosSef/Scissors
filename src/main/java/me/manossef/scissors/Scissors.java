@@ -1,10 +1,5 @@
 package me.manossef.scissors;
 
-import ch.qos.logback.classic.AsyncAppender;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.manossef.scissors.config.*;
@@ -40,7 +35,6 @@ public class Scissors {
 
         try {
 
-            startWebhookLogger();
             DISCORD_API.awaitReady();
             config = getConfigFromFile();
             if(config == null)
@@ -88,33 +82,6 @@ public class Scissors {
     public static void saveCheckedIssues(JiraCheckLoop.CheckedIssues checkedIssues) {
 
         Util.saveJsonToFile(SharedConstants.CHECKED_ISSUES_FILE_NAME, checkedIssues);
-
-    }
-
-    private static void startWebhookLogger() {
-
-        AsyncAppender newAppender = new AsyncAppender();
-        newAppender.addAppender(new UnsynchronizedAppenderBase<>() {
-
-            private static final PatternLayout LAYOUT = new PatternLayout();
-
-            static {
-
-                LAYOUT.setPattern("`%d{HH:mm:ss.SSS} [%thread] [%logger{0}] [%level] %msg`%n%replace(```%ex{full}```){'``````',''}%nopex");
-
-            }
-
-            @Override
-            protected void append(ILoggingEvent event) {
-
-                DevGuild.log(LAYOUT.doLayout(event));
-
-            }
-
-        });
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        newAppender.setContext(context);
-        context.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(newAppender);
 
     }
 
