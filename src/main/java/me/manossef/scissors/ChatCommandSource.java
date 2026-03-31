@@ -49,7 +49,7 @@ public record ChatCommandSource(Message commandMessage, User user) {
 
     private String truncate(String content) {
 
-        if(content.length() > 2000) {
+        if(content.length() > Message.MAX_CONTENT_LENGTH) {
 
             if(SharedConstants.IS_STAGING) Scissors.LOGGER.warn("Could not send entire command response: {}", content);
             return Util.truncate(content);

@@ -22,12 +22,14 @@ public class Util {
 
     public static String truncate(String message) {
 
-        if(message.length() <= 2000)
+        if(message.length() <= Message.MAX_CONTENT_LENGTH)
             return message;
         if(message.endsWith("```"))
-            return message.substring(0, 1994) + "...```";
+            return message.substring(0, Message.MAX_CONTENT_LENGTH - 6) + "...```";
+        else if(message.endsWith("`"))
+            return message.substring(0, Message.MAX_CONTENT_LENGTH - 4) + "...`";
         else
-            return message.substring(0, 1997) + "...";
+            return message.substring(0, Message.MAX_CONTENT_LENGTH - 3) + "...";
 
     }
 

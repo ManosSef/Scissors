@@ -7,6 +7,9 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.codeblock;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
+
 public class DevGuild {
 
     private static final long DEV_GUILD_ID = SharedConstants.IS_STAGING ? 1473455985690546227L : 1428446740855656542L;
@@ -34,7 +37,14 @@ public class DevGuild {
     public static void log(String message) {
 
         if(logWebhook == null) logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, SharedConstants.LOG_WEBHOOK_URL);
-        logWebhook.sendMessage(Util.truncate(message)).queue();
+        String fixed = message.replace("`", "").strip();
+        if(fixed.contains("\n")) {
+
+            logWebhook.sendMessage(Util.truncate(codeblock(fixed))).queue();
+            return;
+
+        }
+        logWebhook.sendMessage(Util.truncate(monospace(fixed))).queue();
 
     }
 
@@ -47,6 +57,16 @@ public class DevGuild {
     public static void logCommand(String message) {
 
         logMessage(message, getCommandLogChannel());
+
+    }
+
+    public static void logCommandError(String message, Throwable exception) {
+
+        logCommand(message);
+        StringBuilder stackTrace = new StringBuilder();
+        for(StackTraceElement element : exception.getStackTrace())
+            stackTrace.append("\t").append("at ").append(element.toString()).append("\n");
+        logCommand(codeblock(exception.getClass().getName() + ": " + exception.getMessage() + "\n" + stackTrace));
 
     }
 
@@ -71,7 +91,7 @@ public class DevGuild {
     public static void logMessage(String message, MessageChannel channel) {
 
         if(channel == null) return;
-        if(message.length() > 2000) {
+        if(message.length() > Message.MAX_CONTENT_LENGTH) {
 
             channel.sendMessage(Util.truncate(message)).queue();
             Scissors.LOGGER.warn("Could not log entire message: {}", message);

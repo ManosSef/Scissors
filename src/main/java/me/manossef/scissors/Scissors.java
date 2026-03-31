@@ -46,6 +46,7 @@ public class Scissors {
             if(SharedConstants.IS_STAGING) LOGGER.info("Retrieved previous checked issues: {}", checkedIssues);
             Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues));
             jiraCheckLoop.start();
+            LOGGER.error("tets", new RuntimeException("test"));
 
         } catch(InterruptedException e) {
 
