@@ -7,6 +7,7 @@ public class SharedConstants {
     public static final String TOKEN = System.getenv("SCISSORS_BOT_TOKEN");
     public static final String JIRA_EMAIL = System.getenv("JIRA_ALT_EMAIL");
     public static final String JIRA_API_TOKEN = System.getenv("JIRA_ALT_API_TOKEN");
+    public static final String LOG_WEBHOOK_URL = System.getenv("SCISSORS_LOGGER_WEBHOOK");
 
     public static final long MY_USER_ID = 611151083141857286L;
 

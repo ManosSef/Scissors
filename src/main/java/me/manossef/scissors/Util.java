@@ -20,6 +20,17 @@ public class Util {
 
     }
 
+    public static String truncate(String message) {
+
+        if(message.length() <= 2000)
+            return message;
+        if(message.endsWith("```"))
+            return message.substring(0, 1994) + "...```";
+        else
+            return message.substring(0, 1997) + "...";
+
+    }
+
     public static void writeValue(JsonWriter out, JsonElement value) throws IOException {
 
         if(value == null || value.isJsonNull())

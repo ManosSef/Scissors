@@ -2,7 +2,9 @@ package me.manossef.scissors;
 
 import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.LoggerContext;
-import com.github.napstr.logback.DiscordAppender;
+import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.manossef.scissors.config.*;
@@ -91,10 +93,26 @@ public class Scissors {
 
     private static void startWebhookLogger() {
 
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        AsyncAppender discordAsync = (AsyncAppender) lc.getLogger(Logger.ROOT_LOGGER_NAME).getAppender("ASYNC_DISCORD");
-        DiscordAppender discordAppender = (DiscordAppender) discordAsync.getAppender("DISCORD");
-        discordAppender.setWebhookUri(System.getenv("SCISSORS_LOGGER_WEBHOOK"));
+        AsyncAppender newAppender = new AsyncAppender();
+        newAppender.addAppender(new UnsynchronizedAppenderBase<>() {
+
+            private static final PatternLayout LAYOUT = new PatternLayout();
+
+            static {
+
+                LAYOUT.setPattern("`%d{HH:mm:ss.SSS} [%thread] [%logger{0}] [%level] %msg`%n%replace(```%ex{full}```){'``````',''}%nopex");
+
+            }
+
+            @Override
+            protected void append(ILoggingEvent event) {
+
+                DevGuild.log(LAYOUT.doLayout(event));
+
+            }
+
+        });
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger(Logger.ROOT_LOGGER_NAME).addAppender(newAppender);
 
     }
 
