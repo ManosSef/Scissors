@@ -4,12 +4,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
+import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static net.dv8tion.jda.api.utils.MarkdownUtil.codeblock;
 
 public class Util {
 
@@ -127,6 +130,41 @@ public class Util {
             DevGuild.logStatus(logError);
 
         }
+
+    }
+
+    public static void createIssueForException(Throwable exception) {
+
+        createIssueForException(exception, "", "");
+
+    }
+
+    public static void createIssueForException(Throwable exception, String summaryPrefix, String description) {
+
+        Issue issue = Scissors.JIRA_API.createIssue(
+            summaryPrefix + exception.getClass().getName() + ": " + exception.getMessage(),
+            description + "\nStack trace:\n" + codeblock(getStackTrace(exception)),
+            Scissors.JIRA_API.getIssuetype(SharedConstants.ISSUETYPE_BUG_ID),
+            Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
+            Scissors.DISCORD_API.getSelfUser().getId()
+        );
+        if(issue.id() == null) {
+
+            StringBuilder builder = new StringBuilder();
+            for(String error : issue.errorMessages()) builder.append(error).append(", ");
+            for(String error : issue.errors().values()) builder.append(error).append(", ");
+            Scissors.LOGGER.error("Failed to create issue: {}", builder.substring(0, builder.length() - 2));
+
+        }
+
+    }
+
+    public static String getStackTrace(Throwable exception) {
+
+        StringBuilder stackTrace = new StringBuilder();
+        for(StackTraceElement element : exception.getStackTrace())
+            stackTrace.append("\t").append("at ").append(element.toString()).append("\n");
+        return stackTrace.toString();
 
     }
 

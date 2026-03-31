@@ -63,10 +63,7 @@ public class DevGuild {
     public static void logCommandError(String message, Throwable exception) {
 
         logCommand(message);
-        StringBuilder stackTrace = new StringBuilder();
-        for(StackTraceElement element : exception.getStackTrace())
-            stackTrace.append("\t").append("at ").append(element.toString()).append("\n");
-        logCommand(codeblock(exception.getClass().getName() + ": " + exception.getMessage() + "\n" + stackTrace));
+        logCommand(codeblock(exception.getClass().getName() + ": " + exception.getMessage() + "\n" + Util.getStackTrace(exception)));
 
     }
 

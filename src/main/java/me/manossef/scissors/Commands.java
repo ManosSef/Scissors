@@ -53,6 +53,7 @@ public class Commands {
 
             source.sendError(e.getMessage());
             DevGuild.logCommandError(username + " (" + user.getId() + ") executed command " + monospace(command) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception:", e);
+            Util.createIssueForException(e, "Command error: ", "Command: " + monospace(command));
 
         }
 

@@ -36,6 +36,12 @@ public class Scissors {
         try {
 
             DISCORD_API.awaitReady();
+            Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
+
+                LOGGER.error("Uncaught exception thrown!", exception);
+                Util.createIssueForException(exception);
+
+            });
             config = getConfigFromFile();
             if(config == null)
                 config = new Configuration(new Settings(), new HashMap<>(), new HashMap<>());
