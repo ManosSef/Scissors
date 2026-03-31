@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static net.dv8tion.jda.api.utils.MarkdownUtil.codeblock;
-
 public class Util {
 
     public static String getMessageLink(Message message) {
@@ -143,7 +141,7 @@ public class Util {
 
         Issue issue = Scissors.JIRA_API.createIssue(
             summaryPrefix + exception.getClass().getName() + ": " + exception.getMessage(),
-            description + "\nStack trace:\n" + codeblock(getStackTrace(exception)),
+            description + "\nStack trace:\n{noformat}" + getStackTrace(exception) + "{noformat}",
             Scissors.JIRA_API.getIssuetype(SharedConstants.ISSUETYPE_BUG_ID),
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
             Scissors.DISCORD_API.getSelfUser().getId()
