@@ -112,7 +112,9 @@ public class Scissors {
             }
 
         });
-        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger(Logger.ROOT_LOGGER_NAME).addAppender(newAppender);
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        newAppender.setContext(context);
+        context.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(newAppender);
 
     }
 
