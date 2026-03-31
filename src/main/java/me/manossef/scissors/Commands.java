@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 import java.util.function.Predicate;
 
+import static net.dv8tion.jda.api.utils.MarkdownUtil.codeblock;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class Commands {
@@ -54,9 +55,9 @@ public class Commands {
             source.sendError(e.getMessage());
             StringBuilder stackTrace = new StringBuilder();
             for(StackTraceElement element : e.getStackTrace())
-                stackTrace.append("\t").append(monospace("at " + element.toString())).append("\n");
+                stackTrace.append("\t").append("at ").append(element.toString()).append("\n");
             DevGuild.logCommand(username + " (" + user.getId() + ") executed command " + shorten(monospace(command), 100) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception: " +
-                monospace(e.getClass().getName() + ": " + e.getMessage()) + "\n" + stackTrace);
+                codeblock(e.getClass().getName() + ": " + e.getMessage() + "\n" + stackTrace));
 
         }
 

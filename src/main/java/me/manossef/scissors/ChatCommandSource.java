@@ -52,7 +52,7 @@ public record ChatCommandSource(Message commandMessage, User user) {
         if(content.length() > 2000) {
 
             if(SharedConstants.IS_STAGING) Scissors.LOGGER.warn("Could not send entire command response: {}", content);
-            return content.substring(0, 1997) + "...";
+            return Util.truncate(content);
 
         }
         return content;
