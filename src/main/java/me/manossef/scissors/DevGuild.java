@@ -15,7 +15,8 @@ public class DevGuild {
     private static final long RESPONSE_LOGS_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456190079111248L : 1473074962733600912L;
     private static final long DONE_ISSUES_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456208697626795L : 1429172420069298176L;
     private static final long INVALID_ISSUES_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456228482154638L : 1429172445067214988L;
-    private static final WebhookClient<Message> LOG_WEBHOOK = WebhookClient.createClient(Scissors.DISCORD_API, SharedConstants.LOG_WEBHOOK_URL);
+
+    private static WebhookClient<Message> logWebhook;
 
     public static Guild getDevGuild() {
 
@@ -32,7 +33,8 @@ public class DevGuild {
 
     public static void log(String message) {
 
-        LOG_WEBHOOK.sendMessage(Util.truncate(message)).queue();
+        if(logWebhook == null) logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, SharedConstants.LOG_WEBHOOK_URL);
+        logWebhook.sendMessage(Util.truncate(message)).queue();
 
     }
 
