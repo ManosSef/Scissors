@@ -15,6 +15,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class MessageListeners extends ListenerAdapter {
         if(content.startsWith(SharedConstants.COMMAND_PREFIX)) return;
         Configuration config = Scissors.getConfiguration();
         if(this.promptsGPPCT(message, config))
-            replyWithRandomMessage(message, content.equals("67") ? Messages.GPPCT_BRAINROT_RESPONSES : Messages.GPPCT_RESPONSES, "GPPCT");
+            replyWithRandomMessage(message, isApril1st() ? Messages.GPPCT_APRIL_FOOLS_RESPONSES : content.equals("67") ? Messages.GPPCT_BRAINROT_RESPONSES : Messages.GPPCT_RESPONSES, "GPPCT");
         else if(this.promptsPing(message, config))
             replyWithRandomMessage(message, Messages.PING_RESPONSES, "ping");
         else if(this.promptsMeme(message, config))
@@ -117,6 +119,13 @@ public class MessageListeners extends ListenerAdapter {
 
         return channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") ||
             (channel instanceof ICategorizableChannel iCategorizableChannel && iCategorizableChannel.getParentCategory() != null && iCategorizableChannel.getParentCategory().getName().toLowerCase().contains("counting"));
+
+    }
+
+    private static boolean isApril1st() {
+
+        LocalDate now = LocalDate.now();
+        return now.getMonth().equals(Month.APRIL) && now.getDayOfMonth() == 1;
 
     }
 

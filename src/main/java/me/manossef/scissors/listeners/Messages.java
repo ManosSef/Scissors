@@ -57,6 +57,19 @@ public class Messages {
         "HOW DID PEOPLE MAKE A MEME OUT OF JUST TWO NUMBERS???",
         "IT'S NOT 2025 ANYMORE HOW IS THIS MEME NOT DEAD YET"
     );
+    static final List<String> GPPCT_APRIL_FOOLS_RESPONSES = List.of(
+        "I love you",
+        "I love counting so much",
+        "Ah, numbers... Don't you just love them?",
+        "I wish I was a number",
+        "It must feel so good to be a number",
+        "What was my creator thinking when he started the GPPCT?",
+        "We need to make more counting threads",
+        "YES! MORE COUNTING!",
+        "I'm so proud right now",
+        "\uD83D\uDE0D",
+        "YAY NUMBERS"
+    );
     static final List<String> SCISSORS_RESPONSES = List.of(
         "RAHHH!"
     );
