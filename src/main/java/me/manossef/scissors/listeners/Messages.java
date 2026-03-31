@@ -49,7 +49,9 @@ public class Messages {
         "Honestly why did the GPPCT stop",
         "I'm not mad, just disappointed",
         "Are you just excited because you just learned how to count?",
-        "Do you just randomly shout random numbers in real life too?"
+        "Do you just randomly shout random numbers in real life too?",
+        "I was joking on April 1st by the way",
+        "Believe it or not, I don't like it when you do that"
     );
     static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
