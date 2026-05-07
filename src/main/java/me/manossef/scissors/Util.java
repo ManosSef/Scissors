@@ -3,12 +3,16 @@ package me.manossef.scissors;
 import com.google.gson.JsonSyntaxException;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.List;
 import java.util.Objects;
 
 public class Util {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
 
     public static String getMessageLink(Message message) {
 
@@ -44,7 +48,7 @@ public class Util {
 
         } catch(IOException | JsonSyntaxException e) {
 
-            Scissors.LOGGER.error("Failed to read the {} file.", fileName);
+            LOGGER.error("Failed to read the {} file.", fileName);
             return null;
 
         }
@@ -55,14 +59,14 @@ public class Util {
 
         try {
 
-            new File(SharedConstants.FILE_DIRECTORY).mkdirs();
+            boolean ignored = new File(SharedConstants.FILE_DIRECTORY).mkdirs();
             BufferedWriter writer = new BufferedWriter(new FileWriter(SharedConstants.FILE_DIRECTORY + fileName));
             writer.write(Scissors.GSON.toJson(object));
             writer.close();
 
         } catch(IOException e) {
 
-            Scissors.LOGGER.error("Failed to save the {} file.", fileName);
+            LOGGER.error("Failed to save the {} file.", fileName);
 
         }
 
@@ -81,7 +85,7 @@ public class Util {
 
         } catch(IOException e) {
 
-            Scissors.LOGGER.error("Failed to load the list of words from the {} file.", fileName, e);
+            LOGGER.error("Failed to load the list of words from the {} file.", fileName, e);
             DevGuild.logStatus(logError);
 
         }
@@ -108,9 +112,9 @@ public class Util {
             StringBuilder builder = new StringBuilder();
             for(String error : issue.errorMessages()) builder.append(error).append(", ");
             for(String error : issue.errors().values()) builder.append(error).append(", ");
-            Scissors.LOGGER.error("Failed to create issue: {}", builder.substring(0, builder.length() - 2));
+            LOGGER.error("Failed to create issue: {}", builder.substring(0, builder.length() - 2));
 
-        } else Scissors.LOGGER.info("Created issue {}", issue.key());
+        } else LOGGER.info("Created issue {}", issue.key());
 
     }
 

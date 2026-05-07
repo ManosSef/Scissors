@@ -4,10 +4,14 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 
 public record ChatCommandSource(Message commandMessage, User user) {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatCommandSource.class);
 
     public ChatCommandSource withMessage(Message newMessage) {
 
@@ -51,7 +55,7 @@ public record ChatCommandSource(Message commandMessage, User user) {
 
         if(content.length() > Message.MAX_CONTENT_LENGTH) {
 
-            if(SharedConstants.IS_STAGING) Scissors.LOGGER.warn("Could not send entire command response: {}", content);
+            if(SharedConstants.IS_STAGING) LOGGER.warn("Could not send entire command response: {}", content);
             return Util.truncate(content);
 
         }

@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.entities.WebhookClient;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.codeblock;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
@@ -18,6 +20,7 @@ public class DevGuild {
     private static final long RESPONSE_LOGS_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456190079111248L : 1473074962733600912L;
     private static final long DONE_ISSUES_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456208697626795L : 1429172420069298176L;
     private static final long INVALID_ISSUES_CHANNEL_ID = SharedConstants.IS_STAGING ? 1473456228482154638L : 1429172445067214988L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DevGuild.class);
 
     private static WebhookClient<Message> logWebhook;
 
@@ -26,7 +29,7 @@ public class DevGuild {
         Guild devGuild = Scissors.DISCORD_API.getGuildById(DEV_GUILD_ID);
         if(devGuild == null) {
 
-            Scissors.LOGGER.error("Could not find dev guild.");
+            LOGGER.error("Could not find dev guild.");
             return null;
 
         }
@@ -91,7 +94,7 @@ public class DevGuild {
         if(message.length() > Message.MAX_CONTENT_LENGTH) {
 
             channel.sendMessage(Util.truncate(message)).queue();
-            Scissors.LOGGER.warn("Could not log entire message: {}", message);
+            LOGGER.warn("Could not log entire message: {}", message);
             return;
 
         }
@@ -143,13 +146,13 @@ public class DevGuild {
         GuildChannel logsChannel = DevGuild.getDevGuild().getGuildChannelById(id);
         if(logsChannel == null) {
 
-            Scissors.LOGGER.error("Could not find #{} in dev guild.", name);
+            LOGGER.error("Could not find #{} in dev guild.", name);
             return null;
 
         }
         if(!(logsChannel instanceof MessageChannel messageChannel)) {
 
-            Scissors.LOGGER.error("Found #{} in dev guild, but it isn't a message channel.", name);
+            LOGGER.error("Found #{} in dev guild, but it isn't a message channel.", name);
             return null;
 
         }
