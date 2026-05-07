@@ -82,7 +82,8 @@ public class Messages {
         "Hi there!",
         "Ready to cut some paper today?",
         "You'd better not want to throw a rock at me",
-        "At your service!"
+        "At your service!",
+        "0% AI!"
     );
     static final List<String> MEME_RESPONSES = List.of(
         "May I see it?"
