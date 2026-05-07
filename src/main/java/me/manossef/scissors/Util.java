@@ -100,19 +100,20 @@ public class Util {
 
     public static void createIssueForException(Throwable exception, String summaryPrefix, String description) {
 
+        String summary = summaryPrefix + exception.getClass().getName() + ": " + exception.getMessage();
+        if(SharedConstants.IS_STAGING) {
+
+            LOGGER.info("Not creating issue in staging, summary would be: {}", summary);
+            return;
+
+        }
         Issue issue = Scissors.JIRA_API.createIssue(
-            summaryPrefix + exception.getClass().getName() + ": " + exception.getMessage(),
+            summary,
             description + "\nStack trace:\n{noformat}" + getStackTrace(exception) + "{noformat}",
             Scissors.JIRA_API.getIssuetype(SharedConstants.ISSUETYPE_BUG_ID),
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
             Scissors.DISCORD_API.getSelfUser().getId()
         );
-        if(SharedConstants.IS_STAGING) {
-
-            LOGGER.info("Issue that would be created: {}", issue);
-            return;
-
-        }
         if(issue.id() == null) {
 
             StringBuilder builder = new StringBuilder();
