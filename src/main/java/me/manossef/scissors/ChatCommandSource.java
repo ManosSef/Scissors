@@ -29,25 +29,25 @@ public record ChatCommandSource(Message commandMessage, User user) {
 
     public void sendSuccess(String message) {
 
-        this.commandMessage.reply(truncate("✅ " + message)).setAllowedMentions(Collections.emptyList()).queue();
+        this.commandMessage.reply(truncate(Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " + message)).setAllowedMentions(Collections.emptyList()).queue();
 
     }
 
     public void sendSuccess(String message, MessageEmbed... embeds) {
 
-        this.commandMessage.reply(new MessageCreateBuilder().setContent(truncate("✅ " + message)).setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
+        this.commandMessage.reply(new MessageCreateBuilder().setContent(truncate(Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " + message)).setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
 
     }
 
     public void sendFailure(String message) {
 
-        this.commandMessage.reply(truncate("❌ " + message)).setAllowedMentions(Collections.emptyList()).queue();
+        this.commandMessage.reply(truncate(Emojis.CROSS_MARK.getFormatted() + " " + message)).setAllowedMentions(Collections.emptyList()).queue();
 
     }
 
     public void sendError(String message) {
 
-        this.commandMessage.reply(truncate("\uD83D\uDC1E\uD83E\uDEB2\uD83D\uDD77 " + message)).setAllowedMentions(Collections.emptyList()).queue();
+        this.commandMessage.reply(truncate(Emojis.LADY_BEETLE.getFormatted() + Emojis.BEETLE.getFormatted() + Emojis.SPIDER.getFormatted() + " " + message)).setAllowedMentions(Collections.emptyList()).queue();
 
     }
 

@@ -1,6 +1,6 @@
 package me.manossef.scissors.squaredle;
 
-import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
+import me.manossef.scissors.Emojis;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.util.Arrays;
@@ -16,7 +16,7 @@ public class PuzzleUtil {
         for(String row : puzzle.board()) {
 
             for(char letter : row.toCharArray())
-                builder.append(getEmojiForLetter(letter).getAsMention()).append(" ");
+                builder.append(getEmojiForLetter(letter).getFormatted()).append(" ");
             builder.append("\n");
 
         }
@@ -42,7 +42,7 @@ public class PuzzleUtil {
                 .append(puzzle.wordOfTheDay().term().length())
                 .append(" letters)\n");
         if(puzzle.difficulty() != null)
-            builder.append("Difficulty: ").append(puzzle.difficulty()).append(" ⭐\n");
+            builder.append("Difficulty: ").append(puzzle.difficulty()).append(" ").append(Emojis.WHITE_MEDIUM_STAR).append("\n");
         if(puzzle.credits() != null) {
 
             if(puzzle.credits().author() != null)
@@ -58,40 +58,40 @@ public class PuzzleUtil {
 
     }
 
-    private static CustomEmoji getEmojiForLetter(char letter) {
+    private static Emoji getEmojiForLetter(char letter) {
 
         return switch(letter) {
 
-            case 'a', 'A' -> Emoji.fromCustom("squaredleA", 1434215203662463187L, false);
-            case 'b', 'B' -> Emoji.fromCustom("squaredleB", 1434215202118697071L, false);
-            case 'c', 'C' -> Emoji.fromCustom("squaredleC", 1434215165297164348L, false);
-            case 'd', 'D' -> Emoji.fromCustom("squaredleD", 1434215200591970305L, false);
-            case 'e', 'E' -> Emoji.fromCustom("squaredleE", 1434215199480746174L, false);
-            case 'f', 'F' -> Emoji.fromCustom("squaredleF", 1434215198025056266L, false);
-            case 'g', 'G' -> Emoji.fromCustom("squaredleG", 1434215196439871588L, false);
-            case 'h', 'H' -> Emoji.fromCustom("squaredleH", 1434215194740920524L, false);
-            case 'i', 'I' -> Emoji.fromCustom("squaredleI", 1434215193335824465L, false);
-            case 'j', 'J' -> Emoji.fromCustom("squaredleJ", 1434215191809228800L, false);
-            case 'k', 'K' -> Emoji.fromCustom("squaredleK", 1434215190383165542L, false);
-            case 'l', 'L' -> Emoji.fromCustom("squaredleL", 1434215188734803989L, false);
-            case 'm', 'M' -> Emoji.fromCustom("squaredleM", 1434215187459739658L, false);
-            case 'n', 'N' -> Emoji.fromCustom("squaredleN", 1434215186063032590L, false);
-            case 'o', 'O' -> Emoji.fromCustom("squaredleO", 1434215184565670119L, false);
-            case 'p', 'P' -> Emoji.fromCustom("squaredleP", 1434215183210774650L, false);
-            case 'q', 'Q' -> Emoji.fromCustom("squaredleQ", 1434215181533315273L, false);
-            case 'r', 'R' -> Emoji.fromCustom("squaredleR", 1434215180086153448L, false);
-            case 's', 'S' -> Emoji.fromCustom("squaredleS", 1434215178588782623L, false);
-            case 't', 'T' -> Emoji.fromCustom("squaredleT", 1434215176948809898L, false);
-            case 'u', 'U' -> Emoji.fromCustom("squaredleU", 1434215175078285363L, false);
-            case 'v', 'V' -> Emoji.fromCustom("squaredleV", 1434215173937172510L, false);
-            case 'w', 'W' -> Emoji.fromCustom("squaredleW", 1434215172586868897L, false);
-            case 'x', 'X' -> Emoji.fromCustom("squaredleX", 1434215170938372196L, false);
-            case 'y', 'Y' -> Emoji.fromCustom("squaredleY", 1434215169696727083L, false);
-            case 'z', 'Z' -> Emoji.fromCustom("squaredleZ", 1434215168547487824L, false);
-            case '!' -> Emoji.fromCustom("squaredleBang", 1434215167117361234L, false);
-            case '.' -> Emoji.fromCustom("squaredlePeriod", 1434216521626026166L, false);
-            case '↑' -> Emoji.fromCustom("squaredleUp", 1434228465527296123L, false);
-            default -> Emoji.fromCustom("squaredleBlank", 1434228466999492770L, false);
+            case 'a', 'A' -> Emojis.SQUAREDLE_A;
+            case 'b', 'B' -> Emojis.SQUAREDLE_B;
+            case 'c', 'C' -> Emojis.SQUAREDLE_C;
+            case 'd', 'D' -> Emojis.SQUAREDLE_D;
+            case 'e', 'E' -> Emojis.SQUAREDLE_E;
+            case 'f', 'F' -> Emojis.SQUAREDLE_F;
+            case 'g', 'G' -> Emojis.SQUAREDLE_G;
+            case 'h', 'H' -> Emojis.SQUAREDLE_H;
+            case 'i', 'I' -> Emojis.SQUAREDLE_I;
+            case 'j', 'J' -> Emojis.SQUAREDLE_J;
+            case 'k', 'K' -> Emojis.SQUAREDLE_K;
+            case 'l', 'L' -> Emojis.SQUAREDLE_L;
+            case 'm', 'M' -> Emojis.SQUAREDLE_M;
+            case 'n', 'N' -> Emojis.SQUAREDLE_N;
+            case 'o', 'O' -> Emojis.SQUAREDLE_O;
+            case 'p', 'P' -> Emojis.SQUAREDLE_P;
+            case 'q', 'Q' -> Emojis.SQUAREDLE_Q;
+            case 'r', 'R' -> Emojis.SQUAREDLE_R;
+            case 's', 'S' -> Emojis.SQUAREDLE_S;
+            case 't', 'T' -> Emojis.SQUAREDLE_T;
+            case 'u', 'U' -> Emojis.SQUAREDLE_U;
+            case 'v', 'V' -> Emojis.SQUAREDLE_V;
+            case 'w', 'W' -> Emojis.SQUAREDLE_W;
+            case 'x', 'X' -> Emojis.SQUAREDLE_X;
+            case 'y', 'Y' -> Emojis.SQUAREDLE_Y;
+            case 'z', 'Z' -> Emojis.SQUAREDLE_Z;
+            case '!' -> Emojis.SQUAREDLE_BANG;
+            case '.' -> Emojis.SQUAREDLE_PERIOD;
+            case '↑' -> Emojis.SQUAREDLE_UP;
+            default -> Emojis.SQUAREDLE_BLANK;
 
         };
 

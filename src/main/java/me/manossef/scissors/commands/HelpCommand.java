@@ -16,9 +16,9 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 public class HelpCommand {
 
     private static final String BASE_LITERAL = "help";
-    private static final LiteralArgumentBuilder<ChatCommandSource> baseArgument = Commands.literal(BASE_LITERAL)
+    private static final LiteralArgumentBuilder<ChatCommandSource> BASE_ARGUMENT = Commands.literal(BASE_LITERAL)
         .executes(context -> showHelpMessage(context.getSource()));
-    private static final List<String> lines = new ArrayList<>();
+    private static final List<String> LINES = new ArrayList<>();
 
     public static void addLine(String baseLiteral, String line, String... aliases) {
 
@@ -27,16 +27,16 @@ public class HelpCommand {
         for(String alias : aliases)
             builder.append("/").append(monospace(SharedConstants.COMMAND_PREFIX + alias));
         builder.append(" - ").append(line);
-        lines.add(builder.toString());
+        LINES.add(builder.toString());
 
     }
 
     public static void addLiteral(String baseLiteral, String text, String... aliases) {
 
         Command<ChatCommandSource> command = context -> showHelpForCommand(context.getSource(), baseLiteral, text, aliases);
-        baseArgument.then(Commands.literal(baseLiteral).executes(command));
+        BASE_ARGUMENT.then(Commands.literal(baseLiteral).executes(command));
         for(String alias : aliases)
-            baseArgument.then(Commands.literal(alias).executes(command));
+            BASE_ARGUMENT.then(Commands.literal(alias).executes(command));
 
     }
 
@@ -51,8 +51,8 @@ public class HelpCommand {
                 - %s: Explains the specified command in detail. Lists all available syntaxes for it, describes what each one does, and mentions any situations in which the command fails.""",
             monospace(SharedConstants.COMMAND_PREFIX + BASE_LITERAL),
             monospace(SharedConstants.COMMAND_PREFIX + BASE_LITERAL + " <command>")));
-        lines.sort(Comparator.naturalOrder());
-        dispatcher.register(baseArgument);
+        LINES.sort(Comparator.naturalOrder());
+        dispatcher.register(BASE_ARGUMENT);
 
     }
 
@@ -60,10 +60,10 @@ public class HelpCommand {
 
         StringBuilder builder = new StringBuilder();
         builder.append("All available commands are listed below. To learn more about a command, use ").append(monospace(SharedConstants.COMMAND_PREFIX + "help <command>")).append(".");
-        for(String line : lines)
+        for(String line : LINES)
             builder.append("\n- ").append(line);
         source.sendSuccess(builder.toString());
-        return lines.size();
+        return LINES.size();
 
     }
 

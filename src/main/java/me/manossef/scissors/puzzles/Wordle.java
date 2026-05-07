@@ -1,5 +1,6 @@
 package me.manossef.scissors.puzzles;
 
+import me.manossef.scissors.Emojis;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.Util;
@@ -66,8 +67,8 @@ public class Wordle extends Puzzle {
 
         }
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Wordle" + (this.hardMode ? " (hard mode)" : ""),
-            "⬛⬛⬛⬛⬛\n".repeat(MAX_GUESSES) + "Reply to this message with a 5-letter word to guess it!", EmbedType.RICH, null, 0x5865F2, null, null, null,
-            null, null, null, null))).queue();
+            Emojis.BLACK_LARGE_SQUARE.getFormatted().repeat(5) + "\n".repeat(MAX_GUESSES) + "Reply to this message with a 5-letter word to guess it!", EmbedType.RICH,
+            null, 0x5865F2, null, null, null, null, null, null, null))).queue();
 
     }
 
@@ -179,7 +180,7 @@ public class Wordle extends Puzzle {
                 builder.append(this.formatGuess(guess)).append("\n");
 
         }
-        builder.append("⬛⬛⬛⬛⬛\n".repeat(MAX_GUESSES - this.guesses.size()));
+        builder.append(Emojis.BLACK_LARGE_SQUARE.getFormatted().repeat(5)).append("\n".repeat(MAX_GUESSES - this.guesses.size()));
         if(this.isSolved()) builder.append(bold(this.getFinalComment()));
         else if(this.isLost()) builder.append(bold("Failed! The answer was " + this.answer.toUpperCase()));
         else builder.append("Reply to this message with a 5-letter word to guess it!");
@@ -196,9 +197,9 @@ public class Wordle extends Puzzle {
 
             builder.append(switch(color) {
 
-                case GREEN -> "\uD83D\uDFE9";
-                case YELLOW -> "\uD83D\uDFE8";
-                case NONE -> "⬛";
+                case GREEN -> Emojis.LARGE_GREEN_SQUARE.getFormatted();
+                case YELLOW -> Emojis.LARGE_YELLOW_SQUARE.getFormatted();
+                case NONE -> Emojis.BLACK_LARGE_SQUARE.getFormatted();
 
             });
 

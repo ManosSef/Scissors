@@ -98,11 +98,8 @@ public class TicTacToeEngine {
     private static char[][] deepCopyOf(char[][] original) {
 
         char[][] result = new char[original.length][];
-        for(int i = 0; i < original.length; i++) {
-
+        for(int i = 0; i < original.length; i++)
             result[i] = Arrays.copyOf(original[i], original[i].length);
-
-        }
         return result;
 
     }

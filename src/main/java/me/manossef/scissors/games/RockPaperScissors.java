@@ -1,6 +1,8 @@
 package me.manossef.scissors.games;
 
+import me.manossef.scissors.Emojis;
 import me.manossef.scissors.Scissors;
+import net.dv8tion.jda.api.components.MessageTopLevelComponent;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.*;
@@ -13,6 +15,10 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
 public class RockPaperScissors extends Game {
+
+    private static final MessageTopLevelComponent BUTTONS = ActionRow.of(
+        Button.success("20", Emojis.ROCK.getFormatted() + " Rock"), Button.success("21", Emojis.ROLL_OF_PAPER.getFormatted() + " Paper"), Button.success("22", Emojis.SCISSORS.getFormatted() + " Scissors")
+    );
 
     private Message message;
     private Move player1Move;
@@ -31,7 +37,7 @@ public class RockPaperScissors extends Game {
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(
             new MessageEmbed(null, "Rock paper scissors game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), "Choose your move:", EmbedType.RICH, null, 0xDE6868,
                 null, null, null, null, null, null, null)
-        )).addComponents(ActionRow.of(Button.success("20", "\uD83E\uDEA8 Rock"), Button.success("21", "\uD83E\uDDFB Paper"), Button.success("22", "✂️ Scissors"))).queue();
+        )).addComponents(BUTTONS).queue();
 
     }
 
@@ -121,7 +127,7 @@ public class RockPaperScissors extends Game {
         this.message.editMessage(MessageEditData.fromEmbeds(
             new MessageEmbed(null, "Rock paper scissors game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), description.toString(), EmbedType.RICH, null, 0xDE6868,
                 null, null, null, null, null, null, null)
-        )).setComponents(ActionRow.of(Button.success("20", "\uD83E\uDEA8 Rock"), Button.success("21", "\uD83E\uDDFB Paper"), Button.success("22", "✂️ Scissors"))).queue();
+        )).setComponents(BUTTONS).queue();
 
     }
 

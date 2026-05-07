@@ -1,16 +1,12 @@
 package me.manossef.scissors.listeners;
 
-import me.manossef.scissors.DevGuild;
-import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
-import me.manossef.scissors.Util;
+import me.manossef.scissors.*;
 import me.manossef.scissors.config.Configuration;
 import me.manossef.scissors.config.Option;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.attribute.ICategorizableChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -41,7 +37,7 @@ public class MessageListeners extends ListenerAdapter {
         else if(this.promptsScissors(message, config))
             replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES, "scissors");
         if(message.getContentRaw().toLowerCase().contains("paper") && config.getOptionForChannel(Option.REACT_TO_PAPER, Boolean.class, message.getChannel()))
-            message.addReaction(Emoji.fromUnicode("✂️")).onErrorMap(e -> null).queue();
+            message.addReaction(Emojis.SCISSORS).onErrorMap(e -> null).queue();
 
     }
 
@@ -49,7 +45,7 @@ public class MessageListeners extends ListenerAdapter {
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
 
         if(event.getMessageAuthorIdLong() != Scissors.DISCORD_API.getSelfUser().getIdLong()) return;
-        if(!event.getEmoji().getName().equals("\uD83D\uDDD1\uFE0F")) return;
+        if(!event.getEmoji().equals(Emojis.WASTEBASKET)) return;
         if(event.getUserIdLong() != SharedConstants.MY_USER_ID) return;
         event.retrieveMessage().onSuccess(message -> message.delete().queue()).queue();
 

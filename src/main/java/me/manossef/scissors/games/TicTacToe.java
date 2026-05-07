@@ -1,5 +1,6 @@
 package me.manossef.scissors.games;
 
+import me.manossef.scissors.Emojis;
 import me.manossef.scissors.Scissors;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -8,8 +9,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
-import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
@@ -21,7 +20,6 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
 public class TicTacToe extends Game {
 
-    private static final CustomEmoji TICTACTOE_EMOJI = Emoji.fromCustom("tictactoe", 1436395840276135936L, true);
     private Message message;
     private char[][] grid;
     private boolean player1MovedLast;
@@ -41,9 +39,9 @@ public class TicTacToe extends Game {
             new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), this.getGridFormat(), EmbedType.RICH, null, 0xDE6868,
                 null, null, null, null, null, null, null)
         )).addComponents(
-            ActionRow.of(Button.success("100", TICTACTOE_EMOJI), Button.success("101", TICTACTOE_EMOJI), Button.success("102", TICTACTOE_EMOJI)),
-            ActionRow.of(Button.success("110", TICTACTOE_EMOJI), Button.success("111", TICTACTOE_EMOJI), Button.success("112", TICTACTOE_EMOJI)),
-            ActionRow.of(Button.success("120", TICTACTOE_EMOJI), Button.success("121", TICTACTOE_EMOJI), Button.success("122", TICTACTOE_EMOJI))
+            ActionRow.of(Button.success("100", Emojis.TICTACTOE), Button.success("101", Emojis.TICTACTOE), Button.success("102", Emojis.TICTACTOE)),
+            ActionRow.of(Button.success("110", Emojis.TICTACTOE), Button.success("111", Emojis.TICTACTOE), Button.success("112", Emojis.TICTACTOE)),
+            ActionRow.of(Button.success("120", Emojis.TICTACTOE), Button.success("121", Emojis.TICTACTOE), Button.success("122", Emojis.TICTACTOE))
         ).queue();
 
     }
@@ -120,9 +118,9 @@ public class TicTacToe extends Game {
             new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), this.getGridFormat() + statusText, EmbedType.RICH, null, 0xDE6868,
                 null, null, null, null, null, null, null)
         )).setComponents(
-            ActionRow.of(Button.success("100", TICTACTOE_EMOJI).withDisabled(grid[0][0] != ' '), Button.success("101", TICTACTOE_EMOJI).withDisabled(grid[0][1] != ' '), Button.success("102", TICTACTOE_EMOJI).withDisabled(grid[0][2] != ' ')),
-            ActionRow.of(Button.success("110", TICTACTOE_EMOJI).withDisabled(grid[1][0] != ' '), Button.success("111", TICTACTOE_EMOJI).withDisabled(grid[1][1] != ' '), Button.success("112", TICTACTOE_EMOJI).withDisabled(grid[1][2] != ' ')),
-            ActionRow.of(Button.success("120", TICTACTOE_EMOJI).withDisabled(grid[2][0] != ' '), Button.success("121", TICTACTOE_EMOJI).withDisabled(grid[2][1] != ' '), Button.success("122", TICTACTOE_EMOJI).withDisabled(grid[2][2] != ' '))
+            ActionRow.of(Button.success("100", Emojis.TICTACTOE).withDisabled(grid[0][0] != ' '), Button.success("101", Emojis.TICTACTOE).withDisabled(grid[0][1] != ' '), Button.success("102", Emojis.TICTACTOE).withDisabled(grid[0][2] != ' ')),
+            ActionRow.of(Button.success("110", Emojis.TICTACTOE).withDisabled(grid[1][0] != ' '), Button.success("111", Emojis.TICTACTOE).withDisabled(grid[1][1] != ' '), Button.success("112", Emojis.TICTACTOE).withDisabled(grid[1][2] != ' ')),
+            ActionRow.of(Button.success("120", Emojis.TICTACTOE).withDisabled(grid[2][0] != ' '), Button.success("121", Emojis.TICTACTOE).withDisabled(grid[2][1] != ' '), Button.success("122", Emojis.TICTACTOE).withDisabled(grid[2][2] != ' '))
         ).queue();
         if(status != Status.ONGOING) this.end();
 
@@ -144,9 +142,9 @@ public class TicTacToe extends Game {
 
         return switch(ch) {
 
-            case 'X' -> Emoji.fromCustom("x_", 1440259387934642284L, false).getAsMention();
-            case 'O' -> Emoji.fromCustom("o_", 1440259386306990181L, false).getAsMention();
-            case ' ' -> "⬛";
+            case 'X' -> Emojis.TICTACTOE_X.getFormatted();
+            case 'O' -> Emojis.TICTACTOE_O.getFormatted();
+            case ' ' -> Emojis.BLACK_LARGE_SQUARE.getFormatted();
             default -> throw new IllegalArgumentException("Tic-tac-toe can only use X, O and space");
 
         };

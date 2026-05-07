@@ -1,5 +1,7 @@
 package me.manossef.scissors.listeners;
 
+import me.manossef.scissors.Emojis;
+
 import java.util.List;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
@@ -29,7 +31,7 @@ public class Messages {
         "This isn't #counting, is it?",
         "Oh my goodness! Is that... a... a... " + italics("number") + "?",
         "Is that your age?",
-        "\uD83D\uDE21",
+        Emojis.POUTING_FACE.getFormatted(),
         "Don't you have anything better to do?",
         "NO COUNTING NO COUNTING NO COUNTING NO COUNTING",
         "YOU HAVE TO BE RAGEBAITING RIGHT NOW",
@@ -69,7 +71,7 @@ public class Messages {
         "We need to make more counting threads",
         "YES! MORE COUNTING!",
         "I'm so proud right now",
-        "\uD83D\uDE0D",
+        Emojis.SMILING_FACE_WITH_HEART_EYES.getFormatted(),
         "YAY NUMBERS"
     );
     static final List<String> SCISSORS_RESPONSES = List.of(
