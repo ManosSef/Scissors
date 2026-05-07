@@ -107,6 +107,12 @@ public class Util {
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
             Scissors.DISCORD_API.getSelfUser().getId()
         );
+        if(SharedConstants.IS_STAGING) {
+
+            LOGGER.info("Issue that would be created: {}", issue);
+            return;
+
+        }
         if(issue.id() == null) {
 
             StringBuilder builder = new StringBuilder();
