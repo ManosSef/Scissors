@@ -51,6 +51,7 @@ public class Scissors {
                 checkedIssues = new JiraCheckLoop.CheckedIssues(new ArrayList<>(), new ArrayList<>());
             if(SharedConstants.IS_STAGING) LOGGER.info("Retrieved previous checked issues: {}", checkedIssues);
             Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues));
+            jiraCheckLoop.setName("JiraCheckLoop");
             jiraCheckLoop.start();
 
         } catch(InterruptedException e) {
