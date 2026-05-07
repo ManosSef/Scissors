@@ -67,7 +67,7 @@ public class Wordle extends Puzzle {
 
         }
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Wordle" + (this.hardMode ? " (hard mode)" : ""),
-            Emojis.BLACK_LARGE_SQUARE.getFormatted().repeat(5) + "\n".repeat(MAX_GUESSES) + "Reply to this message with a 5-letter word to guess it!", EmbedType.RICH,
+            (Emojis.BLACK_LARGE_SQUARE.getFormatted().repeat(5) + "\n").repeat(MAX_GUESSES) + "Reply to this message with a 5-letter word to guess it!", EmbedType.RICH,
             null, 0x5865F2, null, null, null, null, null, null, null))).queue();
 
     }
@@ -180,7 +180,7 @@ public class Wordle extends Puzzle {
                 builder.append(this.formatGuess(guess)).append("\n");
 
         }
-        builder.append(Emojis.BLACK_LARGE_SQUARE.getFormatted().repeat(5)).append("\n".repeat(MAX_GUESSES - this.guesses.size()));
+        builder.append((Emojis.BLACK_LARGE_SQUARE.getFormatted().repeat(5) + "\n").repeat(MAX_GUESSES - this.guesses.size()));
         if(this.isSolved()) builder.append(bold(this.getFinalComment()));
         else if(this.isLost()) builder.append(bold("Failed! The answer was " + this.answer.toUpperCase()));
         else builder.append("Reply to this message with a 5-letter word to guess it!");
