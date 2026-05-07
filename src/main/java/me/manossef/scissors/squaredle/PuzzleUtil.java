@@ -42,7 +42,7 @@ public class PuzzleUtil {
                 .append(puzzle.wordOfTheDay().term().length())
                 .append(" letters)\n");
         if(puzzle.difficulty() != null)
-            builder.append("Difficulty: ").append(puzzle.difficulty()).append(" ").append(Emojis.WHITE_MEDIUM_STAR).append("\n");
+            builder.append("Difficulty: ").append(puzzle.difficulty()).append(" ").append(Emojis.WHITE_MEDIUM_STAR.getFormatted()).append("\n");
         if(puzzle.credits() != null) {
 
             if(puzzle.credits().author() != null)
