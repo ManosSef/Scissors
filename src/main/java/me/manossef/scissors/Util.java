@@ -1,15 +1,11 @@
 package me.manossef.scissors;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonWriter;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.io.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class Util {
@@ -31,44 +27,6 @@ public class Util {
             return message.substring(0, Message.MAX_CONTENT_LENGTH - 4) + "...`";
         else
             return message.substring(0, Message.MAX_CONTENT_LENGTH - 3) + "...";
-
-    }
-
-    public static void writeValue(JsonWriter out, JsonElement value) throws IOException {
-
-        if(value == null || value.isJsonNull())
-            out.nullValue();
-        else if(value.isJsonPrimitive()) {
-
-            JsonPrimitive primitive = value.getAsJsonPrimitive();
-            if(primitive.isNumber())
-                out.value(primitive.getAsNumber());
-            else if(primitive.isBoolean())
-                out.value(primitive.getAsBoolean());
-            else
-                out.value(primitive.getAsString());
-
-        } else if(value.isJsonArray()) {
-
-            out.beginArray();
-            for(JsonElement element : value.getAsJsonArray())
-                writeValue(out, element);
-            out.endArray();
-
-        } else {
-
-            if(!value.isJsonObject())
-                throw new IllegalArgumentException("Couldn't write " + value.getClass());
-            out.beginObject();
-            for(Map.Entry<String, JsonElement> entry : value.getAsJsonObject().entrySet()) {
-
-                out.name(entry.getKey());
-                writeValue(out, entry.getValue());
-
-            }
-            out.endObject();
-
-        }
 
     }
 
@@ -98,9 +56,8 @@ public class Util {
         try {
 
             new File(SharedConstants.FILE_DIRECTORY).mkdirs();
-            JsonWriter writer = new JsonWriter(new FileWriter(SharedConstants.FILE_DIRECTORY + fileName));
-            writer.setIndent("  ");
-            writeValue(writer, Scissors.GSON.toJsonTree(object));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(SharedConstants.FILE_DIRECTORY + fileName));
+            writer.write(Scissors.GSON.toJson(object));
             writer.close();
 
         } catch(IOException e) {
