@@ -20,20 +20,16 @@ import java.util.List;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class SuggestCommand {
-
     private static final DynamicNCommandExceptionType ISSUE_CREATION_FAILED = new DynamicNCommandExceptionType(errors -> {
-
         StringBuilder builder = new StringBuilder();
         for(Object error : errors) builder.append("\n- ").append(error);
         return new LiteralMessage("The following error(s) occurred while trying to create the issue: " + builder);
-
     });
     private static final SimpleCommandExceptionType NO_ISSUE_TYPE = new SimpleCommandExceptionType(new LiteralMessage(
         "Please add " + monospace("bug") + ", " + monospace("feature") + " or " + monospace("improvement") + " after " + monospace(SharedConstants.COMMAND_PREFIX + "suggest") + " depending on what you're suggesting"
     ));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         String baseLiteral = "suggest";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendIssueTypeHint())
@@ -66,59 +62,39 @@ public class SuggestCommand {
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " bug <summary>"),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " feature <summary>"),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " improvement <summary>")));
-
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueType(String literal, IssueType type) {
-
         return Commands.literal(literal)
             .then(Commands.argument("summary", StringArgumentType.greedyString())
                 .executes(context -> {
-
                     try {
-
                         return createIssue(context.getSource(), type, context.getArgument("summary", String.class));
-
                     } catch(UnirestException e) {
-
                         throw Commands.IO_EXCEPTION.create();
-
                     }
-
                 })
             );
-
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueTypeWithUser(String literal, IssueType type) {
-
         return Commands.literal(literal)
             .then(Commands.argument("summary", StringArgumentType.greedyString())
                 .executes(context -> {
-
                     try {
-
                         return createIssue(context.getSource(), type, context.getArgument("summary", String.class), context.getArgument("reporter", User.class));
-
                     } catch(UnirestException e) {
-
                         throw Commands.IO_EXCEPTION.create();
-
                     }
-
                 })
             );
-
     }
 
     private static int createIssue(ChatCommandSource source, IssueType type, String summary) throws CommandSyntaxException {
-
         return createIssue(source, type, summary, source.user());
-
     }
 
     private static int createIssue(ChatCommandSource source, IssueType type, String summary, User user) throws CommandSyntaxException {
-
         if(user == null) throw Commands.USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
@@ -128,26 +104,20 @@ public class SuggestCommand {
             user.getId()
         );
         if(issue.id() == null) {
-
             List<String> errors = new ArrayList<>();
             if(issue.errorMessages() != null) errors.addAll(Arrays.stream(issue.errorMessages()).toList());
             if(issue.errors() != null) errors.addAll(issue.errors().values());
             throw ISSUE_CREATION_FAILED.create(null, errors.toArray());
-
         }
         source.sendSuccess("Successfully created issue " + issue.key() + ". Thanks for the feedback!");
         return 1;
-
     }
 
     private static int sendIssueTypeHint() throws CommandSyntaxException {
-
         throw NO_ISSUE_TYPE.create();
-
     }
 
     private enum IssueType {
-
         BUG(SharedConstants.ISSUETYPE_BUG_ID),
         FEATURE(SharedConstants.ISSUETYPE_FEATURE_ID),
         IMPROVEMENT(SharedConstants.ISSUETYPE_IMPROVEMENT_ID),
@@ -156,11 +126,7 @@ public class SuggestCommand {
         private final String id;
 
         IssueType(String id) {
-
             this.id = id;
-
         }
-
     }
-
 }

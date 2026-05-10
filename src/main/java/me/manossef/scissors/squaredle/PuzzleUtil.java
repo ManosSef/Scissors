@@ -9,26 +9,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PuzzleUtil {
-
     public static String getMessageText(PuzzleData puzzle) {
-
         StringBuilder builder = new StringBuilder();
         for(String row : puzzle.board()) {
-
             for(char letter : row.toCharArray())
                 builder.append(getEmojiForLetter(letter).getFormatted()).append(" ");
             builder.append("\n");
-
         }
         builder.append("Word count: ").append(puzzle.words().length).append(" (");
         Map<Integer, Integer> lengthToCount = getLengthToCount(puzzle.words());
         StringBuilder wordCount = new StringBuilder();
         for(int i = 4; i < 33; i++) {
-
             Integer count = lengthToCount.get(i);
             if(count == null) continue;
             wordCount.append(count).append("x").append(i).append(", ");
-
         }
         if(wordCount.length() > 2) wordCount.delete(wordCount.length() - 2, wordCount.length());
         builder.append(wordCount)
@@ -44,24 +38,19 @@ public class PuzzleUtil {
         if(puzzle.difficulty() != null)
             builder.append("Difficulty: ").append(puzzle.difficulty()).append(" ").append(Emojis.WHITE_MEDIUM_STAR.getFormatted()).append("\n");
         if(puzzle.credits() != null) {
-
             if(puzzle.credits().author() != null)
                 builder.append("Puzzle created by ").append(puzzle.credits().author());
             else if(puzzle.credits().sponsor() != null)
                 builder.append("Puzzle sponsored by ").append(puzzle.credits().sponsor());
             else
                 builder.delete(wordCount.length() - 2, wordCount.length());
-
         } else
             builder.delete(wordCount.length() - 2, wordCount.length());
         return builder.toString();
-
     }
 
     private static Emoji getEmojiForLetter(char letter) {
-
         return switch(letter) {
-
             case 'a', 'A' -> Emojis.SQUAREDLE_A;
             case 'b', 'B' -> Emojis.SQUAREDLE_B;
             case 'c', 'C' -> Emojis.SQUAREDLE_C;
@@ -92,59 +81,44 @@ public class PuzzleUtil {
             case '.' -> Emojis.SQUAREDLE_PERIOD;
             case '↑' -> Emojis.SQUAREDLE_UP;
             default -> Emojis.SQUAREDLE_BLANK;
-
         };
-
     }
 
     private static Map<Integer, Integer> getLengthToCount(String[] words) {
-
         Map<Integer, Integer> lengthToCount = new HashMap<>();
         for(String word : words) {
-
             int length = word.length();
             if(!lengthToCount.containsKey(length)) lengthToCount.put(length, 0);
             lengthToCount.put(length, lengthToCount.get(length) + 1);
-
         }
         return lengthToCount;
-
     }
 
     public static String decryptString(String encrypted) {
-
         String[] split = encrypted.split("");
         Object[] decrypted = Arrays.stream(split).map(PuzzleUtil::decipherChar).toArray();
         String data = join(decrypted);
         byte[] decoded = Base64.getDecoder().decode(data);
         return new String(decoded);
-
     }
 
     private static String decipherChar(String data) {
-
         String[] key = "5pyf0gcrl1a9oe3ui8d2htn67sqjkxbmw4vzPYFGCRLAOEUIDHTNSQJKXBMWVZ".split("");
         int index = indexOf(key, data);
         return -1 == index ? data : key[(index - 12 + key.length) % key.length];
-
     }
 
     private static <T> int indexOf(T[] array, T toFind) {
-
         for(int i = 0; i < array.length; i++)
             if(toFind.equals(array[i]))
                 return i;
         return -1;
-
     }
 
     private static <T> String join(T[] array) {
-
         StringBuilder builder = new StringBuilder();
         for(T t : array)
             builder.append(t.toString());
         return builder.toString();
-
     }
-
 }

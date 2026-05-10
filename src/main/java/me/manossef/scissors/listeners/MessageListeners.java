@@ -22,7 +22,6 @@ public class MessageListeners extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-
         Message message = event.getMessage();
         if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         String content = message.getContentRaw();
@@ -38,23 +37,18 @@ public class MessageListeners extends ListenerAdapter {
             replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES, "scissors");
         if(message.getContentRaw().toLowerCase().contains("paper") && config.getOptionForChannel(Option.REACT_TO_PAPER, Boolean.class, message.getChannel()))
             message.addReaction(Emojis.SCISSORS).onErrorMap(e -> null).queue();
-
     }
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
-
         if(event.getMessageAuthorIdLong() != Scissors.DISCORD_API.getSelfUser().getIdLong()) return;
         if(!event.getEmoji().equals(Emojis.WASTEBASKET)) return;
         if(event.getUserIdLong() != SharedConstants.MY_USER_ID) return;
         event.retrieveMessage().onSuccess(message -> message.delete().queue()).queue();
-
     }
 
     private void replyWithRandomMessage(Message message, List<String> possibleMessages, String responseType) {
-
         if(message.getChannel().canTalk()) {
-
             message.getChannel().sendMessage(possibleMessages.get(Scissors.RANDOM.nextInt(possibleMessages.size())).formatted(message.getAuthor().getAsMention()))
                 .setMessageReference(message)
                 .mentionRepliedUser(false)
@@ -62,43 +56,34 @@ public class MessageListeners extends ListenerAdapter {
                 .queue();
             DevGuild.logResponse("Posted a " + responseType + " response to " + Util.getMessageLink(message));
             return;
-
         }
         DevGuild.logResponse("Could not post a " + responseType + " response to " + Util.getMessageLink(message) + "; no permission to talk");
-
     }
 
     private boolean promptsGPPCT(Message message, Configuration config) {
-
         MessageChannelUnion channel = message.getChannel();
         return message.getContentRaw().matches("^[0-9]+$")
             && channel.canTalk()
             && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel)
             && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.GPPCT_RESPONSE_CHANCE, Integer.class, channel);
-
     }
 
     private boolean promptsPing(Message message, Configuration config) {
-
         MessageChannelUnion channel = message.getChannel();
         return message.getContentRaw().contains(Scissors.DISCORD_API.getSelfUser().getAsMention())
             && channel.canTalk()
             && config.getOptionForChannel(Option.PING_RESPONSES, Boolean.class, channel);
-
     }
 
     private boolean promptsScissors(Message message, Configuration config) {
-
         MessageChannelUnion channel = message.getChannel();
         return message.getContentRaw().toLowerCase().contains("scissors")
             && channel.canTalk()
             && config.getOptionForChannel(Option.SCISSORS_RESPONSES, Boolean.class, channel)
             && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.SCISSORS_RESPONSE_CHANCE, Integer.class, channel);
-
     }
 
     private boolean promptsMeme(Message message, Configuration config) {
-
         Message referencedMessage = message.getReferencedMessage();
         if(referencedMessage == null) return false;
         MessageChannelUnion channel = message.getChannel();
@@ -108,21 +93,15 @@ public class MessageListeners extends ListenerAdapter {
             && message.getContentRaw().toLowerCase().replaceAll("[^a-z]+", "").equals("yes")
             && channel.canTalk()
             && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel);
-
     }
 
     public static boolean isDisallowedForGPPCT(Channel channel) {
-
         return channel.getName().toLowerCase().contains("counting") || channel.getName().toLowerCase().contains("spam") ||
             (channel instanceof ICategorizableChannel iCategorizableChannel && iCategorizableChannel.getParentCategory() != null && iCategorizableChannel.getParentCategory().getName().toLowerCase().contains("counting"));
-
     }
 
     private static boolean isApril1st() {
-
         LocalDate now = LocalDate.now();
         return now.getMonth().equals(Month.APRIL) && now.getDayOfMonth() == 1;
-
     }
-
 }

@@ -3,7 +3,6 @@ package me.manossef.scissors;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 public class Emojis {
-
     public static final Emoji POUTING_FACE = Emoji.fromUnicode("U+1F621");
     public static final Emoji SMILING_FACE_WITH_HEART_EYES = Emoji.fromUnicode("U+1F60D");
     public static final Emoji SCISSORS = Emoji.fromUnicode("U+2702 U+FE0F");
@@ -55,5 +54,4 @@ public class Emojis {
     public static final Emoji SQUAREDLE_PERIOD = Emoji.fromCustom("squaredlePeriod", 1434216521626026166L, false);
     public static final Emoji SQUAREDLE_UP = Emoji.fromCustom("squaredleUp", 1434228465527296123L, false);
     public static final Emoji SQUAREDLE_BLANK = Emoji.fromCustom("squaredleBlank", 1434228466999492770L, false);
-
 }

@@ -12,11 +12,9 @@ import me.manossef.scissors.puzzles.Hangman;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class HangmanCommand {
-
     private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start hangman games in this session"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         String baseLiteral = "hangman";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> startHangman(context.getSource(), Hangman.Difficulty.NORMAL))
@@ -39,20 +37,14 @@ public class HangmanCommand {
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " hard"),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " impossible")));
-
     }
 
     private static int startHangman(ChatCommandSource source, Hangman.Difficulty difficulty) throws CommandSyntaxException {
-
         if(Hangman.canStart()) {
-
             source.sendSuccess("Starting a game of hangman of " + difficulty.toString().toLowerCase() + " difficulty");
             new Hangman(source.commandMessage().getChannel(), difficulty);
             return 1;
-
         }
         throw CANNOT_START.create();
-
     }
-
 }

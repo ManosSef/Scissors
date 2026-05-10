@@ -8,31 +8,21 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 
 public class OptionAdapter extends TypeAdapter<Option> {
-
     public Option read(JsonReader reader) throws IOException {
-
         if(reader.peek() == JsonToken.NULL) {
-
             reader.nextNull();
             return null;
-
         }
         String name = reader.nextString();
         return Option.fromName(name);
-
     }
 
     public void write(JsonWriter writer, Option value) throws IOException {
-
         if(value == null) {
-
             writer.nullValue();
             return;
-
         }
         String name = value.properties().getName();
         writer.value(name);
-
     }
-
 }

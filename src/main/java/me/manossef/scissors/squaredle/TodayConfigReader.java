@@ -8,9 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TodayConfigReader {
-
     public static TodayConfig readTodayPuzzleConfig() {
-
         String config = getConfig();
         if(config == null) return null;
         Pattern pattern = Pattern.compile("const\\s+gTodayDateStr\\s*=\\s*'(.*?)';", Pattern.DOTALL);
@@ -26,16 +24,12 @@ public class TodayConfigReader {
         String json = jsonConst.substring(jsonConst.indexOf("=") + 1).trim();
         PuzzleConfig puzzles = Scissors.GSON.fromJson(json, PuzzleConfig.class);
         return new TodayConfig(puzzles.puzzles(), currentDate);
-
     }
 
     private static String getConfig() {
-
         return Unirest.get("https://squaredle.app/api/today-puzzle-config.js").asString().getBody();
-
     }
 
     private record PuzzleConfig(Map<String, PuzzleData> puzzles) {
     }
-
 }

@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Scissors {
-
     public static final JDA DISCORD_API = JDABuilder.createDefault(SharedConstants.TOKEN)
         .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_PRESENCES)
         .addEventListeners(new Startup(), new CommandListener(), new MessageListeners())
@@ -33,15 +32,11 @@ public class Scissors {
     private static Configuration config;
 
     public static void main(String[] args) {
-
         try {
-
             DISCORD_API.awaitReady();
             Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
-
                 LOGGER.error("Uncaught exception thrown!", exception);
                 Util.createIssueForException(exception);
-
             });
             config = getConfigFromFile();
             if(config == null)
@@ -53,43 +48,28 @@ public class Scissors {
             if(SharedConstants.IS_STAGING) LOGGER.info("Retrieved previous checked issues: {}", checkedIssues);
             Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues), "JiraCheckLoop");
             jiraCheckLoop.start();
-
         } catch(InterruptedException e) {
-
             LOGGER.error("The thread was interrupted!");
-
         }
-
     }
 
     public static Configuration getConfiguration() {
-
         return config;
-
     }
 
     private static Configuration getConfigFromFile() {
-
         return Util.getJsonFromFile(SharedConstants.CONFIG_FILE_NAME, Configuration.class);
-
     }
 
     private static JiraCheckLoop.CheckedIssues getCheckedIssues() {
-
         return Util.getJsonFromFile(SharedConstants.CHECKED_ISSUES_FILE_NAME, JiraCheckLoop.CheckedIssues.class);
-
     }
 
     public static void saveConfiguration() {
-
         Util.saveJsonToFile(SharedConstants.CONFIG_FILE_NAME, config);
-
     }
 
     public static void saveCheckedIssues(JiraCheckLoop.CheckedIssues checkedIssues) {
-
         Util.saveJsonToFile(SharedConstants.CHECKED_ISSUES_FILE_NAME, checkedIssues);
-
     }
-
 }

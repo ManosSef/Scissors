@@ -9,9 +9,7 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.italics;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class InfoCommand {
-
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         String baseLiteral = "info";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendGenericInfo(context.getSource()))
@@ -33,11 +31,9 @@ public class InfoCommand {
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " devserver"),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " github")));
-
     }
 
     private static int sendGenericInfo(ChatCommandSource source) {
-
         source.sendSuccess(String.format("""
                 Hi! I'm a Discord bot that can do one or two things. Mostly cutting paper.
                 
@@ -54,21 +50,15 @@ public class InfoCommand {
             monospace(SharedConstants.COMMAND_PREFIX + "suggest feature <summary>"),
             monospace(SharedConstants.COMMAND_PREFIX + "suggest improvement <summary>")));
         return 1;
-
     }
 
     private static int sendDevServer(ChatCommandSource source) {
-
         source.sendSuccess("My development server can be joined at https://discord.gg/FjRTdwBdM8");
         return 1;
-
     }
 
     private static int sendGithub(ChatCommandSource source) {
-
         source.sendSuccess("The GitHub repository where my code is hosted can be found at https://github.com/ManosSef/Scissors");
         return 1;
-
     }
-
 }

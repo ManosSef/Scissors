@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
 public class RockPaperScissors extends Game {
-
     private static final MessageTopLevelComponent BUTTONS = ActionRow.of(
         Button.success("20", Emojis.ROCK.getFormatted() + " Rock"), Button.success("21", Emojis.ROLL_OF_PAPER.getFormatted() + " Paper"), Button.success("22", Emojis.SCISSORS.getFormatted() + " Scissors")
     );
@@ -25,31 +24,24 @@ public class RockPaperScissors extends Game {
     private Move player2Move;
 
     public RockPaperScissors(User player1, User player2, MessageChannel channel) {
-
         super(player1, player2, channel);
         Scissors.DISCORD_API.addEventListener(this);
         this.start();
-
     }
 
     public void start() {
-
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(
             new MessageEmbed(null, "Rock paper scissors game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), "Choose your move:", EmbedType.RICH, null, 0xDE6868,
                 null, null, null, null, null, null, null)
         )).addComponents(BUTTONS).queue();
-
     }
 
     public void end() {
-
         Scissors.DISCORD_API.removeEventListener(this);
-
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-
         if(this.message != null) return;
         Message message = event.getMessage();
         if(message.getAuthor().getIdLong() != Scissors.DISCORD_API.getSelfUser().getIdLong()) return;
@@ -58,92 +50,70 @@ public class RockPaperScissors extends Game {
         if(title == null) return;
         if(!title.contains("Rock paper scissors")) return;
         this.message = message;
-
     }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-
         if(this.message == null) return;
         Message message = event.getMessage();
         if(this.message.getIdLong() != message.getIdLong()) return;
         event.getInteraction().deferEdit().queue();
         this.makeMove(event.getInteraction().getMember(), switch(event.getCustomId()) {
-
             case "20" -> Move.ROCK;
             case "21" -> Move.PAPER;
             case "22" -> Move.SCISSORS;
             default -> null;
-
         });
-
     }
 
     private void makeMove(Member member, Move move) {
-
         if(move == null) return;
         if(member.getIdLong() == this.getPlayer1().getIdLong()) {
-
             if(this.player1Move != null) return;
             this.player1Move = move;
-
         } else if(member.getIdLong() == this.getPlayer2().getIdLong()) {
-
             if(this.player2Move != null) return;
             this.player2Move = move;
-
         } else return;
         this.update();
-
     }
 
     private void update() {
-
         StringBuilder description = new StringBuilder();
         Status status = this.getStatus();
         if(status == Status.ONGOING) {
-
             if(player1Move != null)
                 description.append(bold(this.getPlayer1().getAsMention() + " has chosen their move!")).append("\n");
             if(player2Move != null)
                 description.append(bold(this.getPlayer2().getAsMention() + " has chosen their move!")).append("\n");
             description.append("Choose your move:");
-
         } else {
-
             StringBuilder result = new StringBuilder();
             result.append(this.getPlayer1().getAsMention()).append(" has chosen ").append(this.player1Move.getName()).append(" and ").append(this.getPlayer2().getAsMention()).append(" has chosen ").append(this.player2Move.getName()).append("!\n");
             switch(status) {
-
                 case PLAYER_1_WON -> result.append(this.getPlayer1().getAsMention()).append(" won!");
                 case PLAYER_2_WON -> result.append(this.getPlayer2().getAsMention()).append(" won!");
                 case DRAW -> result.append("It's a tie!");
-
             }
             description.append(bold(result.toString()));
             this.end();
-
         }
         this.message.editMessage(MessageEditData.fromEmbeds(
             new MessageEmbed(null, "Rock paper scissors game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), description.toString(), EmbedType.RICH, null, 0xDE6868,
                 null, null, null, null, null, null, null)
         )).setComponents(BUTTONS).queue();
-
     }
 
     private Status getStatus() {
-
         if(player1Move == null || player2Move == null) return Status.ONGOING;
         if(player1Move == player2Move) return Status.DRAW;
         if((player1Move == Move.ROCK && player2Move == Move.SCISSORS)
             || (player1Move == Move.SCISSORS && player2Move == Move.PAPER)
             || (player1Move == Move.PAPER && player2Move == Move.ROCK)) return Status.PLAYER_1_WON;
         return Status.PLAYER_2_WON;
-
     }
 
     public enum Move {
-
         ROCK("rock"),
         PAPER("paper"),
         SCISSORS("scissors");
@@ -151,17 +121,11 @@ public class RockPaperScissors extends Game {
         private final String name;
 
         Move(String name) {
-
             this.name = name;
-
         }
 
         public String getName() {
-
             return this.name;
-
         }
-
     }
-
 }

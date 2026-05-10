@@ -15,12 +15,10 @@ import net.dv8tion.jda.api.entities.User;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class TicTacToeCommand {
-
     private static final SimpleCommandExceptionType SAME_USER = new SimpleCommandExceptionType(new LiteralMessage("You cannot play tic-tac-toe with yourself"));
     private static final SimpleCommandExceptionType NO_BOTS = new SimpleCommandExceptionType(new LiteralMessage("You cannot play tic-tac-toe with that bot"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         String baseLiteral = "tictactoe";
         dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.literal("bot")
@@ -42,19 +40,15 @@ public class TicTacToeCommand {
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " bot"),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <opponent>"),
             monospace("<opponent>")));
-
     }
 
     private static int startBotTicTacToeGame(ChatCommandSource source) {
-
         source.sendSuccess("Starting a tic-tac-toe game with the bot");
         new TicTacToe(source.user(), Scissors.DISCORD_API.getSelfUser(), source.commandMessage().getChannel());
         return 1;
-
     }
 
     private static int startTicTacToeGame(ChatCommandSource source, User user) throws CommandSyntaxException {
-
         if(user == null) throw Commands.USER_NOT_FOUND.create();
         if(user.isBot() && user.getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong())
             return startBotTicTacToeGame(source);
@@ -63,7 +57,5 @@ public class TicTacToeCommand {
         source.sendSuccess("Starting a tic-tac-toe game with " + user.getAsMention());
         new TicTacToe(source.user(), user, source.commandMessage().getChannel());
         return 1;
-
     }
-
 }

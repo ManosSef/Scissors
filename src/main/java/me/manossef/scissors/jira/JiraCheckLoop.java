@@ -20,18 +20,13 @@ public class JiraCheckLoop implements Runnable {
     private CheckedIssues checkedIssues;
 
     public JiraCheckLoop(CheckedIssues checkedIssues) {
-
         this.checkedIssues = checkedIssues;
-
     }
 
     @Override
     public void run() {
-
         while(true) {
-
             try {
-
                 CheckedIssues newChecked = this.checkIssues();
                 List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
                 uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
@@ -46,23 +41,15 @@ public class JiraCheckLoop implements Runnable {
                 this.checkedIssues = newChecked;
                 Scissors.saveCheckedIssues(newChecked);
                 Thread.sleep(600000L);
-
             } catch(UnirestException e) {
-
                 LOGGER.warn("Something went wrong; ignoring and continuing as normal.");
-
             } catch(InterruptedException e) {
-
                 LOGGER.error("The thread was interrupted!");
-
             }
-
         }
-
     }
 
     private CheckedIssues checkIssues() {
-
         Issue[] fixedIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution = Done ORDER BY created ASC", "id,key").issues();
         List<Integer> checkedFixed;
         if(fixedIssues != null)
@@ -82,10 +69,8 @@ public class JiraCheckLoop implements Runnable {
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
         if(SharedConstants.IS_STAGING) LOGGER.info("Checked issues, found: {}", found);
         return found;
-
     }
 
     public record CheckedIssues(List<Integer> checkedFixed, List<Integer> checkedInvalid) {
     }
-
 }

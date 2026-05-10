@@ -1,7 +1,6 @@
 package me.manossef.scissors;
 
 public class SharedConstants {
-
     public static final boolean IS_STAGING = "staging".equalsIgnoreCase(System.getenv("SCISSORS_ENVIRONMENT"));
 
     public static final String TOKEN = System.getenv("SCISSORS_BOT_TOKEN");
@@ -23,5 +22,4 @@ public class SharedConstants {
     public static final String FILE_DIRECTORY = IS_STAGING ? "storage/" : "/storage/";
     public static final String CHECKED_ISSUES_FILE_NAME = "checked_issues.json";
     public static final String CONFIG_FILE_NAME = "config.json";
-
 }

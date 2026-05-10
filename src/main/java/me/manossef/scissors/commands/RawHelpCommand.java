@@ -8,25 +8,19 @@ import me.manossef.scissors.SharedConstants;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class RawHelpCommand {
-
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         dispatcher.register(Commands.literal("rawhelp")
             .requires(Commands.devRestricted())
             .executes(context -> help(context.getSource(), dispatcher))
         );
-
     }
 
     private static int help(ChatCommandSource source, CommandDispatcher<ChatCommandSource> dispatcher) {
-
         String[] usage = dispatcher.getAllUsage(dispatcher.getRoot(), source, true);
         StringBuilder builder = new StringBuilder();
         for(String line : usage)
             builder.append("- ").append(monospace(SharedConstants.COMMAND_PREFIX + line)).append("\n");
         source.sendSuccess("All commands:\n" + builder);
         return usage.length;
-
     }
-
 }

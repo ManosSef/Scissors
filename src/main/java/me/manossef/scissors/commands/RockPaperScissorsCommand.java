@@ -16,13 +16,11 @@ import net.dv8tion.jda.api.entities.User;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 
 public class RockPaperScissorsCommand {
-
     private static final SimpleCommandExceptionType SAME_USER = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with yourself"));
     private static final SimpleCommandExceptionType NO_BOTS = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with that bot"));
     private static final SimpleCommandExceptionType NO_SCISSORS = new SimpleCommandExceptionType(new LiteralMessage("Use " + monospace(SharedConstants.COMMAND_PREFIX + "rockpaperscissors (rock|paper|scissors)") + " to play with the bot!"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         String baseLiteral = "rockpaperscissors";
         LiteralCommandNode<ChatCommandSource> node = dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.literal("paper")
@@ -52,47 +50,33 @@ public class RockPaperScissorsCommand {
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " (rock|paper|scissors)"),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <opponent>"),
             monospace("<opponent>")), alias);
-
     }
 
     private static int rockPaperScissors(ChatCommandSource source, RockPaperScissors.Move move) {
-
         int random = Scissors.RANDOM.nextInt(-1, 2);
         switch(random) {
-
             case 0 -> source.sendSuccess("I chose " + bold(move.getName()) + "! It's a tie! Try again.");
             case -1 -> {
-
                 RockPaperScissors.Move botMove = switch(move) {
-
                     case ROCK -> RockPaperScissors.Move.SCISSORS;
                     case PAPER -> RockPaperScissors.Move.ROCK;
                     case SCISSORS -> RockPaperScissors.Move.PAPER;
-
                 };
                 source.sendSuccess("I chose " + bold(botMove.getName()) + "! You win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " " + italics("What?! How did I lose with scissors? This must be a glitch...") : ""));
-
             }
             case 1 -> {
-
                 RockPaperScissors.Move botMove = switch(move) {
-
                     case ROCK -> RockPaperScissors.Move.PAPER;
                     case PAPER -> RockPaperScissors.Move.SCISSORS;
                     case SCISSORS -> RockPaperScissors.Move.ROCK;
-
                 };
                 source.sendSuccess("I chose " + bold(botMove.getName()) + "! I win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " " + italics("Yay! I win with scissors again! I mean, that was expected.") : ""));
-
             }
-
         }
         return random;
-
     }
 
     private static int startRockPaperScissorsGame(ChatCommandSource source, User user) throws CommandSyntaxException {
-
         if(user == null) throw Commands.USER_NOT_FOUND.create();
         if(user.getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong()) throw NO_SCISSORS.create();
         if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
@@ -100,7 +84,5 @@ public class RockPaperScissorsCommand {
         source.sendSuccess("Starting a game of rock paper scissors with " + user.getAsMention());
         new RockPaperScissors(source.user(), user, source.commandMessage().getChannel());
         return 1;
-
     }
-
 }

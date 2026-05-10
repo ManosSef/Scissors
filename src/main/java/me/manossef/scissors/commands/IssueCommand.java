@@ -15,11 +15,9 @@ import me.manossef.scissors.jira.objects.Issue;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class IssueCommand {
-
     private static final DynamicCommandExceptionType ISSUE_NOT_FOUND = new DynamicCommandExceptionType(issue -> new LiteralMessage("Could not find issue " + issue));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         String baseLiteral = "issue";
         dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.argument("number", IntegerArgumentType.integer(1))
@@ -38,24 +36,16 @@ public class IssueCommand {
             monospace("SCIS-<#>"),
             monospace("<#>"),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <number>")));
-
     }
 
     private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException {
-
         try {
-
             Issue issue = Scissors.JIRA_API.getIssue(issueKey);
             if(issue.id() == null) throw ISSUE_NOT_FOUND.create(issueKey);
             source.sendSuccess("Successfully found issue " + issueKey + ":", issue.makeEmbed());
             return 1;
-
         } catch(UnirestException e) {
-
             throw Commands.IO_EXCEPTION.create();
-
         }
-
     }
-
 }

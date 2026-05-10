@@ -13,11 +13,9 @@ import me.manossef.scissors.puzzles.Wordle;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class WordleCommand {
-
     private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start Wordle games in this session"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         String baseLiteral = "wordle";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> startWordle(context.getSource(), false))
@@ -43,33 +41,23 @@ public class WordleCommand {
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " hard")
         ));
-
     }
 
     private static int startWordle(ChatCommandSource source, boolean hardMode) throws CommandSyntaxException {
-
         if(Wordle.canStart()) {
-
             source.sendSuccess("Starting a game of Wordle" + (hardMode ? " in hard mode" : ""));
             new Wordle(source.commandMessage().getChannel(), hardMode);
             return 1;
-
         }
         throw CANNOT_START.create();
-
     }
 
     private static int startWordle(ChatCommandSource source, boolean hardMode, String answer) throws CommandSyntaxException {
-
         if(Wordle.canStart()) {
-
             source.sendSuccess("Starting a game of Wordle" + (hardMode ? " in hard mode" : ""));
             new Wordle(source.commandMessage().getChannel(), hardMode, answer);
             return 1;
-
         }
         throw CANNOT_START.create();
-
     }
-
 }

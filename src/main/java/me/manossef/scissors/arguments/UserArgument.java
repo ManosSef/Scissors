@@ -13,52 +13,36 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class UserArgument implements ArgumentType<User> {
-
     private static final SimpleCommandExceptionType INVALID_MENTION = new SimpleCommandExceptionType(new LiteralMessage("Invalid user mention"));
     private static final Collection<String> EXAMPLES = Arrays.asList("611151083141857286", "<@611151083141857286>");
 
     public static UserArgument user() {
-
         return new UserArgument();
-
     }
 
     @Override
     public User parse(StringReader reader) throws CommandSyntaxException {
-
         String remaining = reader.getRemaining().split(" ")[0];
         if(Util.isLong(remaining)) {
-
             reader.setCursor(reader.getCursor() + remaining.length());
             return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(remaining)).complete();
-
         }
         if(remaining.startsWith("<@") && remaining.endsWith(">")) {
-
             String middle = remaining.substring(2, remaining.length() - 1);
             if(Util.isLong(middle)) {
-
                 reader.setCursor(reader.getCursor() + remaining.length());
                 return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(middle)).complete();
-
             }
             String legacyMiddle = middle.replaceFirst("!", "");
             if(middle.startsWith("!") && Util.isLong(legacyMiddle)) {
-
                 reader.setCursor(reader.getCursor() + remaining.length());
                 return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(legacyMiddle)).complete();
-
             }
-
         }
         throw INVALID_MENTION.create();
-
     }
 
     public Collection<String> getExamples() {
-
         return EXAMPLES;
-
     }
-
 }

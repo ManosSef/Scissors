@@ -16,79 +16,57 @@ import java.util.function.Predicate;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class Commands {
-
     public static final SimpleCommandExceptionType IO_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Something went wrong; please try again"));
     public static final SimpleCommandExceptionType USER_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No user was found"));
     private static final CommandDispatcher<ChatCommandSource> DISPATCHER = new CommandDispatcher<>() {{
-
         registerCommands(this);
-
     }};
     private static ChatCommandSource source = new ChatCommandSource(null, null);
 
     static {
-
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = new BuiltInExceptions(new com.mojang.brigadier.exceptions.BuiltInExceptions());
-
     }
 
     public static void dispatch(Message message, User user) {
-
         String command = message.getContentRaw().replaceFirst(SharedConstants.COMMAND_PREFIX, "").strip();
         if(command.isEmpty()) return;
         MessageChannel channel = message.getChannel();
         source = source.withMessage(message).withUser(user);
         String username = user.getName().replace("_", "\\_");
         try {
-
             int result = DISPATCHER.execute(command, source);
             DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " (" + channel.getId() + ") and succeeded with return value " + result));
-
         } catch(CommandSyntaxException e) {
-
             source.sendFailure(e.getMessage());
             DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " (" + channel.getId() + ") and failed"));
-
         } catch(Exception e) {
-
             source.sendError(e.getMessage());
             DevGuild.logCommandError(username + " (" + user.getId() + ") executed command " + monospace(command) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception:", e);
             Util.createIssueForException(e, "Command error: ", "Command: {{" + command + "}}");
-
         }
-
     }
 
     private static String shortenMiddle(String start, String middle, String end) {
-
         return start + shorten(middle, Message.MAX_CONTENT_LENGTH - start.length() - end.length()) + end;
-
     }
 
     private static String shorten(String string, int length) {
-
         if(length > string.length() - 3) return string;
         int remaining = length - 3;
         int fromStart = remaining / 2 + (remaining % 2 == 0 ? 0 : 1);
         int fromEnd = remaining / 2;
         return string.substring(0, fromStart) + "..." + string.substring(string.length() - fromEnd);
-
     }
 
     public static LiteralArgumentBuilder<ChatCommandSource> literal(String name) {
-
         return LiteralArgumentBuilder.literal(name);
-
     }
 
     public static <T> RequiredArgumentBuilder<ChatCommandSource, T> argument(String name, ArgumentType<T> type) {
-
         return RequiredArgumentBuilder.argument(name, type);
-
     }
 
     private static void registerCommands(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         CatFactCommand.register(dispatcher);
         CoinflipCommand.register(dispatcher);
         ConfigCommand.register(dispatcher);
@@ -110,17 +88,13 @@ public class Commands {
         HelpCommand.register(dispatcher);
         if(SharedConstants.IS_STAGING)
             ManualErrorCommand.register(dispatcher);
-
     }
 
     public static Predicate<ChatCommandSource> devRestricted() {
-
         return source -> source.user().getIdLong() == SharedConstants.MY_USER_ID;
-
     }
 
     private static class BuiltInExceptions implements BuiltInExceptionProvider {
-
         private static final Dynamic2CommandExceptionType DOUBLE_TOO_SMALL = new Dynamic2CommandExceptionType((found, min) -> new LiteralMessage("Expected a number not less than " + min + ", found " + found));
         private static final Dynamic2CommandExceptionType DOUBLE_TOO_BIG = new Dynamic2CommandExceptionType((found, max) -> new LiteralMessage("Expected a number not more than " + max + ", found " + found));
         private static final Dynamic2CommandExceptionType FLOAT_TOO_SMALL = new Dynamic2CommandExceptionType((found, min) -> new LiteralMessage("Expected a number not less than " + min + ", found " + found));
@@ -148,9 +122,7 @@ public class Commands {
         private final com.mojang.brigadier.exceptions.BuiltInExceptions defaultExceptions;
 
         private BuiltInExceptions(com.mojang.brigadier.exceptions.BuiltInExceptions defaultExceptions) {
-
             this.defaultExceptions = defaultExceptions;
-
         }
 
         public Dynamic2CommandExceptionType doubleTooLow() {
@@ -260,7 +232,5 @@ public class Commands {
         public DynamicCommandExceptionType dispatcherParseException() {
             return this.defaultExceptions.dispatcherParseException();
         }
-
     }
-
 }

@@ -19,21 +19,17 @@ import java.util.Objects;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
 public class TicTacToe extends Game {
-
     private Message message;
     private char[][] grid;
     private boolean player1MovedLast;
 
     public TicTacToe(User player1, User player2, MessageChannel channel) {
-
         super(player1, player2, channel);
         Scissors.DISCORD_API.addEventListener(this);
         this.start();
-
     }
 
     public void start() {
-
         this.grid = new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(
             new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), this.getGridFormat(), EmbedType.RICH, null, 0xDE6868,
@@ -43,18 +39,14 @@ public class TicTacToe extends Game {
             ActionRow.of(Button.success("110", Emojis.TICTACTOE), Button.success("111", Emojis.TICTACTOE), Button.success("112", Emojis.TICTACTOE)),
             ActionRow.of(Button.success("120", Emojis.TICTACTOE), Button.success("121", Emojis.TICTACTOE), Button.success("122", Emojis.TICTACTOE))
         ).queue();
-
     }
 
     public void end() {
-
         Scissors.DISCORD_API.removeEventListener(this);
-
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-
         if(this.message != null) return;
         Message message = event.getMessage();
         if(message.getAuthor().getIdLong() != Scissors.DISCORD_API.getSelfUser().getIdLong()) return;
@@ -63,12 +55,10 @@ public class TicTacToe extends Game {
         if(title == null) return;
         if(!title.contains("Tic-tac-toe")) return;
         this.message = message;
-
     }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-
         if(this.message == null) return;
         Message message = event.getMessage();
         if(this.message.getIdLong() != message.getIdLong()) return;
@@ -78,11 +68,9 @@ public class TicTacToe extends Game {
         if(Objects.requireNonNull(event.getInteraction().getMember()).getIdLong() == this.getPlayer2().getIdLong() && !this.player1MovedLast)
             return;
         this.makeMove(event.getInteraction().getMember().getUser(), Integer.parseInt(String.valueOf(event.getCustomId().charAt(1))), Integer.parseInt(String.valueOf(event.getCustomId().charAt(2))));
-
     }
 
     private void makeMove(User user, int row, int column) {
-
         if(grid[row][column] != ' ') return;
         char mark;
         if(user.getIdLong() == this.getPlayer1().getIdLong()) mark = 'X';
@@ -93,26 +81,20 @@ public class TicTacToe extends Game {
         this.update();
         if(this.isBotGame() && TicTacToeEngine.getStatus(this.grid) == Status.ONGOING && this.player1MovedLast)
             this.makeBotMove();
-
     }
 
     private void makeBotMove() {
-
         TicTacToeEngine.Slot move = TicTacToeEngine.getMove(this.grid);
         this.makeMove(Scissors.DISCORD_API.getSelfUser(), move.row(), move.column());
-
     }
 
     private void update() {
-
         Status status = TicTacToeEngine.getStatus(grid);
         String statusText = switch(status) {
-
             case DRAW -> "\n" + bold("It's a tie!");
             case ONGOING -> "";
             case PLAYER_1_WON -> "\n" + bold(this.getPlayer1().getAsMention() + " won!");
             case PLAYER_2_WON -> "\n" + bold(this.getPlayer2().getAsMention() + " won!");
-
         };
         this.message.editMessage(MessageEditData.fromEmbeds(
             new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), this.getGridFormat() + statusText, EmbedType.RICH, null, 0xDE6868,
@@ -123,11 +105,9 @@ public class TicTacToe extends Game {
             ActionRow.of(Button.success("120", Emojis.TICTACTOE).withDisabled(grid[2][0] != ' '), Button.success("121", Emojis.TICTACTOE).withDisabled(grid[2][1] != ' '), Button.success("122", Emojis.TICTACTOE).withDisabled(grid[2][2] != ' '))
         ).queue();
         if(status != Status.ONGOING) this.end();
-
     }
 
     private String getGridFormat() {
-
         return String.format("""
                 %s%s%s
                 %s%s%s
@@ -135,26 +115,18 @@ public class TicTacToe extends Game {
             getEmojiForChar(grid[0][0]), getEmojiForChar(grid[0][1]), getEmojiForChar(grid[0][2]),
             getEmojiForChar(grid[1][0]), getEmojiForChar(grid[1][1]), getEmojiForChar(grid[1][2]),
             getEmojiForChar(grid[2][0]), getEmojiForChar(grid[2][1]), getEmojiForChar(grid[2][2]));
-
     }
 
     private String getEmojiForChar(char ch) {
-
         return switch(ch) {
-
             case 'X' -> Emojis.TICTACTOE_X.getFormatted();
             case 'O' -> Emojis.TICTACTOE_O.getFormatted();
             case ' ' -> Emojis.BLACK_LARGE_SQUARE.getFormatted();
             default -> throw new IllegalArgumentException("Tic-tac-toe can only use X, O and space");
-
         };
-
     }
 
     private boolean isBotGame() {
-
         return this.getPlayer2().getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong();
-
     }
-
 }

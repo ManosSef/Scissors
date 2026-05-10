@@ -17,11 +17,9 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class SquaredleCommand {
-
     private static final SimpleCommandExceptionType CONFIG_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("Failed to get the daily Squaredle puzzle configuration"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
-
         String baseLiteral = "squaredle";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendDailySquaredle(context.getSource(), false))
@@ -39,26 +37,18 @@ public class SquaredleCommand {
                 - %s: Provides information about today's Squaredle Express puzzle.""",
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " xp")));
-
     }
 
     private static int sendDailySquaredle(ChatCommandSource source, boolean xp) throws CommandSyntaxException {
-
         try {
-
             TodayConfig todayConfig = TodayConfigReader.readTodayPuzzleConfig();
             if(todayConfig == null) throw CONFIG_NOT_FOUND.create();
             String date = todayConfig.currentDate();
             PuzzleData puzzle = todayConfig.puzzles().get(date + (xp ? "-xp" : ""));
             source.sendSuccess(bold("Daily " + (xp ? "xp " : "") + date.replace("/", "-")) + "\n" + PuzzleUtil.getMessageText(puzzle));
             return 1;
-
         } catch(UnirestException e) {
-
             throw Commands.IO_EXCEPTION.create();
-
         }
-
     }
-
 }

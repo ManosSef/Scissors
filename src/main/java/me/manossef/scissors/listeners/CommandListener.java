@@ -9,10 +9,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class CommandListener extends ListenerAdapter {
-
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-
         MessageChannel channel = event.getChannel();
         if(!channel.canTalk()) return;
         Message message = event.getMessage();
@@ -20,7 +18,5 @@ public class CommandListener extends ListenerAdapter {
         User user = event.getAuthor();
         if(user.isBot() || user.isSystem()) return;
         Commands.dispatch(message, user);
-
     }
-
 }
