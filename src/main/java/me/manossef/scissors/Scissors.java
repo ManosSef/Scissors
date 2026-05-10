@@ -45,11 +45,11 @@ public class Scissors {
             JiraCheckLoop.CheckedIssues checkedIssues = getCheckedIssues();
             if(checkedIssues == null)
                 checkedIssues = new JiraCheckLoop.CheckedIssues(new ArrayList<>(), new ArrayList<>());
-            if(SharedConstants.IS_STAGING) LOGGER.info("Retrieved previous checked issues: {}", checkedIssues);
+            LOGGER.debug("Retrieved previous checked issues: {}", checkedIssues);
             Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues), "JiraCheckLoop");
             jiraCheckLoop.start();
         } catch(InterruptedException e) {
-            LOGGER.error("The thread was interrupted!");
+            LOGGER.warn("The thread was interrupted!");
         }
     }
 

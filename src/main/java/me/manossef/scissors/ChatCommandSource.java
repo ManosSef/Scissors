@@ -40,7 +40,7 @@ public record ChatCommandSource(Message commandMessage, User user) {
 
     private String truncate(String content) {
         if(content.length() > Message.MAX_CONTENT_LENGTH) {
-            if(SharedConstants.IS_STAGING) LOGGER.warn("Could not send entire command response: {}", content);
+            LOGGER.warn("Tried to send too long a command response; truncating: {}", content);
             return Util.truncate(content);
         }
         return content;

@@ -74,7 +74,8 @@ public class Util {
     }
 
     public static void createIssueForException(Throwable exception, String summaryPrefix, String description) {
-        String summary = summaryPrefix + exception.getClass().getName() + ": " + exception.getMessage();
+        String summary = summaryPrefix + exception.getClass().getName();
+        if(exception.getMessage() != null) summary += ": " + exception.getMessage();
         if(SharedConstants.IS_STAGING) {
             LOGGER.info("Not creating issue in staging, summary would be: {}", summary);
             return;

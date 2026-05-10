@@ -3,7 +3,6 @@ package me.manossef.scissors.jira;
 import kong.unirest.core.UnirestException;
 import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.slf4j.Logger;
@@ -14,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JiraCheckLoop implements Runnable {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(JiraCheckLoop.class);
 
     private CheckedIssues checkedIssues;
@@ -30,12 +28,12 @@ public class JiraCheckLoop implements Runnable {
                 CheckedIssues newChecked = this.checkIssues();
                 List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
                 uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
-                if(SharedConstants.IS_STAGING) LOGGER.info("To post in #done-issues: {}", uncheckedFixed);
+                LOGGER.debug("To post in #done-issues: {}", uncheckedFixed);
                 for(Integer number : uncheckedFixed)
                     DevGuild.logDoneIssue(MessageCreateData.fromEmbeds(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed()));
                 List<Integer> uncheckedInvalid = new ArrayList<>(newChecked.checkedInvalid);
                 uncheckedInvalid.removeAll(this.checkedIssues.checkedInvalid);
-                if(SharedConstants.IS_STAGING) LOGGER.info("To post in #invalid-issues: {}", uncheckedInvalid);
+                LOGGER.debug("To post in #invalid-issues: {}", uncheckedInvalid);
                 for(Integer number : uncheckedInvalid)
                     DevGuild.logInvalidIssue(MessageCreateData.fromEmbeds(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed()));
                 this.checkedIssues = newChecked;
@@ -44,7 +42,7 @@ public class JiraCheckLoop implements Runnable {
             } catch(UnirestException e) {
                 LOGGER.warn("Something went wrong; ignoring and continuing as normal.");
             } catch(InterruptedException e) {
-                LOGGER.error("The thread was interrupted!");
+                LOGGER.warn("The thread was interrupted!");
             }
         }
     }
@@ -67,7 +65,7 @@ public class JiraCheckLoop implements Runnable {
             .toList();
         else checkedInvalid = this.checkedIssues.checkedInvalid;
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
-        if(SharedConstants.IS_STAGING) LOGGER.info("Checked issues, found: {}", found);
+        LOGGER.debug("Checked issues, found: {}", found);
         return found;
     }
 
