@@ -82,6 +82,7 @@ public class Commands {
         TicTacToeCommand.register(dispatcher);
         WordleCommand.register(dispatcher);
         NineCommand.register(dispatcher);
+        LeaveCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
         RawHelpCommand.register(dispatcher);
         StopAllGamesCommand.register(dispatcher);
