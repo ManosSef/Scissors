@@ -1,6 +1,7 @@
 package me.manossef.scissors.listeners;
 
 import me.manossef.scissors.Emojis;
+import me.manossef.scissors.SharedConstants;
 
 import java.util.List;
 
@@ -52,7 +53,10 @@ public class Messages {
         "Are you just excited because you just learned how to count?",
         "Do you just randomly shout random numbers in real life too?",
         "I was joking on April 1st by the way",
-        "Believe it or not, I don't like it when you do that"
+        "Believe it or not, I don't like it when you do that",
+        "What do you gain from deliberately being annoying?",
+        Emojis.SERIOUS_FACE_WITH_SYMBOLS_COVERING_MOUTH.getFormatted(),
+        "Why am I a pair of scissors instead of a gun"
     );
     static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",
@@ -74,7 +78,12 @@ public class Messages {
         "YAY NUMBERS"
     );
     static final List<String> SCISSORS_RESPONSES = List.of(
-        "RAHHH!"
+        "RAHHH!",
+        "Did someboady call me?",
+        "SURPRISE!",
+        "I'm here! Wait that wasn't about me was it",
+        "Were you talking about me?",
+        "I will not take this slander"
     );
     static final List<String> PING_RESPONSES = List.of(
         "You rang?",
@@ -82,7 +91,11 @@ public class Messages {
         "Ready to cut some paper today?",
         "You'd better not want to throw a rock at me",
         "At your service!",
-        "0% AI!"
+        "0% AI!",
+        "Type " + monospace(SharedConstants.COMMAND_PREFIX + "help") + " to get started!",
+        "Best paper cutting performance on the market!",
+        "Cutting edge technology!",
+        "Whomst has awakened the ancient one?"
     );
     static final List<String> MEME_RESPONSES = List.of(
         "May I see it?"
