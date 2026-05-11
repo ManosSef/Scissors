@@ -62,7 +62,7 @@ public class MessageListeners extends ListenerAdapter {
 
     private boolean promptsGPPCT(Message message, Configuration config) {
         MessageChannelUnion channel = message.getChannel();
-        return message.getContentRaw().matches("^[0-9]+$")
+        return message.getContentRaw().matches("^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?$")
             && channel.canTalk()
             && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel)
             && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.GPPCT_RESPONSE_CHANCE, Integer.class, channel);
