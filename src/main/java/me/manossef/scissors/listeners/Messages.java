@@ -56,7 +56,10 @@ public class Messages {
         "Believe it or not, I don't like it when you do that",
         "What do you gain from deliberately being annoying?",
         Emojis.SERIOUS_FACE_WITH_SYMBOLS_COVERING_MOUTH.getFormatted(),
-        "Why am I a pair of scissors instead of a gun"
+        "Why am I a pair of scissors instead of a gun",
+        "I'm so tired of this",
+        Emojis.FACE_WITH_BAGS_UNDER_EYES.getFormatted(),
+        "I wish I could say I'm done with this but I'm coded to keep replying"
     );
     static final List<String> GPPCT_BRAINROT_RESPONSES = List.of(
         "sIx SeVeN",

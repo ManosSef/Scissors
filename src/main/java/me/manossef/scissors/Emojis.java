@@ -6,6 +6,7 @@ public class Emojis {
     public static final Emoji POUTING_FACE = Emoji.fromUnicode("U+1F621");
     public static final Emoji SMILING_FACE_WITH_HEART_EYES = Emoji.fromUnicode("U+1F60D");
     public static final Emoji SERIOUS_FACE_WITH_SYMBOLS_COVERING_MOUTH = Emoji.fromUnicode("U+1F92C");
+    public static final Emoji FACE_WITH_BAGS_UNDER_EYES = Emoji.fromUnicode("U+1FAE9");
     public static final Emoji SCISSORS = Emoji.fromUnicode("U+2702 U+FE0F");
     public static final Emoji ROCK = Emoji.fromUnicode("U+1FAA8");
     public static final Emoji ROLL_OF_PAPER = Emoji.fromUnicode("U+1F9FB");
