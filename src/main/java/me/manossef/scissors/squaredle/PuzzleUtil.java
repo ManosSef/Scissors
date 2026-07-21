@@ -1,5 +1,6 @@
 package me.manossef.scissors.squaredle;
 
+import me.manossef.commoncode.MyArrays;
 import me.manossef.scissors.Emojis;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
@@ -97,28 +98,14 @@ public class PuzzleUtil {
     public static String decryptString(String encrypted) {
         String[] split = encrypted.split("");
         Object[] decrypted = Arrays.stream(split).map(PuzzleUtil::decipherChar).toArray();
-        String data = join(decrypted);
+        String data = MyArrays.join(decrypted, "");
         byte[] decoded = Base64.getDecoder().decode(data);
         return new String(decoded);
     }
 
     private static String decipherChar(String data) {
         String[] key = "5pyf0gcrl1a9oe3ui8d2htn67sqjkxbmw4vzPYFGCRLAOEUIDHTNSQJKXBMWVZ".split("");
-        int index = indexOf(key, data);
+        int index = MyArrays.indexOf(key, data);
         return -1 == index ? data : key[(index - 12 + key.length) % key.length];
-    }
-
-    private static <T> int indexOf(T[] array, T toFind) {
-        for(int i = 0; i < array.length; i++)
-            if(toFind.equals(array[i]))
-                return i;
-        return -1;
-    }
-
-    private static <T> String join(T[] array) {
-        StringBuilder builder = new StringBuilder();
-        for(T t : array)
-            builder.append(t.toString());
-        return builder.toString();
     }
 }

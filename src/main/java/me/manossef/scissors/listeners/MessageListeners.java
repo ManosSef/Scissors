@@ -19,7 +19,6 @@ import java.util.List;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.strike;
 
 public class MessageListeners extends ListenerAdapter {
-
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         Message message = event.getMessage();

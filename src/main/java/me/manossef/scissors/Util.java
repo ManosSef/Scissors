@@ -101,13 +101,4 @@ public class Util {
             stackTrace.append("\t").append("at ").append(element.toString()).append("\n");
         return stackTrace.toString();
     }
-
-    public static boolean isLong(String input) {
-        try {
-            Long.parseLong(input);
-            return true;
-        } catch(NumberFormatException e) {
-            return false;
-        }
-    }
 }

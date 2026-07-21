@@ -6,7 +6,7 @@
 
     <groupId>me.manossef</groupId>
     <artifactId>Scissors</artifactId>
-    <version>1.8.4</version>
+    <version>1.9.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -49,6 +49,10 @@
             <id>minecraft-libraries</id>
             <url>https://libraries.minecraft.net</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -81,6 +85,11 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.5.32</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ManosSef</groupId>
+            <artifactId>CommonCode</artifactId>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 

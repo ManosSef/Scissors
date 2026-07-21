@@ -5,8 +5,8 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import me.manossef.commoncode.TypeChecks;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.Util;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.Arrays;
@@ -23,18 +23,18 @@ public class UserArgument implements ArgumentType<User> {
     @Override
     public User parse(StringReader reader) throws CommandSyntaxException {
         String remaining = reader.getRemaining().split(" ")[0];
-        if(Util.isLong(remaining)) {
+        if(TypeChecks.isLong(remaining)) {
             reader.setCursor(reader.getCursor() + remaining.length());
             return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(remaining)).complete();
         }
         if(remaining.startsWith("<@") && remaining.endsWith(">")) {
             String middle = remaining.substring(2, remaining.length() - 1);
-            if(Util.isLong(middle)) {
+            if(TypeChecks.isLong(middle)) {
                 reader.setCursor(reader.getCursor() + remaining.length());
                 return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(middle)).complete();
             }
             String legacyMiddle = middle.replaceFirst("!", "");
-            if(middle.startsWith("!") && Util.isLong(legacyMiddle)) {
+            if(middle.startsWith("!") && TypeChecks.isLong(legacyMiddle)) {
                 reader.setCursor(reader.getCursor() + remaining.length());
                 return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(legacyMiddle)).complete();
             }
