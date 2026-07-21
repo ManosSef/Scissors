@@ -13,7 +13,7 @@ import me.manossef.scissors.puzzles.Wordle;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class WordleCommand {
-    private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start Wordle games in this session"));
+    private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start Wordle games in this session. Please yell at <@" + SharedConstants.MY_USER_ID + "> to restart me"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "wordle";
