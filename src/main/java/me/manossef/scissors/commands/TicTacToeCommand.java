@@ -37,8 +37,8 @@ public class TicTacToeCommand {
                 - %s: Starts a game of tic-tac-toe between you and the specified user. Fails if the specified user does not exist in the server, is the same as the user running the command, or is a bot other than Scissors.
                 
                 For the %s argument, you can use a user ID or a mention (ping) of the user in question.""",
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " bot"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <opponent>"),
+            Commands.format(baseLiteral + " bot"),
+            Commands.format(baseLiteral + " <opponent>"),
             monospace("<opponent>")));
     }
 

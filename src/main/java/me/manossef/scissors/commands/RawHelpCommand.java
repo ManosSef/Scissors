@@ -19,7 +19,7 @@ public class RawHelpCommand {
         String[] usage = dispatcher.getAllUsage(dispatcher.getRoot(), source, true);
         StringBuilder builder = new StringBuilder();
         for(String line : usage)
-            builder.append("- ").append(monospace(SharedConstants.COMMAND_PREFIX + line)).append("\n");
+            builder.append("- ").append(Commands.format(line)).append("\n");
         source.sendSuccess("All commands:\n" + builder);
         return usage.length;
     }

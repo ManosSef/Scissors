@@ -21,9 +21,9 @@ public class HelpCommand {
 
     public static void addLine(String baseLiteral, String line, String... aliases) {
         StringBuilder builder = new StringBuilder();
-        builder.append(monospace(SharedConstants.COMMAND_PREFIX + baseLiteral));
+        builder.append(Commands.format(baseLiteral));
         for(String alias : aliases)
-            builder.append("/").append(monospace(SharedConstants.COMMAND_PREFIX + alias));
+            builder.append("/").append(Commands.format(alias));
         builder.append(" - ").append(line);
         LINES.add(builder.toString());
     }
@@ -43,15 +43,15 @@ public class HelpCommand {
                 Here are all available syntaxes for this command:
                 - %s: Lists all available commands, explaining what each one does in one sentence.
                 - %s: Explains the specified command in detail. Lists all available syntaxes for it, describes what each one does, and mentions any situations in which the command fails.""",
-            monospace(SharedConstants.COMMAND_PREFIX + BASE_LITERAL),
-            monospace(SharedConstants.COMMAND_PREFIX + BASE_LITERAL + " <command>")));
+            Commands.format(BASE_LITERAL),
+            Commands.format(BASE_LITERAL + " <command>")));
         LINES.sort(Comparator.naturalOrder());
         dispatcher.register(BASE_ARGUMENT);
     }
 
     private static int showHelpMessage(ChatCommandSource source) {
         StringBuilder builder = new StringBuilder();
-        builder.append("All available commands are listed below. To learn more about a command, use ").append(monospace(SharedConstants.COMMAND_PREFIX + "help <command>")).append(".");
+        builder.append("All available commands are listed below. To learn more about a command, use ").append(Commands.format("help <command>")).append(".");
         for(String line : LINES)
             builder.append("\n- ").append(line);
         source.sendSuccess(builder.toString());
@@ -60,11 +60,11 @@ public class HelpCommand {
 
     private static int showHelpForCommand(ChatCommandSource source, String baseLiteral, String helpText, String[] aliases) {
         StringBuilder builder = new StringBuilder();
-        builder.append(monospace(SharedConstants.COMMAND_PREFIX + baseLiteral));
+        builder.append(Commands.format(baseLiteral));
         if(aliases.length > 0) {
             builder.append("\n\nAliases: ");
             for(String alias : aliases)
-                builder.append(monospace(SharedConstants.COMMAND_PREFIX + alias)).append(", ");
+                builder.append(Commands.format(alias)).append(", ");
             builder.delete(builder.length() - 2, builder.length());
         }
         builder.append("\n\n").append(helpText);

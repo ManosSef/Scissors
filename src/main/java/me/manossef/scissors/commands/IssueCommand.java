@@ -35,7 +35,7 @@ public class IssueCommand {
                 Fails if there is no work item with the specified number.""",
             monospace("SCIS-<#>"),
             monospace("<#>"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <number>")));
+            Commands.format(baseLiteral + " <number>")));
     }
 
     private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException {

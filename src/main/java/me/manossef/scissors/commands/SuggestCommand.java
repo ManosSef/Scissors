@@ -26,7 +26,7 @@ public class SuggestCommand {
         return new LiteralMessage("The following error(s) occurred while trying to create the issue: " + builder);
     });
     private static final SimpleCommandExceptionType NO_ISSUE_TYPE = new SimpleCommandExceptionType(new LiteralMessage(
-        "Please add " + monospace("bug") + ", " + monospace("feature") + " or " + monospace("improvement") + " after " + monospace(SharedConstants.COMMAND_PREFIX + "suggest") + " depending on what you're suggesting"
+        "Please add " + monospace("bug") + ", " + monospace("feature") + " or " + monospace("improvement") + " after " + Commands.format("suggest") + " depending on what you're suggesting"
     ));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
@@ -59,9 +59,9 @@ public class SuggestCommand {
                 
                 Fails if the provided summary is longer than 255 characters, or if anything else goes wrong while trying to submit the work item.""",
             SharedConstants.MY_USER_ID,
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " bug <summary>"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " feature <summary>"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " improvement <summary>")));
+            Commands.format(baseLiteral + " bug <summary>"),
+            Commands.format(baseLiteral + " feature <summary>"),
+            Commands.format(baseLiteral + " improvement <summary>")));
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueType(String literal, IssueType type) {

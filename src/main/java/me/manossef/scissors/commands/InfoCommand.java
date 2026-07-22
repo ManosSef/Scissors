@@ -28,9 +28,9 @@ public class InfoCommand {
                 - %s: Makes the bot introduce itself.
                 - %s: Posts the invite link to the bot's development server.
                 - %s: Posts the link to the bot's GitHub repository.""",
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " devserver"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " github")));
+            Commands.format(baseLiteral),
+            Commands.format(baseLiteral + " devserver"),
+            Commands.format(baseLiteral + " github")));
     }
 
     private static int sendGenericInfo(ChatCommandSource source) {
@@ -45,10 +45,10 @@ public class InfoCommand {
                 If you'd like to know what I can do, type %s. You can also type %s if you find something wrong with me, %s if you'd like to suggest a new feature for me, or %s if you have an idea for improving me.""",
             SharedConstants.MY_USER_ID,
             italics("how did I get here?"),
-            monospace(SharedConstants.COMMAND_PREFIX + "help"),
-            monospace(SharedConstants.COMMAND_PREFIX + "suggest bug <summary>"),
-            monospace(SharedConstants.COMMAND_PREFIX + "suggest feature <summary>"),
-            monospace(SharedConstants.COMMAND_PREFIX + "suggest improvement <summary>")));
+            Commands.format("help"),
+            Commands.format("suggest bug <summary>"),
+            Commands.format("suggest feature <summary>"),
+            Commands.format("suggest improvement <summary>")));
         return 1;
     }
 

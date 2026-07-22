@@ -1,8 +1,8 @@
 package me.manossef.scissors.puzzles;
 
+import me.manossef.scissors.Commands;
 import me.manossef.scissors.Emojis;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.Util;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
-import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class Wordle extends Puzzle {
     private static final List<String> WORDS = new ArrayList<>();
@@ -26,8 +25,8 @@ public class Wordle extends Puzzle {
     private static final int MAX_GUESSES = 6;
 
     static {
-        Util.loadWords("wordle_words.txt", WORDS, "Failed to initialize the list of words for Wordle games. All " + monospace(SharedConstants.COMMAND_PREFIX + "wordle") + " commands will fail during this session.");
-        Util.loadWords("wordle_answers.txt", ANSWERS, "Failed to initialize the list of answers for Wordle games. All " + monospace(SharedConstants.COMMAND_PREFIX + "wordle") + " commands will fail during this session.");
+        Util.loadWords("wordle_words.txt", WORDS, "Failed to initialize the list of words for Wordle games. All " + Commands.format("wordle") + " commands will fail during this session.");
+        Util.loadWords("wordle_answers.txt", ANSWERS, "Failed to initialize the list of answers for Wordle games. All " + Commands.format("wordle") + " commands will fail during this session.");
     }
 
     private Message message;

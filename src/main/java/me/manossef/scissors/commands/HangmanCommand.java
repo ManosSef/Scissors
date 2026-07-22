@@ -34,9 +34,9 @@ public class HangmanCommand {
                 - %s: Starts a game of hangman where you lose if you make 6 mistakes.
                 - %s: Starts a game of hangman where you lose if you make 3 mistakes.
                 - %s: Starts a game of hangman where you lose if you make 1 mistake.""",
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " hard"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " impossible")));
+            Commands.format(baseLiteral),
+            Commands.format(baseLiteral + " hard"),
+            Commands.format(baseLiteral + " impossible")));
     }
 
     private static int startHangman(ChatCommandSource source, Hangman.Difficulty difficulty) throws CommandSyntaxException {

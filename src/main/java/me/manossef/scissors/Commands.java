@@ -95,6 +95,10 @@ public class Commands {
         return source -> source.user().getIdLong() == SharedConstants.MY_USER_ID;
     }
 
+    public static String format(String command) {
+        return monospace(SharedConstants.COMMAND_PREFIX + command);
+    }
+
     private static class BuiltInExceptions implements BuiltInExceptionProvider {
         private static final Dynamic2CommandExceptionType DOUBLE_TOO_SMALL = new Dynamic2CommandExceptionType((found, min) -> new LiteralMessage("Expected a number not less than " + min + ", found " + found));
         private static final Dynamic2CommandExceptionType DOUBLE_TOO_BIG = new Dynamic2CommandExceptionType((found, max) -> new LiteralMessage("Expected a number not more than " + max + ", found " + found));

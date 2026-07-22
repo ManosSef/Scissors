@@ -37,7 +37,7 @@ public class EchoCommand {
                 Syntax: %s
                 
                 Fails when the bot doesn't have permission to delete messages. Always fails when used in a DM.""",
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <text>")));
+            Commands.format(baseLiteral + " <text>")));
     }
 
     private static int echo(ChatCommandSource source, String message) throws CommandSyntaxException {

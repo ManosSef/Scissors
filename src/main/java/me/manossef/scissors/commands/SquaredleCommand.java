@@ -35,8 +35,8 @@ public class SquaredleCommand {
                 Here are the available syntaxes for this command:
                 - %s: Provides information about today's Squaredle puzzle.
                 - %s: Provides information about today's Squaredle Express puzzle.""",
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " xp")));
+            Commands.format(baseLiteral),
+            Commands.format(baseLiteral + " xp")));
     }
 
     private static int sendDailySquaredle(ChatCommandSource source, boolean xp) throws CommandSyntaxException {

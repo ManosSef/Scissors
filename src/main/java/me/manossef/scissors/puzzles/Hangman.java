@@ -1,7 +1,7 @@
 package me.manossef.scissors.puzzles;
 
+import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.Util;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
@@ -16,13 +16,14 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.codeblock;
 
 public class Hangman extends Puzzle {
     private static final List<String> WORDS = new ArrayList<>();
 
     static {
-        Util.loadWords("hangman_words.txt", WORDS, "Failed to initialize the list of words for hangman games. All " + monospace(SharedConstants.COMMAND_PREFIX + "hangman") + " commands will fail during this session.");
+        Util.loadWords("hangman_words.txt", WORDS, "Failed to initialize the list of words for hangman games. All " + Commands.format("hangman") + " commands will fail during this session.");
     }
 
     private Message message;

@@ -28,8 +28,8 @@ public class CoinflipCommand {
                 - %s: Flips a coin with no funny business.""",
             bold("heads"),
             bold("tails"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " nofunnybusiness")));
+            Commands.format(baseLiteral),
+            Commands.format(baseLiteral + " nofunnybusiness")));
     }
 
     private static int flipCoin(ChatCommandSource source) {

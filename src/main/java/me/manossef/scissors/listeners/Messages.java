@@ -1,7 +1,7 @@
 package me.manossef.scissors.listeners;
 
+import me.manossef.scissors.Commands;
 import me.manossef.scissors.Emojis;
-import me.manossef.scissors.SharedConstants;
 
 import java.util.List;
 
@@ -95,7 +95,7 @@ public class Messages {
         "You'd better not want to throw a rock at me",
         "At your service!",
         "0% AI!",
-        "Type " + monospace(SharedConstants.COMMAND_PREFIX + "help") + " to get started!",
+        "Type " + Commands.format("help") + " to get started!",
         "Best paper cutting performance on the market!",
         "Cutting edge technology!",
         "Whomst has awakened the ancient one?"

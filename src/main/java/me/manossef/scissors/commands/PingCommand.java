@@ -40,10 +40,10 @@ public class PingCommand {
                 - %s: Measures how long it takes for the bot to reply to this command in nanoseconds.
                 - %s: Pings Discord's API.
                 - %s: Replies with "Pong!\"""",
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " nanos"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " discord"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " pong")));
+            Commands.format(baseLiteral),
+            Commands.format(baseLiteral + " nanos"),
+            Commands.format(baseLiteral + " discord"),
+            Commands.format(baseLiteral + " pong")));
     }
 
     private static int pingUser(ChatCommandSource source, boolean nanos) throws CommandSyntaxException {

@@ -18,7 +18,7 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 public class RockPaperScissorsCommand {
     private static final SimpleCommandExceptionType SAME_USER = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with yourself"));
     private static final SimpleCommandExceptionType NO_BOTS = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with that bot"));
-    private static final SimpleCommandExceptionType NO_SCISSORS = new SimpleCommandExceptionType(new LiteralMessage("Use " + monospace(SharedConstants.COMMAND_PREFIX + "rockpaperscissors (rock|paper|scissors)") + " to play with the bot!"));
+    private static final SimpleCommandExceptionType NO_SCISSORS = new SimpleCommandExceptionType(new LiteralMessage("Use " + Commands.format("rockpaperscissors (rock|paper|scissors)") + " to play with the bot!"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "rockpaperscissors";
@@ -47,8 +47,8 @@ public class RockPaperScissorsCommand {
                 - %s: Starts a game of rock paper scissors between you and the specified user. Fails if the specified user does not exist in the server, is the same as the user running the command, or is a bot.
                 
                 For the %s argument, you can use a user ID or a mention (ping) of the user in question.""",
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " (rock|paper|scissors)"),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " <opponent>"),
+            Commands.format(baseLiteral + " (rock|paper|scissors)"),
+            Commands.format(baseLiteral + " <opponent>"),
             monospace("<opponent>")), alias);
     }
 

@@ -38,8 +38,8 @@ public class WordleCommand {
                 Here are all available syntaxes for this command:
                 - %s: Starts a normal game of Wordle.
                 - %s: Starts a game of Wordle in hard mode, which works like the hard mode in the New York Times' Wordle.""",
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral),
-            monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " hard")
+            Commands.format(baseLiteral),
+            Commands.format(baseLiteral + " hard")
         ));
     }
 
