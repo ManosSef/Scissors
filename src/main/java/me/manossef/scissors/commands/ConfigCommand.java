@@ -18,6 +18,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
@@ -124,7 +126,7 @@ public class ConfigCommand {
                     throw ALREADY_DEFAULT_GUILD.create();
             }
             case PER_CHANNEL -> {
-                if(source.commandMessage().getChannel() instanceof GuildChannel guildChannel && !canEditPerChannel(source.user(), guildChannel))
+                if(!canEditPerChannel(source.user(), source.commandMessage().getChannel()))
                     throw NO_PERMS_IN_CHANNEL.create();
                 if(Scissors.getConfiguration().resetForChannel(source.commandMessage().getChannel()))
                     source.sendSuccess("Removed the explicit values of all options for this channel");
@@ -170,14 +172,13 @@ public class ConfigCommand {
                 if(canEditPerGuild(source.user(), guildChannel.getGuild())) {
                     Scissors.getConfiguration().setOptionForGuild(option, value, source.commandMessage().getGuild());
                     source.sendSuccess("Set the value of the option " + monospace(option.properties().getName()) + " for this server to " + bold(value.toString()));
-                }
-                throw NO_PERMS_IN_GUILD.create();
+                } else throw NO_PERMS_IN_GUILD.create();
             }
             case PER_CHANNEL -> {
-                if(source.commandMessage().getChannel() instanceof GuildChannel guildChannel && !canEditPerChannel(source.user(), guildChannel))
-                    throw NO_PERMS_IN_CHANNEL.create();
-                Scissors.getConfiguration().setOptionForChannel(option, value, source.commandMessage().getChannel());
-                source.sendSuccess("Set the value of the option " + monospace(option.properties().getName()) + " for this channel to " + bold(value.toString()));
+                if(canEditPerChannel(source.user(), source.commandMessage().getChannel())) {
+                    Scissors.getConfiguration().setOptionForChannel(option, value, source.commandMessage().getChannel());
+                    source.sendSuccess("Set the value of the option " + monospace(option.properties().getName()) + " for this channel to " + bold(value.toString()));
+                } else throw NO_PERMS_IN_CHANNEL.create();
             }
             default -> throw INVALID_CONTEXT.create();
         }
@@ -194,13 +195,15 @@ public class ConfigCommand {
         return member.hasPermission(Permission.MANAGE_SERVER);
     }
 
-    private static boolean canEditPerChannel(User user, GuildChannel channel) throws CommandSyntaxException {
+    private static boolean canEditPerChannel(User user, MessageChannelUnion channel) throws CommandSyntaxException {
         if(user.getIdLong() == SharedConstants.MY_USER_ID)
             return true;
-        Member member = channel.getGuild().retrieveMemberById(user.getIdLong()).complete();
+        if(!(channel instanceof GuildChannel guildChannel))
+            return true;
+        Member member = guildChannel.getGuild().retrieveMemberById(user.getIdLong()).complete();
         if(member == null)
             throw IMPOSSIBLE_ERROR.create();
-        return member.hasPermission(channel, Permission.MANAGE_CHANNEL);
+        return member.hasPermission(guildChannel, Permission.MANAGE_CHANNEL);
     }
 
     private enum OptionContext {
