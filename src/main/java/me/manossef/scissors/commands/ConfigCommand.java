@@ -63,7 +63,8 @@ public class ConfigCommand {
                 - %12$s: Whether responses to pings are posted. The value is either %1$s or %2$s.
                 - %13$s: Whether responses to mentions of scissors are posted. The value is either %1$s or %2$s.
                 - %14$s: The chance (from 0 to 100) that a response to each new message with a mention of scissors is posted.
-                - %15$s: Whether the bot reacts to mentions of paper with the scissors emoji. The value is either %1$s or %2$s.""",
+                - %15$s: Whether the bot reacts to mentions of paper with the scissors emoji. The value is either %1$s or %2$s.
+                - %16$s: Whether counting responses are posted for integers only (instead of all real numbers). The value is either %1$s or %2$s.""",
             monospace("true"),
             monospace("false"),
             monospace(SharedConstants.COMMAND_PREFIX + baseLiteral + " (server|channel) <option>"),
@@ -78,7 +79,8 @@ public class ConfigCommand {
             monospace(Option.PING_RESPONSES.properties().getName()),
             monospace(Option.SCISSORS_RESPONSES.properties().getName()),
             monospace(Option.SCISSORS_RESPONSE_CHANCE.properties().getName()),
-            monospace(Option.REACT_TO_PAPER.properties().getName())));
+            monospace(Option.REACT_TO_PAPER.properties().getName()),
+            monospace(Option.GPPCT_ON_INTEGERS_ONLY.properties().getName())));
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> optionsArguments(ArgumentBuilder<ChatCommandSource, ?> argument, OptionContext optionContext) {

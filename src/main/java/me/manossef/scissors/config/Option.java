@@ -9,7 +9,8 @@ public enum Option {
     PING_RESPONSES(BooleanOption.PING_RESPONSES),
     SCISSORS_RESPONSES(BooleanOption.SCISSORS_RESPONSES),
     SCISSORS_RESPONSE_CHANCE(IntOption.SCISSORS_RESPONSE_CHANCE),
-    REACT_TO_PAPER(BooleanOption.REACT_TO_PAPER);
+    REACT_TO_PAPER(BooleanOption.REACT_TO_PAPER),
+    GPPCT_ON_INTEGERS_ONLY(BooleanOption.GPPCT_ON_INTEGERS_ONLY);
 
     private static final Map<String, Option> NAME_TO_OPTION = mapNamesToOptions();
     private final TypedOption typedOption;
@@ -41,18 +42,6 @@ public enum Option {
         return this.typedOption instanceof IntOption;
     }
 
-    public OptionProperties<Boolean> getAsBoolean() {
-        if(this.typedOption instanceof BooleanOption)
-            return ((BooleanOption) typedOption).properties();
-        return null;
-    }
-
-    public OptionProperties<Integer> getAsInteger() {
-        if(this.typedOption instanceof IntOption)
-            return ((IntOption) typedOption).properties();
-        return null;
-    }
-
     private interface TypedOption {
         OptionProperties<?> properties();
     }
@@ -61,7 +50,8 @@ public enum Option {
         GPPCT_RESPONSES(new OptionProperties<>("gppctResponses", Boolean.class, true)),
         PING_RESPONSES(new OptionProperties<>("pingResponses", Boolean.class, true)),
         SCISSORS_RESPONSES(new OptionProperties<>("scissorsResponses", Boolean.class, true)),
-        REACT_TO_PAPER(new OptionProperties<>("reactToPaper", Boolean.class, true));
+        REACT_TO_PAPER(new OptionProperties<>("reactToPaper", Boolean.class, true)),
+        GPPCT_ON_INTEGERS_ONLY(new OptionProperties<>("gppctOnIntegersOnly", Boolean.class, false)),;
 
         private final OptionProperties<Boolean> properties;
 
