@@ -9,8 +9,6 @@ import me.manossef.scissors.Commands;
 import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.puzzles.Hangman;
 
-import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
-
 public class HangmanCommand {
     private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start hangman games in this session. Please yell at " + SharedConstants.MY_MENTION + " to restart me"));
 

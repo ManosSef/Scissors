@@ -33,10 +33,6 @@ public class Hangman extends Puzzle {
     private List<String> guesses;
     private Difficulty difficulty;
 
-    public Hangman(MessageChannel channel) {
-        this(channel, Difficulty.NORMAL);
-    }
-
     public Hangman(MessageChannel channel, Difficulty difficulty) {
         super(channel);
         if(!canStart()) return;

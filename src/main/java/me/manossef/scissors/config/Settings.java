@@ -19,6 +19,7 @@ public class Settings {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T get(Option option, Class<T> type) {
         if(option == null)
             throw new IllegalArgumentException("Option cannot be null");

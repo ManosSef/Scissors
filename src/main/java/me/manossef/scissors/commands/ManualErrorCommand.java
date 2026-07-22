@@ -15,6 +15,7 @@ public class ManualErrorCommand {
         );
     }
 
+    @SuppressWarnings("InfiniteRecursion")
     private static int recurse(int times) {
         if(times <= 0)
             throw new RuntimeException("Manually triggered exception");

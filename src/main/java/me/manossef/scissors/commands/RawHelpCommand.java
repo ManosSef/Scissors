@@ -3,9 +3,6 @@ package me.manossef.scissors.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
-import me.manossef.scissors.SharedConstants;
-
-import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class RawHelpCommand {
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {

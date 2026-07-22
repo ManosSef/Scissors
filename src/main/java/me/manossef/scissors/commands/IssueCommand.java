@@ -9,7 +9,6 @@ import kong.unirest.core.UnirestException;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.jira.objects.Issue;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;

@@ -31,7 +31,7 @@ public class OptionProperties<T> {
             super(name, Integer.class, defaultValue);
             this.min = min;
             this.max = max;
-            if(!validate(defaultValue))
+            if(isInvalid(defaultValue))
                 throw new IllegalArgumentException("Default option value (" + defaultValue + ") out of bounds (" + this.min + ", " + this.max + ")");
         }
 
@@ -43,8 +43,8 @@ public class OptionProperties<T> {
             return this.max;
         }
 
-        public boolean validate(int value) {
-            return value >= min && value <= max;
+        public boolean isInvalid(int value) {
+            return value < min || value > max;
         }
     }
 }

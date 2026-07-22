@@ -7,7 +7,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;

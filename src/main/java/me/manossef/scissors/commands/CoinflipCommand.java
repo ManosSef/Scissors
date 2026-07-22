@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import me.manossef.scissors.*;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
-import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class CoinflipCommand {
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {

@@ -24,7 +24,7 @@ public class Commands {
     private static ChatCommandSource source = new ChatCommandSource(null, null);
 
     static {
-        CommandSyntaxException.BUILT_IN_EXCEPTIONS = new BuiltInExceptions(new com.mojang.brigadier.exceptions.BuiltInExceptions());
+        CommandSyntaxException.BUILT_IN_EXCEPTIONS = new BuiltInExceptions();
     }
 
     public static void dispatch(Message message, User user) {
@@ -124,11 +124,7 @@ public class Commands {
         private static final SimpleCommandExceptionType DISPATCHER_UNKNOWN_ARGUMENT = new SimpleCommandExceptionType(new LiteralMessage("Incorrect argument"));
         private static final SimpleCommandExceptionType DISPATCHER_EXPECTED_ARGUMENT_SEPARATOR = new SimpleCommandExceptionType(new LiteralMessage("An argument was expected to end"));
 
-        private final com.mojang.brigadier.exceptions.BuiltInExceptions defaultExceptions;
-
-        private BuiltInExceptions(com.mojang.brigadier.exceptions.BuiltInExceptions defaultExceptions) {
-            this.defaultExceptions = defaultExceptions;
-        }
+        private static final com.mojang.brigadier.exceptions.BuiltInExceptions DEFAULT_EXCEPTIONS = new com.mojang.brigadier.exceptions.BuiltInExceptions();
 
         public Dynamic2CommandExceptionType doubleTooLow() {
             return DOUBLE_TOO_SMALL;
@@ -175,7 +171,7 @@ public class Commands {
         }
 
         public DynamicCommandExceptionType readerInvalidEscape() {
-            return this.defaultExceptions.readerInvalidEscape();
+            return DEFAULT_EXCEPTIONS.readerInvalidEscape();
         }
 
         public DynamicCommandExceptionType readerInvalidBool() {
@@ -183,7 +179,7 @@ public class Commands {
         }
 
         public DynamicCommandExceptionType readerInvalidInt() {
-            return this.defaultExceptions.readerInvalidInt();
+            return DEFAULT_EXCEPTIONS.readerInvalidInt();
         }
 
         public SimpleCommandExceptionType readerExpectedInt() {
@@ -219,7 +215,7 @@ public class Commands {
         }
 
         public DynamicCommandExceptionType readerExpectedSymbol() {
-            return this.defaultExceptions.readerExpectedSymbol();
+            return DEFAULT_EXCEPTIONS.readerExpectedSymbol();
         }
 
         public SimpleCommandExceptionType dispatcherUnknownCommand() {
@@ -235,7 +231,7 @@ public class Commands {
         }
 
         public DynamicCommandExceptionType dispatcherParseException() {
-            return this.defaultExceptions.dispatcherParseException();
+            return DEFAULT_EXCEPTIONS.dispatcherParseException();
         }
     }
 }

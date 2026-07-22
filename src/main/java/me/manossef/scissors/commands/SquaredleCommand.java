@@ -7,14 +7,12 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import kong.unirest.core.UnirestException;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
-import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.squaredle.PuzzleData;
 import me.manossef.scissors.squaredle.PuzzleUtil;
 import me.manossef.scissors.squaredle.TodayConfig;
 import me.manossef.scissors.squaredle.TodayConfigReader;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
-import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class SquaredleCommand {
     private static final SimpleCommandExceptionType CONFIG_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("Failed to get the daily Squaredle puzzle configuration"));

@@ -8,12 +8,15 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class JiraCheckLoop implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(JiraCheckLoop.class);
+    private static final int TIME_BETWEEN_LOOPS = 600000;
 
     private CheckedIssues checkedIssues;
 
@@ -21,9 +24,19 @@ public class JiraCheckLoop implements Runnable {
         this.checkedIssues = checkedIssues;
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
+        int stopwatch = 0;
+        Instant lastTimeCheck = Instant.now();
         while(true) {
+            Instant now = Instant.now();
+            stopwatch += (int) Duration.between(lastTimeCheck, now).toMillis();
+            lastTimeCheck = now;
+            if(stopwatch >= TIME_BETWEEN_LOOPS) {
+                stopwatch -= TIME_BETWEEN_LOOPS;
+                continue;
+            }
             try {
                 CheckedIssues newChecked = this.checkIssues();
                 List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
@@ -38,11 +51,8 @@ public class JiraCheckLoop implements Runnable {
                     DevGuild.logInvalidIssue(MessageCreateData.fromEmbeds(Scissors.JIRA_API.getIssue("SCIS-" + number).makeEmbed()));
                 this.checkedIssues = newChecked;
                 Scissors.saveCheckedIssues(newChecked);
-                Thread.sleep(600000L);
             } catch(UnirestException e) {
                 LOGGER.warn("Something went wrong; ignoring and continuing as normal.");
-            } catch(InterruptedException e) {
-                LOGGER.warn("The thread was interrupted!");
             }
         }
     }

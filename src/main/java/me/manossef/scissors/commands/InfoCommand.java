@@ -6,7 +6,6 @@ import me.manossef.scissors.Commands;
 import me.manossef.scissors.SharedConstants;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.italics;
-import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class InfoCommand {
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {

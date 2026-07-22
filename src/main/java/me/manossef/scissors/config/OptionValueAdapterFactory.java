@@ -16,6 +16,7 @@ public class OptionValueAdapterFactory implements TypeAdapterFactory {
         if(!typeToken.getRawType().equals(OptionValue.class))
             return null;
         return new TypeAdapter<>() {
+            @SuppressWarnings("unchecked")
             public T read(JsonReader reader) throws IOException {
                 if(reader.peek() == JsonToken.NULL) {
                     reader.nextNull();

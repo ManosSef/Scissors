@@ -5,13 +5,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
-import me.manossef.scissors.SharedConstants;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class HelpCommand {
     private static final String BASE_LITERAL = "help";

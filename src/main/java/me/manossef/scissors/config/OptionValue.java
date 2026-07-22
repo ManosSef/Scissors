@@ -6,7 +6,7 @@ public record OptionValue<T>(Option option, T value) {
             throw new IllegalArgumentException("Option cannot be null");
         if(value != null && option.properties() instanceof OptionProperties.IntOptionProperties properties) {
             int intValue = (int) value;
-            if(!properties.validate(intValue))
+            if(properties.isInvalid(intValue))
                 throw new IllegalArgumentException("Option value (" + intValue + ") out of bounds (" + properties.getMin() + ", " + properties.getMax() + ")");
         }
     }

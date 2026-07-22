@@ -66,6 +66,7 @@ public class MessageListeners extends ListenerAdapter {
                 || !config.getOptionForChannel(Option.GPPCT_ON_INTEGERS_ONLY, Boolean.class, message.getChannel()))
             && channel.canTalk()
             && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel)
+            && !isDisallowedForGPPCT(channel)
             && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.GPPCT_RESPONSE_CHANCE, Integer.class, channel);
     }
 

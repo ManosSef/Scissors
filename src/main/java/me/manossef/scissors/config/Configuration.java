@@ -1,6 +1,5 @@
 package me.manossef.scissors.config;
 
-import me.manossef.scissors.listeners.MessageListeners;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
@@ -33,8 +32,6 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
             if(settings.isPresent(option))
                 return settings.get(option, type);
         }
-        if(option.equals(Option.GPPCT_RESPONSES) && MessageListeners.isDisallowedForGPPCT(channel))
-            return (T) Boolean.FALSE;
         if(channel.getType().isGuild()) {
             GuildChannel guildChannel = (GuildChannel) channel;
             if(perGuild.containsKey(guildChannel.getGuild().getIdLong())) {
@@ -44,17 +41,6 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
             }
         }
         return global.get(option, type);
-    }
-
-    public <T> T getOptionForChannelOnly(Option option, Class<T> type, Channel channel) {
-        if(!option.properties().getType().equals(type))
-            throw new IllegalArgumentException("Option is not of the given type");
-        if(perChannel.containsKey(channel.getIdLong())) {
-            Settings settings = perChannel.get(channel.getIdLong());
-            if(settings.isPresent(option))
-                return settings.get(option, type);
-        }
-        return null;
     }
 
     public <T> void setGlobalOption(Option option, T value) {
