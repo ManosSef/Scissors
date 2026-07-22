@@ -40,10 +40,10 @@ public class InfoCommand {
                 I was created for a server called Chess Rock Community, a server full of amazing people my developer has interacted with for quite a long time and made a lot of inside jokes with. A few of them are integrated into me, \
                 so if you don't get them you either haven't been keeping up or have no idea what I'm talking about.
                 
-                I was created by <@%s>. If this says "unknown user" for you, %s
+                I was created by %s. If this says "unknown user" for you, %s
                 
                 If you'd like to know what I can do, type %s. You can also type %s if you find something wrong with me, %s if you'd like to suggest a new feature for me, or %s if you have an idea for improving me.""",
-            SharedConstants.MY_USER_ID,
+            SharedConstants.MY_MENTION,
             italics("how did I get here?"),
             Commands.format("help"),
             Commands.format("suggest bug <summary>"),

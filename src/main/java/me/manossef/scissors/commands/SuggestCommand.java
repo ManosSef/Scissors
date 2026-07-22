@@ -50,7 +50,7 @@ public class SuggestCommand {
         );
         HelpCommand.addLine(baseLiteral, "Posts a suggestion for the bot.");
         HelpCommand.addLiteral(baseLiteral, String.format("""
-                Posts a suggestion or bug report for the bot. A work item with the provided summary is created in the bot's internal Jira instance for <@%s> to eventually take a look at.
+                Posts a suggestion or bug report for the bot. A work item with the provided summary is created in the bot's internal Jira instance for %s to eventually take a look at.
                 
                 Here are the available syntaxes for this command:
                 - %s: Creates a work item with the "Bug" issue type. This should be used to report bugs.
@@ -58,7 +58,7 @@ public class SuggestCommand {
                 - %s: Creates a work item with the "Improvement" issue type. This should be used to suggest improvements to the bot's existing features.
                 
                 Fails if the provided summary is longer than 255 characters, or if anything else goes wrong while trying to submit the work item.""",
-            SharedConstants.MY_USER_ID,
+            SharedConstants.MY_MENTION,
             Commands.format(baseLiteral + " bug <summary>"),
             Commands.format(baseLiteral + " feature <summary>"),
             Commands.format(baseLiteral + " improvement <summary>")));

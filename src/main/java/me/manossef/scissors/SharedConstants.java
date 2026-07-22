@@ -9,6 +9,7 @@ public class SharedConstants {
     public static final String LOG_WEBHOOK_URL = System.getenv("SCISSORS_LOGGER_WEBHOOK");
 
     public static final long MY_USER_ID = 611151083141857286L;
+    public static final String MY_MENTION = "<@" + MY_USER_ID + ">";
 
     public static final String COMMAND_PREFIX = "8<";
 
