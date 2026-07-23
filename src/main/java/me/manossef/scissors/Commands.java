@@ -81,6 +81,7 @@ public class Commands {
         WordleCommand.register(dispatcher);
         NineCommand.register(dispatcher);
         LeaveCommand.register(dispatcher);
+        ListChannelsCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
         RawHelpCommand.register(dispatcher);
         StopAllGamesCommand.register(dispatcher);
