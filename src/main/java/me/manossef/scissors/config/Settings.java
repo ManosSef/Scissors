@@ -52,4 +52,8 @@ public class Settings {
         values.clear();
         return true;
     }
+
+    public String toString() {
+        return "Settings[values=" + values + "]";
+    }
 }

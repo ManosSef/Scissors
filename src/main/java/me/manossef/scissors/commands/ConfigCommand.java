@@ -39,6 +39,10 @@ public class ConfigCommand {
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "config";
         dispatcher.register(Commands.literal(baseLiteral)
+            .then(Commands.literal("dump")
+                .requires(Commands.devRestricted())
+                .executes(context -> dumpConfig(context.getSource()))
+            )
             .then(optionsArguments(Commands.literal("global"), OptionContext.GLOBAL).requires(Commands.devRestricted()))
             .then(optionsArguments(Commands.literal("server"), OptionContext.PER_GUILD))
             .then(optionsArguments(Commands.literal("channel"), OptionContext.PER_CHANNEL))
@@ -51,18 +55,20 @@ public class ConfigCommand {
                 Option values persist across restarts of the bot.
                 
                 Here are all available syntaxes for this command:
-                - %1$s: Returns the effective value of the specified option for the server/channel the command was run in.
-                - %2$s: Sets the value of the specified option for the server/channel the command was run in to the specified value.
-                - %3$s: Resets the values of all options for the server/channel the command was run in to the default ones.
-                - %4$s: Returns the explicitly applied value of the specified option for the server/channel the command was run in. Fails if this option has not been given an explicit value for this server/channel.
+                - %1$s: Returns the values of all options for the server/channel the command was run in. For each option, the explicitly applied value is returned, falling back to the effective value if no explicit value exists.
+                - %2$s: Returns the effective value of the specified option for the server/channel the command was run in.
+                - %3$s: Sets the value of the specified option for the server/channel the command was run in to the specified value.
+                - %4$s: Resets the values of all options for the server/channel the command was run in to the default ones.
+                - %5$s: Returns the explicitly applied value of the specified option for the server/channel the command was run in. Fails if this option has not been given an explicit value for this server/channel.
                 
-                Use %5$s as the first argument to affect the server, and %6$s to affect the channel the command was run in.
+                Use %6$s as the first argument to affect the server, and %7$s to affect the channel the command was run in.
                 
-                %7$s commands always fail if run in a DM.
+                %8$s commands always fail if run in a DM.
                 
-                You need the "Manage Server" permission to run %7$s commands, and the "Manage Channel" permission in the respective channel to run %8$s commands.
+                You need the "Manage Server" permission to run %8$s commands, and the "Manage Channel" permission in the respective channel to run %9$s commands.
                 
-                Use %9$s to see all available options.""",
+                Use %10$s to see all available options.""",
+            Commands.format(baseLiteral + " (server|channel)"),
             Commands.format(baseLiteral + " (server|channel) <option>"),
             Commands.format(baseLiteral + " (server|channel) <option> <value>"),
             Commands.format(baseLiteral + " (server|channel) reset"),
@@ -75,9 +81,10 @@ public class ConfigCommand {
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> optionsArguments(ArgumentBuilder<ChatCommandSource, ?> argument, OptionContext optionContext) {
-        argument.then(Commands.literal("reset")
-            .executes(context -> resetOptions(context.getSource(), optionContext))
-        );
+        argument.executes(context -> getAllOptions(context.getSource(), optionContext))
+            .then(Commands.literal("reset")
+                .executes(context -> resetOptions(context.getSource(), optionContext))
+            );
         ArgumentBuilder<ChatCommandSource, ?> onlyArgument = Commands.literal("explicit");
         for(Option option : Option.values()) {
             ArgumentBuilder<ChatCommandSource, ?> optionArgument = Commands.literal(option.properties().getName())
@@ -99,6 +106,11 @@ public class ConfigCommand {
         }
         argument.then(onlyArgument);
         return argument;
+    }
+
+    private static int dumpConfig(ChatCommandSource source) {
+        source.sendSuccess(Scissors.getConfiguration().toString());
+        return 1;
     }
 
     private static int resetOptions(ChatCommandSource source, OptionContext optionContext) throws CommandSyntaxException {
@@ -129,6 +141,46 @@ public class ConfigCommand {
             }
         }
         Scissors.saveConfiguration();
+        return 1;
+    }
+
+    private static int getAllOptions(ChatCommandSource source, OptionContext optionContext) throws CommandSyntaxException {
+        switch(optionContext) {
+            case GLOBAL -> {
+                StringBuilder builder = new StringBuilder("Here are the global values of all options:\n");
+                for(Option option : Option.values())
+                    builder.append("- ").append(monospace(option.properties().getName())).append(": ")
+                        .append(bold(Scissors.getConfiguration().getGlobalOption(option, option.properties().getType()).toString()));
+                source.sendSuccess(builder.toString());
+            }
+            case PER_GUILD -> {
+                StringBuilder builder = new StringBuilder("Here are the values of all options for this server:\n");
+                for(Option option : Option.values()) {
+                    builder.append("- ").append(monospace(option.properties().getName())).append(": ");
+                    Object value = Scissors.getConfiguration().getOptionForGuildOnly(option, option.properties().getType(), source.commandMessage().getGuild());
+                    if(value == null) {
+                        builder.append("no explicit value; effective value: ");
+                        value = Scissors.getConfiguration().getOptionForGuild(option, option.properties().getType(), source.commandMessage().getGuild());
+                    }
+                    builder.append(bold(value.toString()));
+                }
+                source.sendSuccess(builder.toString());
+            }
+            case PER_CHANNEL -> {
+                StringBuilder builder = new StringBuilder("Here are the values of all options for this channel:\n");
+                for(Option option : Option.values()) {
+                    builder.append("- ").append(monospace(option.properties().getName())).append(": ");
+                    Object value = Scissors.getConfiguration().getOptionForChannelOnly(option, option.properties().getType(), source.commandMessage().getChannel());
+                    if(value == null) {
+                        builder.append("no explicit value; effective value: ");
+                        value = Scissors.getConfiguration().getOptionForChannel(option, option.properties().getType(), source.commandMessage().getChannel());
+                    }
+                    builder.append(bold(value.toString()));
+                }
+                source.sendSuccess(builder.toString());
+            }
+            default -> throw INVALID_CONTEXT.create();
+        }
         return 1;
     }
 
