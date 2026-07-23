@@ -51,27 +51,18 @@ public class ConfigCommand {
                 Option values persist across restarts of the bot.
                 
                 Here are all available syntaxes for this command:
-                - %3$s: Returns the effective value of the specified option for the server/channel the command was run in.
-                - %4$s: Sets the value of the specified option for the server/channel the command was run in to the specified value.
-                - %5$s: Resets the values of all options for the server/channel the command was run in to the default ones.
-                - %6$s: Returns the explicitly applied value of the specified option for the server/channel the command was run in. Fails if this option has not been given an explicit value for this server/channel.
+                - %1$s: Returns the effective value of the specified option for the server/channel the command was run in.
+                - %2$s: Sets the value of the specified option for the server/channel the command was run in to the specified value.
+                - %3$s: Resets the values of all options for the server/channel the command was run in to the default ones.
+                - %4$s: Returns the explicitly applied value of the specified option for the server/channel the command was run in. Fails if this option has not been given an explicit value for this server/channel.
                 
-                Use %7$s as the first argument to affect the server, and %8$s to affect the channel the command was run in.
+                Use %5$s as the first argument to affect the server, and %6$s to affect the channel the command was run in.
                 
-                %9$s commands always fail if run in a DM.
+                %7$s commands always fail if run in a DM.
                 
-                You need the "Manage Server" permission to run %9$s commands, and the "Manage Channel" permission in the respective channel to run %10$s commands.
+                You need the "Manage Server" permission to run %7$s commands, and the "Manage Channel" permission in the respective channel to run %8$s commands.
                 
-                Here are all available options:
-                - %11$s: Whether counting responses are posted. The value is either %1$s or %2$s.
-                - %12$s: The chance (from 0 to 100) that a response to each new message with only a number is posted.
-                - %13$s: Whether responses to pings are posted. The value is either %1$s or %2$s.
-                - %14$s: Whether responses to mentions of scissors are posted. The value is either %1$s or %2$s.
-                - %15$s: The chance (from 0 to 100) that a response to each new message with a mention of scissors is posted.
-                - %16$s: Whether the bot reacts to mentions of paper with the scissors emoji. The value is either %1$s or %2$s.
-                - %17$s: Whether counting responses are posted for integers only (instead of all real numbers). The value is either %1$s or %2$s.""",
-            monospace("true"),
-            monospace("false"),
+                Use %9$s to see all available options.""",
             Commands.format(baseLiteral + " (server|channel) <option>"),
             Commands.format(baseLiteral + " (server|channel) <option> <value>"),
             Commands.format(baseLiteral + " (server|channel) reset"),
@@ -80,13 +71,7 @@ public class ConfigCommand {
             monospace("channel"),
             Commands.format(baseLiteral + " server ..."),
             Commands.format(baseLiteral + " channel ..."),
-            monospace(Option.GPPCT_RESPONSES.properties().getName()),
-            monospace(Option.GPPCT_RESPONSE_CHANCE.properties().getName()),
-            monospace(Option.PING_RESPONSES.properties().getName()),
-            monospace(Option.SCISSORS_RESPONSES.properties().getName()),
-            monospace(Option.SCISSORS_RESPONSE_CHANCE.properties().getName()),
-            monospace(Option.REACT_TO_PAPER.properties().getName()),
-            monospace(Option.GPPCT_ON_INTEGERS_ONLY.properties().getName())));
+            Commands.format("info options")));
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> optionsArguments(ArgumentBuilder<ChatCommandSource, ?> argument, OptionContext optionContext) {

@@ -4,8 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.config.Option;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.italics;
+import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class InfoCommand {
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
@@ -17,6 +19,9 @@ public class InfoCommand {
             )
             .then(Commands.literal("github")
                 .executes(context -> sendGithub(context.getSource()))
+            )
+            .then(Commands.literal("options")
+                .executes(context -> sendOptions(context.getSource()))
             )
         );
         HelpCommand.addLine(baseLiteral, "Provides information about the bot.");
@@ -58,6 +63,29 @@ public class InfoCommand {
 
     private static int sendGithub(ChatCommandSource source) {
         source.sendSuccess("The GitHub repository where my code is hosted can be found at https://github.com/ManosSef/Scissors");
+        return 1;
+    }
+
+    private static int sendOptions(ChatCommandSource source) {
+        source.sendSuccess(String.format("""
+                Here are all my configuration options, which can be queried or edited using %3$s:
+                - %4$s: Whether counting responses are posted. The value is either %1$s or %2$s.
+                - %5$s: The chance (from 0 to 100) that a response to each new message with only a number is posted.
+                - %6$s: Whether responses to pings are posted. The value is either %1$s or %2$s.
+                - %7$s: Whether responses to mentions of scissors are posted. The value is either %1$s or %2$s.
+                - %8$s: The chance (from 0 to 100) that a response to each new message with a mention of scissors is posted.
+                - %9$s: Whether the bot reacts to mentions of paper with the scissors emoji. The value is either %1$s or %2$s.
+                - %10$s: Whether counting responses are posted for integers only (instead of all real numbers). The value is either %1$s or %2$s.""",
+            monospace("true"),
+            monospace("false"),
+            Commands.format("config"),
+            monospace(Option.GPPCT_RESPONSES.properties().getName()),
+            monospace(Option.GPPCT_RESPONSE_CHANCE.properties().getName()),
+            monospace(Option.PING_RESPONSES.properties().getName()),
+            monospace(Option.SCISSORS_RESPONSES.properties().getName()),
+            monospace(Option.SCISSORS_RESPONSE_CHANCE.properties().getName()),
+            monospace(Option.REACT_TO_PAPER.properties().getName()),
+            monospace(Option.GPPCT_ON_INTEGERS_ONLY.properties().getName())));
         return 1;
     }
 }
