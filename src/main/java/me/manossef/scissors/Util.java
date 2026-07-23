@@ -85,8 +85,7 @@ public class Util {
             description + "\nStack trace:\n{noformat}" + getStackTrace(exception) + "{noformat}",
             Scissors.JIRA_API.getIssuetype(SharedConstants.ISSUETYPE_BUG_ID),
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
-            Scissors.DISCORD_API.getSelfUser().getId(),
-            false
+            Scissors.DISCORD_API.getSelfUser().getId()
         );
         if(issue.id() == null) {
             StringBuilder builder = new StringBuilder();

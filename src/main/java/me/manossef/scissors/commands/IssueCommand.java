@@ -9,14 +9,12 @@ import kong.unirest.core.UnirestException;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.jira.objects.Issue;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class IssueCommand {
     private static final DynamicCommandExceptionType ISSUE_NOT_FOUND = new DynamicCommandExceptionType(issue -> new LiteralMessage("Could not find issue " + issue));
-    private static final DynamicCommandExceptionType PRIVATE_ISSUE = new DynamicCommandExceptionType(issue -> new LiteralMessage(issue + " is private."));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "issue";
@@ -33,18 +31,16 @@ public class IssueCommand {
                 
                 Syntax: %s
                 
-                Fails if there is no work item with the specified number, or the specified work item is only for %s to see.""",
+                Fails if there is no work item with the specified number.""",
             monospace("SCIS-<#>"),
             monospace("<#>"),
-            Commands.format(baseLiteral + " <number>"),
-            SharedConstants.MY_MENTION));
+            Commands.format(baseLiteral + " <number>")));
     }
 
     private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException {
         try {
             Issue issue = Scissors.JIRA_API.getIssue(issueKey);
             if(issue.id() == null) throw ISSUE_NOT_FOUND.create(issueKey);
-            if(issue.isPrivate()) throw PRIVATE_ISSUE.create(issueKey);
             source.sendSuccess("Successfully found issue " + issueKey + ":", issue.makeEmbed());
             return 1;
         } catch(UnirestException e) {

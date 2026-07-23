@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -32,12 +31,22 @@ public class SuggestCommand {
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "suggest";
-        dispatcher.register(addArguments(Commands.literal(baseLiteral)
+        dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendIssueTypeHint())
-            .then(addArguments(Commands.literal("private"), true))
+            .then(argumentsForIssueType("bug", IssueType.BUG))
+            .then(argumentsForIssueType("feature", IssueType.FEATURE))
+            .then(argumentsForIssueType("improvement", IssueType.IMPROVEMENT))
+            .then(argumentsForIssueType("task", IssueType.TASK).requires(Commands.devRestricted()))
+            .then(Commands.argument("reporter", UserArgument.user())
+                .requires(Commands.devRestricted())
+                .then(argumentsForIssueTypeWithUser("bug", IssueType.BUG))
+                .then(argumentsForIssueTypeWithUser("feature", IssueType.FEATURE))
+                .then(argumentsForIssueTypeWithUser("improvement", IssueType.IMPROVEMENT))
+                .then(argumentsForIssueTypeWithUser("task", IssueType.TASK))
+            )
             .then(Commands.argument("summary", StringArgumentType.greedyString())
                 .executes(context -> sendIssueTypeHint())
-            ), false)
+            )
         );
         HelpCommand.addLine(baseLiteral, "Posts a suggestion for the bot.");
         HelpCommand.addLiteral(baseLiteral, String.format("""
@@ -48,44 +57,19 @@ public class SuggestCommand {
                 - %s: Creates a work item with the "New Feature" issue type. This should be used to suggest new features to be added to the bot.
                 - %s: Creates a work item with the "Improvement" issue type. This should be used to suggest improvements to the bot's existing features.
                 
-                Adding %s right before %s, %s, or %s causes the created issue to be private and deletes your command message. Private issues:
-                - Don't appear when using %s.
-                - Don't appear in the done and invalid issue feeds in the bot's development server.
-                You can use private issues to report security exploits or other issues that the public shouldn't know about.
-                
                 Fails if the provided summary is longer than 255 characters, or if anything else goes wrong while trying to submit the work item.""",
             SharedConstants.MY_MENTION,
             Commands.format(baseLiteral + " bug <summary>"),
             Commands.format(baseLiteral + " feature <summary>"),
-            Commands.format(baseLiteral + " improvement <summary>"),
-            monospace("private"),
-            monospace("bug"),
-            monospace("feature"),
-            monospace("improvement"),
-            Commands.format("issue")));
+            Commands.format(baseLiteral + " improvement <summary>")));
     }
 
-    private static LiteralArgumentBuilder<ChatCommandSource> addArguments(LiteralArgumentBuilder<ChatCommandSource> argument, boolean isPrivate) {
-        argument.then(argumentsForIssueType("bug", IssueType.BUG, isPrivate))
-            .then(argumentsForIssueType("feature", IssueType.FEATURE, isPrivate))
-            .then(argumentsForIssueType("improvement", IssueType.IMPROVEMENT, isPrivate))
-            .then(argumentsForIssueType("task", IssueType.TASK, isPrivate).requires(Commands.devRestricted()))
-            .then(Commands.argument("reporter", UserArgument.user())
-                .requires(Commands.devRestricted())
-                .then(argumentsForIssueTypeWithUser("bug", IssueType.BUG, isPrivate))
-                .then(argumentsForIssueTypeWithUser("feature", IssueType.FEATURE, isPrivate))
-                .then(argumentsForIssueTypeWithUser("improvement", IssueType.IMPROVEMENT, isPrivate))
-                .then(argumentsForIssueTypeWithUser("task", IssueType.TASK, isPrivate))
-            );
-        return argument;
-    }
-
-    private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueType(String literal, IssueType type, boolean isPrivate) {
+    private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueType(String literal, IssueType type) {
         return Commands.literal(literal)
             .then(Commands.argument("summary", StringArgumentType.greedyString())
                 .executes(context -> {
                     try {
-                        return createIssue(context.getSource(), type, context.getArgument("summary", String.class), isPrivate);
+                        return createIssue(context.getSource(), type, context.getArgument("summary", String.class));
                     } catch(UnirestException e) {
                         throw Commands.IO_EXCEPTION.create();
                     }
@@ -93,12 +77,12 @@ public class SuggestCommand {
             );
     }
 
-    private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueTypeWithUser(String literal, IssueType type, boolean isPrivate) {
+    private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueTypeWithUser(String literal, IssueType type) {
         return Commands.literal(literal)
             .then(Commands.argument("summary", StringArgumentType.greedyString())
                 .executes(context -> {
                     try {
-                        return createIssue(context.getSource(), type, context.getArgument("summary", String.class), context.getArgument("reporter", User.class), isPrivate);
+                        return createIssue(context.getSource(), type, context.getArgument("summary", String.class), context.getArgument("reporter", User.class));
                     } catch(UnirestException e) {
                         throw Commands.IO_EXCEPTION.create();
                     }
@@ -106,19 +90,18 @@ public class SuggestCommand {
             );
     }
 
-    private static int createIssue(ChatCommandSource source, IssueType type, String summary, boolean isPrivate) throws CommandSyntaxException {
-        return createIssue(source, type, summary, source.user(), isPrivate);
+    private static int createIssue(ChatCommandSource source, IssueType type, String summary) throws CommandSyntaxException {
+        return createIssue(source, type, summary, source.user());
     }
 
-    private static int createIssue(ChatCommandSource source, IssueType type, String summary, User user, boolean isPrivate) throws CommandSyntaxException {
+    private static int createIssue(ChatCommandSource source, IssueType type, String summary, User user) throws CommandSyntaxException {
         if(user == null) throw Commands.USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
             "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: " + Util.getMessageLink(source.commandMessage()),
             Scissors.JIRA_API.getIssuetype(type.id),
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
-            user.getId(),
-            isPrivate
+            user.getId()
         );
         if(issue.id() == null) {
             List<String> errors = new ArrayList<>();
