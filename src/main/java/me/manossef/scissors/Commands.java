@@ -9,7 +9,6 @@ import com.mojang.brigadier.exceptions.*;
 import me.manossef.scissors.commands.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 import java.util.function.Predicate;
 
@@ -30,20 +29,23 @@ public class Commands {
     public static void dispatch(Message message, User user) {
         String command = message.getContentRaw().replaceFirst(SharedConstants.COMMAND_PREFIX, "").strip();
         if(command.isEmpty()) return;
-        MessageChannel channel = message.getChannel();
         source = source.withMessage(message).withUser(user);
         String username = user.getName().replace("_", "\\_");
         try {
             int result = DISPATCHER.execute(command, source);
-            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " (" + channel.getId() + ") and succeeded with return value " + result));
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + formatMessageLink(message) + " and succeeded with return value " + result));
         } catch(CommandSyntaxException e) {
             source.sendFailure(e.getMessage());
-            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " (" + channel.getId() + ") and failed"));
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + formatMessageLink(message) + " and failed"));
         } catch(Exception e) {
             source.sendError(e.getMessage());
-            DevGuild.logCommandError(username + " (" + user.getId() + ") executed command " + monospace(command) + " in " + channel.getAsMention() + " (" + channel.getId() + ") and threw an exception:", e);
+            DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + formatMessageLink(message) + " and threw an exception:"), e);
             Util.createIssueForException(e, "Command error: ", "Command: {{" + command + "}}");
         }
+    }
+
+    private static String formatMessageLink(Message message) {
+        return Util.getMessageLink(message) + " (channel: " + message.getChannelId() + ", message: " + message.getId() + ")";
     }
 
     private static String shortenMiddle(String start, String middle, String end) {
