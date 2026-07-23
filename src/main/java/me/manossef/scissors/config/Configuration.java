@@ -43,6 +43,17 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
         return global.get(option, type);
     }
 
+    public <T> T getOptionForChannelOnly(Option option, Class<T> type, Channel channel) {
+        if(!option.properties().getType().equals(type))
+            throw new IllegalArgumentException("Option is not of the given type");
+        if(perChannel.containsKey(channel.getIdLong())) {
+            Settings settings = perChannel.get(channel.getIdLong());
+            if(settings.isPresent(option))
+                return settings.get(option, type);
+        }
+        return null;
+    }
+
     public <T> void setGlobalOption(Option option, T value) {
         global.set(option, value);
     }
