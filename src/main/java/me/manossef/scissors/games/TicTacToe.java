@@ -34,7 +34,7 @@ public class TicTacToe extends Game {
         this.grid = new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(
             new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), this.getGridFormat(), EmbedType.RICH, null, 0xDE6868,
-                null, null, null, null, null, null, null)
+                null, null, null, null, null, null, null, 0)
         )).addComponents(
             ActionRow.of(Button.success("100", Emojis.TICTACTOE), Button.success("101", Emojis.TICTACTOE), Button.success("102", Emojis.TICTACTOE)),
             ActionRow.of(Button.success("110", Emojis.TICTACTOE), Button.success("111", Emojis.TICTACTOE), Button.success("112", Emojis.TICTACTOE)),
@@ -99,7 +99,7 @@ public class TicTacToe extends Game {
         };
         this.message.editMessage(MessageEditData.fromEmbeds(
             new MessageEmbed(null, "Tic-tac-toe game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), this.getGridFormat() + statusText, EmbedType.RICH, null, 0xDE6868,
-                null, null, null, null, null, null, null)
+                null, null, null, null, null, null, null, 0)
         )).setComponents(
             ActionRow.of(Button.success("100", Emojis.TICTACTOE).withDisabled(grid[0][0] != ' '), Button.success("101", Emojis.TICTACTOE).withDisabled(grid[0][1] != ' '), Button.success("102", Emojis.TICTACTOE).withDisabled(grid[0][2] != ' ')),
             ActionRow.of(Button.success("110", Emojis.TICTACTOE).withDisabled(grid[1][0] != ' '), Button.success("111", Emojis.TICTACTOE).withDisabled(grid[1][1] != ' '), Button.success("112", Emojis.TICTACTOE).withDisabled(grid[1][2] != ' ')),

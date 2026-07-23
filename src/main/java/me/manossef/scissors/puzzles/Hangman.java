@@ -49,7 +49,7 @@ public class Hangman extends Puzzle {
         this.guesses = new ArrayList<>();
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(this.revealedLetters).toUpperCase().replace("_", "\\_") + "\n" + this.getHangmanDrawing()
             + "\n\nReply to this message with a letter or word to guess it!\n" + this.getMistakesSentence(), EmbedType.RICH, null, 0x5865F2, null,
-            null, null, null, null, null, null))).queue();
+            null, null, null, null, null, null, 0))).queue();
     }
 
     public void end() {
@@ -113,7 +113,7 @@ public class Hangman extends Puzzle {
         this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(this.revealedLetters).toUpperCase().replace("_", "\\_") + "\n" + this.getHangmanDrawing()
             + (this.guesses.isEmpty() ? "" : "\nPrevious guesses: " + this.guesses.toString().replaceAll("[\\[\\]]", "").toUpperCase()) + (this.isSolved() ? "\n\n" + bold("Solved!") : this.isLost()
             ? "\n\n" + bold("Failed! The answer was " + this.word.toUpperCase()) : "\n\nReply to this message with a letter or word to guess it!\n" + this.getMistakesSentence()), EmbedType.RICH, null,
-            0x5865F2, null, null, null, null, null, null, null))).queue();
+            0x5865F2, null, null, null, null, null, null, null, 0))).queue();
     }
 
     private String getMistakesSentence() {

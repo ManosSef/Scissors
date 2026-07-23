@@ -33,7 +33,7 @@ public class RockPaperScissors extends Game {
     public void start() {
         this.getChannel().sendMessage(MessageCreateData.fromEmbeds(
             new MessageEmbed(null, "Rock paper scissors game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), "Choose your move:", EmbedType.RICH, null, 0xDE6868,
-                null, null, null, null, null, null, null)
+                null, null, null, null, null, null, null, 0)
         )).addComponents(BUTTONS).queue();
     }
 
@@ -101,7 +101,7 @@ public class RockPaperScissors extends Game {
         }
         this.message.editMessage(MessageEditData.fromEmbeds(
             new MessageEmbed(null, "Rock paper scissors game between " + this.getPlayer1().getName() + " and " + this.getPlayer2().getName(), description.toString(), EmbedType.RICH, null, 0xDE6868,
-                null, null, null, null, null, null, null)
+                null, null, null, null, null, null, null, 0)
         )).setComponents(BUTTONS).queue();
     }
 
