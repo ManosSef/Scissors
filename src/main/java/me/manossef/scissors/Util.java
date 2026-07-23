@@ -13,13 +13,8 @@ import java.util.Objects;
 public class Util {
     private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
 
-    public static String getMessageLink(Message message) {
-        String guildId = message.getGuildId();
-        return "https://discord.com/channels/" + (guildId == null ? "@me" : guildId) + "/" + message.getChannelId() + "/" + message.getId();
-    }
-
     public static String getMessageLinkWithInfo(Message message) {
-        return getMessageLink(message) + " (channel: " + message.getChannelId() + ", message: " + message.getId() + ")";
+        return message.getJumpUrl() + " (channel: " + message.getChannelId() + ", message: " + message.getId() + ")";
     }
 
     public static String truncate(String message) {

@@ -98,7 +98,7 @@ public class SuggestCommand {
         if(user == null) throw Commands.USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
-            "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: " + Util.getMessageLink(source.commandMessage()),
+            "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: " + source.commandMessage().getJumpUrl(),
             Scissors.JIRA_API.getIssuetype(type.id),
             Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
             user.getId()
