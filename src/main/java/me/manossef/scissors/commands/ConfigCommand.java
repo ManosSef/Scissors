@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
@@ -32,6 +33,8 @@ public class ConfigCommand {
     private static final SimpleCommandExceptionType IMPOSSIBLE_ERROR = new SimpleCommandExceptionType(new LiteralMessage("This error should not have happened! Discord must be freaking out!"));
     private static final SimpleCommandExceptionType NO_PERMS_IN_GUILD = new SimpleCommandExceptionType(new LiteralMessage("You need to have the \"Manage Server\" or \"Administrator\" permission to edit the bot's options for this server"));
     private static final SimpleCommandExceptionType NO_PERMS_IN_CHANNEL = new SimpleCommandExceptionType(new LiteralMessage("You need to have the \"Manage Channel\" or \"Administrator\" permission to edit the bot's options for this channel"));
+    private static final DynamicCommandExceptionType NO_EXPLICIT_VALUE_IN_GUILD = new DynamicCommandExceptionType(option -> new LiteralMessage("No explicit value for the option " + option + " has been set for this server"));
+    private static final DynamicCommandExceptionType NO_EXPLICIT_VALUE_IN_CHANNEL = new DynamicCommandExceptionType(option -> new LiteralMessage("No explicit value for the option " + option + " has been set for this channel"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "config";
@@ -51,26 +54,28 @@ public class ConfigCommand {
                 - %3$s: Returns the effective value of the specified option for the server/channel the command was run in.
                 - %4$s: Sets the value of the specified option for the server/channel the command was run in to the specified value.
                 - %5$s: Resets the values of all options for the server/channel the command was run in to the default ones.
+                - %6$s: Returns the explicitly applied value of the specified option for the server/channel the command was run in. Fails if this option has not been given an explicit value for this server/channel.
                 
-                Use %6$s as the first argument to affect the server, and %7$s to affect the channel the command was run in.
+                Use %7$s as the first argument to affect the server, and %8$s to affect the channel the command was run in.
                 
-                %8$s commands always fail if run in a DM.
+                %9$s commands always fail if run in a DM.
                 
-                You need the "Manage Server" permission to run %8$s commands, and the "Manage Channel" permission in the respective channel to run %9$s commands.
+                You need the "Manage Server" permission to run %9$s commands, and the "Manage Channel" permission in the respective channel to run %10$s commands.
                 
                 Here are all available options:
-                - %10$s: Whether counting responses are posted. The value is either %1$s or %2$s.
-                - %11$s: The chance (from 0 to 100) that a response to each new message with only a number is posted.
-                - %12$s: Whether responses to pings are posted. The value is either %1$s or %2$s.
-                - %13$s: Whether responses to mentions of scissors are posted. The value is either %1$s or %2$s.
-                - %14$s: The chance (from 0 to 100) that a response to each new message with a mention of scissors is posted.
-                - %15$s: Whether the bot reacts to mentions of paper with the scissors emoji. The value is either %1$s or %2$s.
-                - %16$s: Whether counting responses are posted for integers only (instead of all real numbers). The value is either %1$s or %2$s.""",
+                - %11$s: Whether counting responses are posted. The value is either %1$s or %2$s.
+                - %12$s: The chance (from 0 to 100) that a response to each new message with only a number is posted.
+                - %13$s: Whether responses to pings are posted. The value is either %1$s or %2$s.
+                - %14$s: Whether responses to mentions of scissors are posted. The value is either %1$s or %2$s.
+                - %15$s: The chance (from 0 to 100) that a response to each new message with a mention of scissors is posted.
+                - %16$s: Whether the bot reacts to mentions of paper with the scissors emoji. The value is either %1$s or %2$s.
+                - %17$s: Whether counting responses are posted for integers only (instead of all real numbers). The value is either %1$s or %2$s.""",
             monospace("true"),
             monospace("false"),
             Commands.format(baseLiteral + " (server|channel) <option>"),
             Commands.format(baseLiteral + " (server|channel) <option> <value>"),
             Commands.format(baseLiteral + " (server|channel) reset"),
+            Commands.format(baseLiteral + " (server|channel) explicit <option>"),
             monospace("server"),
             monospace("channel"),
             Commands.format(baseLiteral + " server ..."),
@@ -88,9 +93,10 @@ public class ConfigCommand {
         argument.then(Commands.literal("reset")
             .executes(context -> resetOptions(context.getSource(), optionContext))
         );
+        ArgumentBuilder<ChatCommandSource, ?> onlyArgument = Commands.literal("explicit");
         for(Option option : Option.values()) {
             ArgumentBuilder<ChatCommandSource, ?> optionArgument = Commands.literal(option.properties().getName())
-                .executes(context -> getOptionValue(context.getSource(), option, option.properties().getType(), optionContext));
+                .executes(context -> getOptionValue(context.getSource(), option, option.properties().getType(), optionContext, true));
             if(option.isBoolean())
                 optionArgument.then(Commands.argument("value", BoolArgumentType.bool())
                     .executes(context -> setOptionValue(context.getSource(), option, BoolArgumentType.getBool(context, "value"), optionContext))
@@ -102,7 +108,11 @@ public class ConfigCommand {
                 );
             }
             argument.then(optionArgument);
+            onlyArgument.then(Commands.literal(option.properties().getName())
+                .executes(context -> getOptionValue(context.getSource(), option, option.properties().getType(), optionContext, false))
+            );
         }
+        argument.then(onlyArgument);
         return argument;
     }
 
@@ -137,7 +147,7 @@ public class ConfigCommand {
         return 1;
     }
 
-    private static <T> int getOptionValue(ChatCommandSource source, Option option, Class<T> type, OptionContext optionContext) throws CommandSyntaxException {
+    private static <T> int getOptionValue(ChatCommandSource source, Option option, Class<T> type, OptionContext optionContext, boolean defaultToHigherPower) throws CommandSyntaxException {
         T value;
         switch(optionContext) {
             case GLOBAL -> {
@@ -147,12 +157,24 @@ public class ConfigCommand {
             case PER_GUILD -> {
                 if(!(source.commandMessage().getChannel() instanceof GuildChannel))
                     throw NOT_IN_GUILD.create();
-                value = Scissors.getConfiguration().getOptionForGuild(option, type, source.commandMessage().getGuild());
-                source.sendSuccess("The current effective value of the option " + monospace(option.properties().getName()) + " for this server is " + bold(value.toString()));
+                if(defaultToHigherPower) {
+                    value = Scissors.getConfiguration().getOptionForGuild(option, type, source.commandMessage().getGuild());
+                    source.sendSuccess("The current effective value of the option " + monospace(option.properties().getName()) + " for this server is " + bold(value.toString()));
+                } else {
+                    value = Scissors.getConfiguration().getOptionForGuildOnly(option, type, source.commandMessage().getGuild());
+                    if(value == null) throw NO_EXPLICIT_VALUE_IN_GUILD.create(monospace(option.properties().getName()));
+                    source.sendSuccess("The current explicit value of the option " + monospace(option.properties().getName()) + " for this server is " + bold(value.toString()));
+                }
             }
             case PER_CHANNEL -> {
-                value = Scissors.getConfiguration().getOptionForChannel(option, type, source.commandMessage().getChannel());
-                source.sendSuccess("The current effective value of the option " + monospace(option.properties().getName()) + " for this channel is " + bold(value.toString()));
+                if(defaultToHigherPower) {
+                    value = Scissors.getConfiguration().getOptionForChannel(option, type, source.commandMessage().getChannel());
+                    source.sendSuccess("The current effective value of the option " + monospace(option.properties().getName()) + " for this channel is " + bold(value.toString()));
+                } else {
+                    value = Scissors.getConfiguration().getOptionForChannelOnly(option, type, source.commandMessage().getChannel());
+                    if(value == null) throw NO_EXPLICIT_VALUE_IN_CHANNEL.create(monospace(option.properties().getName()));
+                    source.sendSuccess("The current explicit value of the option " + monospace(option.properties().getName()) + " for this channel is " + bold(value.toString()));
+                }
             }
             default -> throw INVALID_CONTEXT.create();
         }
