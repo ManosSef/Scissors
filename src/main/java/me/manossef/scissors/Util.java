@@ -18,6 +18,10 @@ public class Util {
         return "https://discord.com/channels/" + (guildId == null ? "@me" : guildId) + "/" + message.getChannelId() + "/" + message.getId();
     }
 
+    public static String getMessageLinkWithInfo(Message message) {
+        return getMessageLink(message) + " (channel: " + message.getChannelId() + ", message: " + message.getId() + ")";
+    }
+
     public static String truncate(String message) {
         if(message.length() <= Message.MAX_CONTENT_LENGTH)
             return message;

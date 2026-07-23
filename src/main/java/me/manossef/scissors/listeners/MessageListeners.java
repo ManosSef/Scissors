@@ -53,10 +53,10 @@ public class MessageListeners extends ListenerAdapter {
                 .mentionRepliedUser(false)
                 .setAllowedMentions(Collections.emptyList())
                 .queue();
-            DevGuild.logResponse("Posted a " + responseType + " response to " + Util.getMessageLink(message));
+            DevGuild.logResponse("Posted a " + responseType + " response to " + Util.getMessageLinkWithInfo(message));
             return;
         }
-        DevGuild.logResponse("Could not post a " + responseType + " response to " + Util.getMessageLink(message) + "; no permission to talk");
+        DevGuild.logResponse("Could not post a " + responseType + " response to " + Util.getMessageLinkWithInfo(message) + "; no permission to talk");
     }
 
     private boolean promptsGPPCT(Message message, Configuration config) {

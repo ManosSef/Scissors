@@ -33,19 +33,15 @@ public class Commands {
         String username = user.getName().replace("_", "\\_");
         try {
             int result = DISPATCHER.execute(command, source);
-            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + formatMessageLink(message) + " and succeeded with return value " + result));
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Util.getMessageLinkWithInfo(message) + " and succeeded with return value " + result));
         } catch(CommandSyntaxException e) {
             source.sendFailure(e.getMessage());
-            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + formatMessageLink(message) + " and failed"));
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Util.getMessageLinkWithInfo(message) + " and failed"));
         } catch(Exception e) {
             source.sendError(e.getMessage());
-            DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + formatMessageLink(message) + " and threw an exception:"), e);
+            DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Util.getMessageLinkWithInfo(message) + " and threw an exception:"), e);
             Util.createIssueForException(e, "Command error: ", "Command: {{" + command + "}}");
         }
-    }
-
-    private static String formatMessageLink(Message message) {
-        return Util.getMessageLink(message) + " (channel: " + message.getChannelId() + ", message: " + message.getId() + ")";
     }
 
     private static String shortenMiddle(String start, String middle, String end) {
