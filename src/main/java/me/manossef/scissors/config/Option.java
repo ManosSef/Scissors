@@ -5,16 +5,19 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public final class Option<T> {
     private final String name;
     private final Class<T> type;
+    private final Predicate<T> validator;
     private final ArgumentType<T> argumentType;
     private final T defaultValue;
 
-    private Option(String name, Class<T> type, ArgumentType<T> argumentType, T defaultValue) {
+    private Option(String name, Class<T> type, Predicate<T> validator, ArgumentType<T> argumentType, T defaultValue) {
         this.name = name;
         this.type = type;
+        this.validator = validator;
         this.argumentType = argumentType;
         this.defaultValue = defaultValue;
     }
@@ -25,6 +28,10 @@ public final class Option<T> {
 
     public Class<T> getType() {
         return this.type;
+    }
+
+    public boolean isValid(T value) {
+        return this.validator.test(value);
     }
 
     public ArgumentType<T> getArgumentType() {
@@ -51,26 +58,26 @@ public final class Option<T> {
     }
 
     static Option<Boolean> bool(String name, boolean defaultValue) {
-        return new Option<>(name, Boolean.class, BoolArgumentType.bool(), defaultValue);
+        return new Option<>(name, Boolean.class, b -> true, BoolArgumentType.bool(), defaultValue);
     }
 
     static Option<Integer> integer(String name, int defaultValue) {
-        return integer(name, IntegerArgumentType.integer(), defaultValue);
+        return integer(name, i -> true, IntegerArgumentType.integer(), defaultValue);
     }
 
     static Option<Integer> integer(String name, int defaultValue, int min) {
         if(defaultValue < min)
             throw new IllegalArgumentException("The default value must be greater than or equal to min");
-        return integer(name, IntegerArgumentType.integer(min), defaultValue);
+        return integer(name, i -> i >= min, IntegerArgumentType.integer(min), defaultValue);
     }
 
     static Option<Integer> integer(String name, int defaultValue, int min, int max) {
         if(defaultValue < min || defaultValue > max)
             throw new IllegalArgumentException("The default value must be between min and max inclusive");
-        return integer(name, IntegerArgumentType.integer(min, max), defaultValue);
+        return integer(name, i -> i >= min && i <= max, IntegerArgumentType.integer(min, max), defaultValue);
     }
 
-    private static Option<Integer> integer(String name, ArgumentType<Integer> argumentType, int defaultValue) {
-        return new Option<>(name, Integer.class, argumentType, defaultValue);
+    private static Option<Integer> integer(String name, Predicate<Integer> validator, ArgumentType<Integer> argumentType, int defaultValue) {
+        return new Option<>(name, Integer.class, validator, argumentType, defaultValue);
     }
 }
