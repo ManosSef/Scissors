@@ -4,6 +4,8 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
+import java.util.Objects;
+
 public final class Option<T> {
     private final String name;
     private final Class<T> type;
@@ -31,6 +33,21 @@ public final class Option<T> {
 
     public T getDefaultValue() {
         return this.defaultValue;
+    }
+
+    public boolean equals(Object other) {
+        if(other == null) return false;
+        if(other == this) return true;
+        if(!(other instanceof Option<?> otherOption)) return false;
+        return Objects.equals(this.name, otherOption.getName()) && Objects.equals(this.type, otherOption.getType());
+    }
+
+    public int hashCode() {
+        return Objects.hash(this.name, this.type);
+    }
+
+    public String toString() {
+        return "Option[name=" + this.name + ", type=" + this.type + ", defaultValue=" + this.defaultValue + "]";
     }
 
     static Option<Boolean> bool(String name, boolean defaultValue) {
