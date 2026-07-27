@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.random.RandomGenerator;
 
 public class Scissors {
     public static final JDA DISCORD_API = JDABuilder.createDefault(SharedConstants.TOKEN)
@@ -25,7 +25,7 @@ public class Scissors {
         .build();
     public static final JiraAPI JIRA_API = new JiraAPI("https://manossef.atlassian.net/rest/api/2/");
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Option.class, new OptionAdapter()).registerTypeAdapterFactory(new OptionValueAdapterFactory()).create();
-    public static final Random RANDOM = new Random();
+    public static final RandomGenerator RANDOM = RandomGenerator.of("Xoroshiro128PlusPlus");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Scissors.class);
 
