@@ -25,7 +25,7 @@ public class Scissors {
         .build();
     public static final JiraAPI JIRA_API = new JiraAPI("https://manossef.atlassian.net/rest/api/2/");
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Option.class, new OptionAdapter()).registerTypeAdapterFactory(new OptionValueAdapterFactory()).create();
-    public static final RandomGenerator RANDOM = RandomGenerator.of("Xoroshiro128PlusPlus");
+    public static final RandomGenerator RANDOM = RandomGenerator.of("L64X128MixRandom");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Scissors.class);
 
