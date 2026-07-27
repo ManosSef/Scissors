@@ -42,10 +42,14 @@ public final class Option<T> {
     }
 
     static Option<Integer> integer(String name, int defaultValue, int min) {
+        if(defaultValue < min)
+            throw new IllegalArgumentException("The default value must be greater than or equal to min");
         return integer(name, IntegerArgumentType.integer(min), defaultValue);
     }
 
     static Option<Integer> integer(String name, int defaultValue, int min, int max) {
+        if(defaultValue < min || defaultValue > max)
+            throw new IllegalArgumentException("The default value must be between min and max inclusive");
         return integer(name, IntegerArgumentType.integer(min, max), defaultValue);
     }
 
