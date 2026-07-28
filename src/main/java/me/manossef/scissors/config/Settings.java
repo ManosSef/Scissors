@@ -2,7 +2,7 @@ package me.manossef.scissors.config;
 
 import java.util.*;
 
-public class Settings {
+public final class Settings {
     private final Map<Option<?>, OptionValue<?>> values;
 
     Settings() {
