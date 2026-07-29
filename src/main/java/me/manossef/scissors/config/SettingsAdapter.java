@@ -44,7 +44,7 @@ public class SettingsAdapter extends TypeAdapter<Settings> {
             }
             return new Settings(values);
         } catch(RuntimeException e) {
-            throw new IllegalStateException("Invalid configuration", e);
+            throw new InvalidConfigurationException(e);
         }
     }
 
