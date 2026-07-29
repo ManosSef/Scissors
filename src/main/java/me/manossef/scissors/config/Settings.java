@@ -9,6 +9,11 @@ public final class Settings {
         this.values = new TreeMap<>((o1, o2) -> Comparator.<String>naturalOrder().compare(o1.getName(), o2.getName()));
     }
 
+    Settings(Set<OptionValue<?>> values) {
+        this();
+        for(OptionValue<?> value : values) this.values.put(value.option(), value);
+    }
+
     public <T> Optional<T> get(Option<T> option) {
         Objects.requireNonNull(option, "Option cannot be null");
         OptionValue<?> value = values.get(option);
@@ -27,6 +32,10 @@ public final class Settings {
         if(values.isEmpty()) return false;
         values.clear();
         return true;
+    }
+
+    Collection<OptionValue<?>> getValues() {
+        return values.values();
     }
 
     public String toString() {

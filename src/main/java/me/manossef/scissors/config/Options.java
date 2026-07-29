@@ -1,10 +1,10 @@
 package me.manossef.scissors.config;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Options {
-    private static final Set<Option<?>> OPTIONS = new HashSet<>();
+    private static final Map<String, Option<?>> OPTIONS = new HashMap<>();
 
     public static final Option<Boolean> GPPCT_RESPONSES = register(Option.bool("gppctResponses", true));
     public static final Option<Integer> GPPCT_RESPONSE_CHANCE = register(Option.integer("gppctResponseChance", 10, 0, 100));
@@ -15,11 +15,17 @@ public class Options {
     public static final Option<Boolean> GPPCT_ON_INTEGERS_ONLY = register(Option.bool("gppctOnIntegersOnly", false));
 
     public static Option<?>[] values() {
-        return OPTIONS.toArray(new Option[0]);
+        return OPTIONS.values().toArray(new Option[0]);
+    }
+
+    public static Option<?> getByName(String name) {
+        Option<?> option = OPTIONS.get(name);
+        if(option == null) throw new IllegalArgumentException("Unknown option: " + name);
+        return option;
     }
 
     private static <T> Option<T> register(Option<T> option) {
-        OPTIONS.add(option);
+        OPTIONS.put(option.getName(), option);
         return option;
     }
 }

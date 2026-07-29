@@ -42,6 +42,10 @@ public final class Option<T> {
         return this.defaultValue;
     }
 
+    public OptionValue<T> castValue(Object value) {
+        return new OptionValue<>(this, type.cast(value));
+    }
+
     public boolean equals(Object other) {
         if(other == null) return false;
         if(other == this) return true;
