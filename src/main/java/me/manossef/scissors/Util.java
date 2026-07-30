@@ -1,6 +1,7 @@
 package me.manossef.scissors;
 
 import com.google.gson.JsonSyntaxException;
+import me.manossef.scissors.config.InvalidConfigurationException;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.Message;
 import org.slf4j.Logger;
@@ -36,7 +37,13 @@ public class Util {
             while((line = reader.readLine()) != null)
                 builder.append(line).append("\n");
             reader.close();
-            return Scissors.GSON.fromJson(builder.toString(), type);
+            String json = builder.toString();
+            try {
+                return Scissors.GSON.fromJson(json, type);
+            } catch(InvalidConfigurationException e) {
+                LOGGER.error("Invalid configuration:\n{}", json, e);
+                return null;
+            }
         } catch(IOException | JsonSyntaxException e) {
             LOGGER.error("Failed to read the {} file.", fileName);
             return null;

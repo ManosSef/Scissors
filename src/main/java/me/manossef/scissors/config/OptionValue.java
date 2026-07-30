@@ -1,13 +1,12 @@
 package me.manossef.scissors.config;
 
-public record OptionValue<T>(Option option, T value) {
+import java.util.Objects;
+
+public record OptionValue<T>(Option<T> option, T value) {
     public OptionValue {
-        if(option == null)
-            throw new IllegalArgumentException("Option cannot be null");
-        if(value != null && option.properties() instanceof OptionProperties.IntOptionProperties properties) {
-            int intValue = (int) value;
-            if(properties.isInvalid(intValue))
-                throw new IllegalArgumentException("Option value (" + intValue + ") out of bounds (" + properties.getMin() + ", " + properties.getMax() + ")");
-        }
+        Objects.requireNonNull(option, "Option cannot be null");
+        Objects.requireNonNull(value, "Value cannot be null");
+        if(!option.isValid(value))
+            throw new IllegalArgumentException(value + " is not valid as a value for the option " + option.getName());
     }
 }

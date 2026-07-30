@@ -2,10 +2,9 @@ package me.manossef.scissors.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
@@ -13,7 +12,8 @@ import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.config.Option;
-import me.manossef.scissors.config.OptionProperties;
+import me.manossef.scissors.config.OptionValue;
+import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -35,6 +35,27 @@ public class ConfigCommand {
     private static final SimpleCommandExceptionType NO_PERMS_IN_CHANNEL = new SimpleCommandExceptionType(new LiteralMessage("You need to have the \"Manage Channel\" or \"Administrator\" permission to edit the bot's options for this channel"));
     private static final DynamicCommandExceptionType NO_EXPLICIT_VALUE_IN_GUILD = new DynamicCommandExceptionType(option -> new LiteralMessage("No explicit value for the option " + option + " has been set for this server"));
     private static final DynamicCommandExceptionType NO_EXPLICIT_VALUE_IN_CHANNEL = new DynamicCommandExceptionType(option -> new LiteralMessage("No explicit value for the option " + option + " has been set for this channel"));
+    private static final Dynamic2CommandExceptionType SAME_GLOBAL_VALUE = new Dynamic2CommandExceptionType((option, value) -> new LiteralMessage("The explicit global value of the option " + option + " is already " + value));
+    private static final Dynamic2CommandExceptionType SAME_GUILD_VALUE = new Dynamic2CommandExceptionType((option, value) -> new LiteralMessage("The explicit value of the option " + option + " for this server is already " + value));
+    private static final Dynamic2CommandExceptionType SAME_CHANNEL_VALUE = new Dynamic2CommandExceptionType((option, value) -> new LiteralMessage("The explicit value of the option " + option + " for this channel is already " + value));
+
+    /*
+    config global explicit remove <option>          me
+    config server explicit remove <option>          manage server
+    config server <server>                          me
+    config server <server> reset                    me
+    config server <server> explicit <option>        me
+    config server <server> explicit remove <option> me
+    config server <server> <option>                 me
+    config server <server> <option> <value>         me
+    config channel explicit remove <option>         manage channel
+    config channel <channel>                        everyone
+    config channel <channel> reset                  manage channel
+    config channel <channel> explicit <option>      everyone
+    config channel <channel> explicit remove <option> manage channel
+    config channel <channel> <option>               everyone
+    config channel <channel> <option> <value>       manage channel
+     */
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "config";
@@ -86,22 +107,15 @@ public class ConfigCommand {
                 .executes(context -> resetOptions(context.getSource(), optionContext))
             );
         ArgumentBuilder<ChatCommandSource, ?> onlyArgument = Commands.literal("explicit");
-        for(Option option : Option.values()) {
-            ArgumentBuilder<ChatCommandSource, ?> optionArgument = Commands.literal(option.properties().getName())
-                .executes(context -> getOptionValue(context.getSource(), option, option.properties().getType(), optionContext, true));
-            if(option.isBoolean())
-                optionArgument.then(Commands.argument("value", BoolArgumentType.bool())
-                    .executes(context -> setOptionValue(context.getSource(), option, BoolArgumentType.getBool(context, "value"), optionContext))
-                );
-            if(option.isInteger()) {
-                OptionProperties.IntOptionProperties intOption = (OptionProperties.IntOptionProperties) option.properties();
-                optionArgument.then(Commands.argument("value", IntegerArgumentType.integer(intOption.getMin(), intOption.getMax()))
-                    .executes(context -> setOptionValue(context.getSource(), option, IntegerArgumentType.getInteger(context, "value"), optionContext))
-                );
-            }
+        for(Option<?> option : Options.values()) {
+            ArgumentBuilder<ChatCommandSource, ?> optionArgument = Commands.literal(option.getName())
+                .executes(context -> getOptionValue(context.getSource(), option, optionContext, true));
+            optionArgument.then(Commands.argument("value", option.getArgumentType())
+                .executes(context -> setOptionValue(context.getSource(), option.castValue(context.getArgument("value", option.getType())), optionContext))
+            );
             argument.then(optionArgument);
-            onlyArgument.then(Commands.literal(option.properties().getName())
-                .executes(context -> getOptionValue(context.getSource(), option, option.properties().getType(), optionContext, false))
+            onlyArgument.then(Commands.literal(option.getName())
+                .executes(context -> getOptionValue(context.getSource(), option, optionContext, false))
             );
         }
         argument.then(onlyArgument);
@@ -147,33 +161,33 @@ public class ConfigCommand {
     private static int getAllOptions(ChatCommandSource source, OptionContext optionContext) throws CommandSyntaxException {
         switch(optionContext) {
             case GLOBAL -> {
-                StringBuilder builder = new StringBuilder("Here are the global values of all options:\n");
-                for(Option option : Option.values())
-                    builder.append("- ").append(monospace(option.properties().getName())).append(": ")
-                        .append(bold(Scissors.getConfiguration().getGlobalOption(option, option.properties().getType()).toString()));
+                StringBuilder builder = new StringBuilder("Here are the global values of all options:");
+                for(Option<?> option : Options.values())
+                    builder.append("\n- ").append(monospace(option.getName())).append(": ")
+                        .append(bold(Scissors.getConfiguration().getGlobalOption(option).toString()));
                 source.sendSuccess(builder.toString());
             }
             case PER_GUILD -> {
-                StringBuilder builder = new StringBuilder("Here are the values of all options for this server:\n");
-                for(Option option : Option.values()) {
-                    builder.append("- ").append(monospace(option.properties().getName())).append(": ");
-                    Object value = Scissors.getConfiguration().getOptionForGuildOnly(option, option.properties().getType(), source.commandMessage().getGuild());
+                StringBuilder builder = new StringBuilder("Here are the values of all options for this server:");
+                for(Option<?> option : Options.values()) {
+                    builder.append("\n- ").append(monospace(option.getName())).append(": ");
+                    Object value = Scissors.getConfiguration().getOptionForGuildOnly(option, source.commandMessage().getGuild());
                     if(value == null) {
                         builder.append("no explicit value; effective value: ");
-                        value = Scissors.getConfiguration().getOptionForGuild(option, option.properties().getType(), source.commandMessage().getGuild());
+                        value = Scissors.getConfiguration().getOptionForGuild(option, source.commandMessage().getGuild());
                     }
                     builder.append(bold(value.toString()));
                 }
                 source.sendSuccess(builder.toString());
             }
             case PER_CHANNEL -> {
-                StringBuilder builder = new StringBuilder("Here are the values of all options for this channel:\n");
-                for(Option option : Option.values()) {
-                    builder.append("- ").append(monospace(option.properties().getName())).append(": ");
-                    Object value = Scissors.getConfiguration().getOptionForChannelOnly(option, option.properties().getType(), source.commandMessage().getChannel());
+                StringBuilder builder = new StringBuilder("Here are the values of all options for this channel:");
+                for(Option<?> option : Options.values()) {
+                    builder.append("\n- ").append(monospace(option.getName())).append(": ");
+                    Object value = Scissors.getConfiguration().getOptionForChannelOnly(option, source.commandMessage().getChannel());
                     if(value == null) {
                         builder.append("no explicit value; effective value: ");
-                        value = Scissors.getConfiguration().getOptionForChannel(option, option.properties().getType(), source.commandMessage().getChannel());
+                        value = Scissors.getConfiguration().getOptionForChannel(option, source.commandMessage().getChannel());
                     }
                     builder.append(bold(value.toString()));
                 }
@@ -184,64 +198,75 @@ public class ConfigCommand {
         return 1;
     }
 
-    private static <T> int getOptionValue(ChatCommandSource source, Option option, Class<T> type, OptionContext optionContext, boolean defaultToHigherPower) throws CommandSyntaxException {
+    private static <T> int getOptionValue(ChatCommandSource source, Option<T> option, OptionContext optionContext, boolean defaultToHigherPower) throws CommandSyntaxException {
         T value;
         switch(optionContext) {
             case GLOBAL -> {
-                value = Scissors.getConfiguration().getGlobalOption(option, type);
-                source.sendSuccess("The current global value of the option " + monospace(option.properties().getName()) + " is " + bold(value.toString()));
+                value = Scissors.getConfiguration().getGlobalOption(option);
+                source.sendSuccess("The current global value of the option " + monospace(option.getName()) + " is " + bold(value.toString()));
             }
             case PER_GUILD -> {
                 if(!(source.commandMessage().getChannel() instanceof GuildChannel))
                     throw NOT_IN_GUILD.create();
                 if(defaultToHigherPower) {
-                    value = Scissors.getConfiguration().getOptionForGuild(option, type, source.commandMessage().getGuild());
-                    source.sendSuccess("The current effective value of the option " + monospace(option.properties().getName()) + " for this server is " + bold(value.toString()));
+                    value = Scissors.getConfiguration().getOptionForGuild(option, source.commandMessage().getGuild());
+                    source.sendSuccess("The current effective value of the option " + monospace(option.getName()) + " for this server is " + bold(value.toString()));
                 } else {
-                    value = Scissors.getConfiguration().getOptionForGuildOnly(option, type, source.commandMessage().getGuild());
-                    if(value == null) throw NO_EXPLICIT_VALUE_IN_GUILD.create(monospace(option.properties().getName()));
-                    source.sendSuccess("The current explicit value of the option " + monospace(option.properties().getName()) + " for this server is " + bold(value.toString()));
+                    value = Scissors.getConfiguration().getOptionForGuildOnly(option, source.commandMessage().getGuild())
+                        .orElseThrow(() -> NO_EXPLICIT_VALUE_IN_GUILD.create(monospace(option.getName())));
+                    source.sendSuccess("The current explicit value of the option " + monospace(option.getName()) + " for this server is " + bold(value.toString()));
                 }
             }
             case PER_CHANNEL -> {
                 if(defaultToHigherPower) {
-                    value = Scissors.getConfiguration().getOptionForChannel(option, type, source.commandMessage().getChannel());
-                    source.sendSuccess("The current effective value of the option " + monospace(option.properties().getName()) + " for this channel is " + bold(value.toString()));
+                    value = Scissors.getConfiguration().getOptionForChannel(option, source.commandMessage().getChannel());
+                    source.sendSuccess("The current effective value of the option " + monospace(option.getName()) + " for this channel is " + bold(value.toString()));
                 } else {
-                    value = Scissors.getConfiguration().getOptionForChannelOnly(option, type, source.commandMessage().getChannel());
-                    if(value == null) throw NO_EXPLICIT_VALUE_IN_CHANNEL.create(monospace(option.properties().getName()));
-                    source.sendSuccess("The current explicit value of the option " + monospace(option.properties().getName()) + " for this channel is " + bold(value.toString()));
+                    value = Scissors.getConfiguration().getOptionForChannelOnly(option, source.commandMessage().getChannel())
+                        .orElseThrow(() -> NO_EXPLICIT_VALUE_IN_CHANNEL.create(monospace(option.getName())));
+                    source.sendSuccess("The current explicit value of the option " + monospace(option.getName()) + " for this channel is " + bold(value.toString()));
                 }
             }
             default -> throw INVALID_CONTEXT.create();
         }
-        return option.isInteger() ? (int) value : (boolean) value ? 1 : 0;
+        return getReturnValue(value);
     }
 
-    private static <T> int setOptionValue(ChatCommandSource source, Option option, T value, OptionContext optionContext) throws CommandSyntaxException {
+    private static <T> int setOptionValue(ChatCommandSource source, OptionValue<T> optionValue, OptionContext optionContext) throws CommandSyntaxException {
+        Option<T> option = optionValue.option();
+        T value = optionValue.value();
         switch(optionContext) {
             case GLOBAL -> {
-                Scissors.getConfiguration().setGlobalOption(option, value);
-                source.sendSuccess("Set the global value of the option " + monospace(option.properties().getName()) + " to " + bold(value.toString()));
+                boolean success = Scissors.getConfiguration().setGlobalOption(option, value);
+                if(!success) throw SAME_GLOBAL_VALUE.create(monospace(option.getName()), bold(value.toString()));
+                source.sendSuccess("Set the explicit global value of the option " + monospace(option.getName()) + " to " + bold(value.toString()));
             }
             case PER_GUILD -> {
                 if(!(source.commandMessage().getChannel() instanceof GuildChannel guildChannel))
                     throw NOT_IN_GUILD.create();
                 if(canEditPerGuild(source.user(), guildChannel.getGuild())) {
-                    Scissors.getConfiguration().setOptionForGuild(option, value, source.commandMessage().getGuild());
-                    source.sendSuccess("Set the value of the option " + monospace(option.properties().getName()) + " for this server to " + bold(value.toString()));
+                    boolean success = Scissors.getConfiguration().setOptionForGuild(option, value, source.commandMessage().getGuild());
+                    if(!success) throw SAME_GUILD_VALUE.create(monospace(option.getName()), bold(value.toString()));
+                    source.sendSuccess("Set the explicit value of the option " + monospace(option.getName()) + " for this server to " + bold(value.toString()));
                 } else throw NO_PERMS_IN_GUILD.create();
             }
             case PER_CHANNEL -> {
                 if(canEditPerChannel(source.user(), source.commandMessage().getChannel())) {
-                    Scissors.getConfiguration().setOptionForChannel(option, value, source.commandMessage().getChannel());
-                    source.sendSuccess("Set the value of the option " + monospace(option.properties().getName()) + " for this channel to " + bold(value.toString()));
+                    boolean success = Scissors.getConfiguration().setOptionForChannel(option, value, source.commandMessage().getChannel());
+                    if(!success) throw SAME_CHANNEL_VALUE.create(monospace(option.getName()), bold(value.toString()));
+                    source.sendSuccess("Set the explicit value of the option " + monospace(option.getName()) + " for this channel to " + bold(value.toString()));
                 } else throw NO_PERMS_IN_CHANNEL.create();
             }
             default -> throw INVALID_CONTEXT.create();
         }
         Scissors.saveConfiguration();
-        return option.isInteger() ? (int) value : (boolean) value ? 1 : 0;
+        return getReturnValue(value);
+    }
+
+    private static int getReturnValue(Object value) {
+        return value instanceof Number n ? (int) n :
+            value instanceof Boolean b ? (b ? 1 : 0) :
+            value instanceof Enum<?> e ? e.ordinal() : value.hashCode();
     }
 
     private static boolean canEditPerGuild(User user, Guild guild) throws CommandSyntaxException {

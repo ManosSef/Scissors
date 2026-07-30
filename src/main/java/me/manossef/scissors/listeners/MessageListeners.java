@@ -2,7 +2,7 @@ package me.manossef.scissors.listeners;
 
 import me.manossef.scissors.*;
 import me.manossef.scissors.config.Configuration;
-import me.manossef.scissors.config.Option;
+import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.attribute.ICategorizableChannel;
@@ -34,7 +34,7 @@ public class MessageListeners extends ListenerAdapter {
             replyWithRandomMessage(message, Messages.MEME_RESPONSES, "meme");
         else if(this.promptsScissors(message, config))
             replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES, "scissors");
-        if(message.getContentRaw().toLowerCase().contains("paper") && config.getOptionForChannel(Option.REACT_TO_PAPER, Boolean.class, message.getChannel()))
+        if(message.getContentRaw().toLowerCase().contains("paper") && config.getOptionForChannel(Options.REACT_TO_PAPER, message.getChannel()))
             message.addReaction(Emojis.SCISSORS).onErrorMap(e -> null).queue();
     }
 
@@ -63,26 +63,26 @@ public class MessageListeners extends ListenerAdapter {
         MessageChannelUnion channel = message.getChannel();
         return message.getContentRaw().matches("^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?$")
             && (message.getContentRaw().matches("^[0-9]+$")
-                || !config.getOptionForChannel(Option.GPPCT_ON_INTEGERS_ONLY, Boolean.class, message.getChannel()))
+                || !config.getOptionForChannel(Options.GPPCT_ON_INTEGERS_ONLY, message.getChannel()))
             && channel.canTalk()
-            && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel)
-            && (!isDisallowedForGPPCT(channel) || config.getOptionForChannelOnly(Option.GPPCT_RESPONSES, Boolean.class, channel) != null)
-            && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.GPPCT_RESPONSE_CHANCE, Integer.class, channel);
+            && config.getOptionForChannel(Options.GPPCT_RESPONSES, channel)
+            && (!isDisallowedForGPPCT(channel) || config.getOptionForChannelOnly(Options.GPPCT_RESPONSES, channel).isPresent())
+            && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Options.GPPCT_RESPONSE_CHANCE, channel);
     }
 
     private boolean promptsPing(Message message, Configuration config) {
         MessageChannelUnion channel = message.getChannel();
         return message.getContentRaw().contains(Scissors.DISCORD_API.getSelfUser().getAsMention())
             && channel.canTalk()
-            && config.getOptionForChannel(Option.PING_RESPONSES, Boolean.class, channel);
+            && config.getOptionForChannel(Options.PING_RESPONSES, channel);
     }
 
     private boolean promptsScissors(Message message, Configuration config) {
         MessageChannelUnion channel = message.getChannel();
         return message.getContentRaw().toLowerCase().contains("scissors")
             && channel.canTalk()
-            && config.getOptionForChannel(Option.SCISSORS_RESPONSES, Boolean.class, channel)
-            && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Option.SCISSORS_RESPONSE_CHANCE, Integer.class, channel);
+            && config.getOptionForChannel(Options.SCISSORS_RESPONSES, channel)
+            && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Options.SCISSORS_RESPONSE_CHANCE, channel);
     }
 
     private boolean promptsMeme(Message message, Configuration config) {
@@ -94,7 +94,7 @@ public class MessageListeners extends ListenerAdapter {
             && referencedMessage.getMessageReference() != null
             && message.getContentRaw().toLowerCase().replaceAll("[^a-z]+", "").equals("yes")
             && channel.canTalk()
-            && config.getOptionForChannel(Option.GPPCT_RESPONSES, Boolean.class, channel);
+            && config.getOptionForChannel(Options.GPPCT_RESPONSES, channel);
     }
 
     public static boolean isDisallowedForGPPCT(Channel channel) {

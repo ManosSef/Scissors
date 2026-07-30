@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.SharedConstants;
-import me.manossef.scissors.config.Option;
+import me.manossef.scissors.config.Options;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.italics;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
@@ -79,13 +79,13 @@ public class InfoCommand {
             monospace("true"),
             monospace("false"),
             Commands.format("config"),
-            monospace(Option.GPPCT_RESPONSES.properties().getName()),
-            monospace(Option.GPPCT_RESPONSE_CHANCE.properties().getName()),
-            monospace(Option.PING_RESPONSES.properties().getName()),
-            monospace(Option.SCISSORS_RESPONSES.properties().getName()),
-            monospace(Option.SCISSORS_RESPONSE_CHANCE.properties().getName()),
-            monospace(Option.REACT_TO_PAPER.properties().getName()),
-            monospace(Option.GPPCT_ON_INTEGERS_ONLY.properties().getName())));
+            monospace(Options.GPPCT_RESPONSES.getName()),
+            monospace(Options.GPPCT_RESPONSE_CHANCE.getName()),
+            monospace(Options.PING_RESPONSES.getName()),
+            monospace(Options.SCISSORS_RESPONSES.getName()),
+            monospace(Options.SCISSORS_RESPONSE_CHANCE.getName()),
+            monospace(Options.REACT_TO_PAPER.getName()),
+            monospace(Options.GPPCT_ON_INTEGERS_ONLY.getName())));
         return 1;
     }
 }

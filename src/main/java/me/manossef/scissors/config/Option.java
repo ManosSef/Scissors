@@ -1,81 +1,87 @@
 package me.manossef.scissors.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 
-public enum Option {
-    GPPCT_RESPONSES(BooleanOption.GPPCT_RESPONSES),
-    GPPCT_RESPONSE_CHANCE(IntOption.GPPCT_RESPONSE_CHANCE),
-    PING_RESPONSES(BooleanOption.PING_RESPONSES),
-    SCISSORS_RESPONSES(BooleanOption.SCISSORS_RESPONSES),
-    SCISSORS_RESPONSE_CHANCE(IntOption.SCISSORS_RESPONSE_CHANCE),
-    REACT_TO_PAPER(BooleanOption.REACT_TO_PAPER),
-    GPPCT_ON_INTEGERS_ONLY(BooleanOption.GPPCT_ON_INTEGERS_ONLY);
+import java.util.Objects;
+import java.util.function.Predicate;
 
-    private static final Map<String, Option> NAME_TO_OPTION = mapNamesToOptions();
-    private final TypedOption typedOption;
+public final class Option<T> {
+    private final String name;
+    private final Class<T> type;
+    private final Predicate<T> validator;
+    private final ArgumentType<T> argumentType;
+    private final T defaultValue;
 
-    Option(TypedOption option) {
-        this.typedOption = option;
+    private Option(String name, Class<T> type, Predicate<T> validator, ArgumentType<T> argumentType, T defaultValue) {
+        this.name = name;
+        this.type = type;
+        this.validator = validator;
+        this.argumentType = argumentType;
+        this.defaultValue = defaultValue;
     }
 
-    private static Map<String, Option> mapNamesToOptions() {
-        Map<String, Option> map = new HashMap<>();
-        for(Option option : values())
-            map.put(option.properties().getName(), option);
-        return map;
+    public String getName() {
+        return this.name;
     }
 
-    public static Option fromName(String name) {
-        return NAME_TO_OPTION.get(name);
+    public Class<T> getType() {
+        return this.type;
     }
 
-    public OptionProperties<?> properties() {
-        return this.typedOption.properties();
+    public boolean isValid(T value) {
+        return this.validator.test(value);
     }
 
-    public boolean isBoolean() {
-        return this.typedOption instanceof BooleanOption;
+    public ArgumentType<T> getArgumentType() {
+        return this.argumentType;
     }
 
-    public boolean isInteger() {
-        return this.typedOption instanceof IntOption;
+    public T getDefaultValue() {
+        return this.defaultValue;
     }
 
-    private interface TypedOption {
-        OptionProperties<?> properties();
+    public OptionValue<T> castValue(Object value) {
+        return new OptionValue<>(this, type.cast(value));
     }
 
-    public enum BooleanOption implements TypedOption {
-        GPPCT_RESPONSES(new OptionProperties<>("gppctResponses", Boolean.class, true)),
-        PING_RESPONSES(new OptionProperties<>("pingResponses", Boolean.class, true)),
-        SCISSORS_RESPONSES(new OptionProperties<>("scissorsResponses", Boolean.class, true)),
-        REACT_TO_PAPER(new OptionProperties<>("reactToPaper", Boolean.class, true)),
-        GPPCT_ON_INTEGERS_ONLY(new OptionProperties<>("gppctOnIntegersOnly", Boolean.class, false)),;
-
-        private final OptionProperties<Boolean> properties;
-
-        BooleanOption(OptionProperties<Boolean> properties) {
-            this.properties = properties;
-        }
-
-        public OptionProperties<Boolean> properties() {
-            return this.properties;
-        }
+    public boolean equals(Object other) {
+        if(other == null) return false;
+        if(other == this) return true;
+        if(!(other instanceof Option<?> otherOption)) return false;
+        return Objects.equals(this.name, otherOption.getName()) && Objects.equals(this.type, otherOption.getType());
     }
 
-    public enum IntOption implements TypedOption {
-        GPPCT_RESPONSE_CHANCE(new OptionProperties.IntOptionProperties("gppctResponseChance", 10, 0, 100)),
-        SCISSORS_RESPONSE_CHANCE(new OptionProperties.IntOptionProperties("scissorsResponseChance", 20, 0, 100));
+    public int hashCode() {
+        return Objects.hash(this.name, this.type);
+    }
 
-        private final OptionProperties<Integer> properties;
+    public String toString() {
+        return "Option[name=" + this.name + ", type=" + this.type + ", defaultValue=" + this.defaultValue + "]";
+    }
 
-        IntOption(OptionProperties<Integer> properties) {
-            this.properties = properties;
-        }
+    static Option<Boolean> bool(String name, boolean defaultValue) {
+        return new Option<>(name, Boolean.class, b -> true, BoolArgumentType.bool(), defaultValue);
+    }
 
-        public OptionProperties<Integer> properties() {
-            return this.properties;
-        }
+    static Option<Integer> integer(String name, int defaultValue) {
+        return integer(name, i -> true, IntegerArgumentType.integer(), defaultValue);
+    }
+
+    static Option<Integer> integer(String name, int defaultValue, int min) {
+        if(defaultValue < min)
+            throw new IllegalArgumentException("The default value must be greater than or equal to min");
+        return integer(name, i -> i >= min, IntegerArgumentType.integer(min), defaultValue);
+    }
+
+    static Option<Integer> integer(String name, int defaultValue, int min, int max) {
+        if(defaultValue < min || defaultValue > max)
+            throw new IllegalArgumentException("The default value must be between min and max inclusive");
+        return integer(name, i -> i >= min && i <= max, IntegerArgumentType.integer(min, max), defaultValue);
+    }
+
+    private static Option<Integer> integer(String name, Predicate<Integer> validator, ArgumentType<Integer> argumentType, int defaultValue) {
+        return new Option<>(name, Integer.class, validator, argumentType, defaultValue);
     }
 }
