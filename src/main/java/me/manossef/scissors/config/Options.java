@@ -18,7 +18,7 @@ public class Options {
         return OPTIONS.values().toArray(new Option[0]);
     }
 
-    public static Option<?> getByName(String name) {
+    static Option<?> getByName(String name) {
         Option<?> option = OPTIONS.get(name);
         if(option == null) throw new IllegalArgumentException("Unknown option: " + name);
         return option;

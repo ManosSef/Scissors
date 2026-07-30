@@ -33,22 +33,20 @@ public class ConfigCommand {
     private static final SimpleCommandExceptionType IMPOSSIBLE_ERROR = new SimpleCommandExceptionType(new LiteralMessage("This error should not have happened! Discord must be freaking out!"));
     private static final SimpleCommandExceptionType NO_PERMS_IN_GUILD = new SimpleCommandExceptionType(new LiteralMessage("You need to have the \"Manage Server\" or \"Administrator\" permission to edit the bot's options for this server"));
     private static final SimpleCommandExceptionType NO_PERMS_IN_CHANNEL = new SimpleCommandExceptionType(new LiteralMessage("You need to have the \"Manage Channel\" or \"Administrator\" permission to edit the bot's options for this channel"));
+    private static final DynamicCommandExceptionType NO_GLOBAL_VALUE = new DynamicCommandExceptionType(option -> new LiteralMessage("No global value for the option " + option + " has been set"));
     private static final DynamicCommandExceptionType NO_EXPLICIT_VALUE_IN_GUILD = new DynamicCommandExceptionType(option -> new LiteralMessage("No explicit value for the option " + option + " has been set for this server"));
     private static final DynamicCommandExceptionType NO_EXPLICIT_VALUE_IN_CHANNEL = new DynamicCommandExceptionType(option -> new LiteralMessage("No explicit value for the option " + option + " has been set for this channel"));
-    private static final Dynamic2CommandExceptionType SAME_GLOBAL_VALUE = new Dynamic2CommandExceptionType((option, value) -> new LiteralMessage("The explicit global value of the option " + option + " is already " + value));
+    private static final Dynamic2CommandExceptionType SAME_GLOBAL_VALUE = new Dynamic2CommandExceptionType((option, value) -> new LiteralMessage("The global value of the option " + option + " is already " + value));
     private static final Dynamic2CommandExceptionType SAME_GUILD_VALUE = new Dynamic2CommandExceptionType((option, value) -> new LiteralMessage("The explicit value of the option " + option + " for this server is already " + value));
     private static final Dynamic2CommandExceptionType SAME_CHANNEL_VALUE = new Dynamic2CommandExceptionType((option, value) -> new LiteralMessage("The explicit value of the option " + option + " for this channel is already " + value));
 
     /*
-    config global explicit remove <option>          me
-    config server explicit remove <option>          manage server
     config server <server>                          me
     config server <server> reset                    me
     config server <server> explicit <option>        me
     config server <server> explicit remove <option> me
     config server <server> <option>                 me
     config server <server> <option> <value>         me
-    config channel explicit remove <option>         manage channel
     config channel <channel>                        everyone
     config channel <channel> reset                  manage channel
     config channel <channel> explicit <option>      everyone
@@ -79,21 +77,23 @@ public class ConfigCommand {
                 - %1$s: Returns the values of all options for the server/channel the command was run in. For each option, the explicitly applied value is returned, falling back to the effective value if no explicit value exists.
                 - %2$s: Returns the effective value of the specified option for the server/channel the command was run in.
                 - %3$s: Sets the value of the specified option for the server/channel the command was run in to the specified value.
-                - %4$s: Resets the values of all options for the server/channel the command was run in to the default ones.
+                - %4$s: Removes the explicitly applied values of all options for the server/channel the command was run in.
                 - %5$s: Returns the explicitly applied value of the specified option for the server/channel the command was run in. Fails if this option has not been given an explicit value for this server/channel.
+                - %6$s: Removes the explicitly applied value of the specified option for the server/channel the command was run in. Fails if this option has not been given an explicit value for this server/channel.
                 
-                Use %6$s as the first argument to affect the server, and %7$s to affect the channel the command was run in.
+                Use %7$s as the first argument to affect the server, and %8$s to affect the channel the command was run in.
                 
-                %8$s commands always fail if run in a DM.
+                %9$s commands always fail if run in a DM.
                 
-                You need the "Manage Server" permission to run %8$s commands, and the "Manage Channel" permission in the respective channel to run %9$s commands.
+                You need the "Manage Server" permission to run %9$s commands, and the "Manage Channel" permission in the respective channel to run %10$s commands.
                 
-                Use %10$s to see all available options.""",
+                Use %11$s to see all available options.""",
             Commands.format(baseLiteral + " (server|channel)"),
             Commands.format(baseLiteral + " (server|channel) <option>"),
             Commands.format(baseLiteral + " (server|channel) <option> <value>"),
             Commands.format(baseLiteral + " (server|channel) reset"),
             Commands.format(baseLiteral + " (server|channel) explicit <option>"),
+            Commands.format(baseLiteral + " (server|channel) explicit remove <option>"),
             monospace("server"),
             monospace("channel"),
             Commands.format(baseLiteral + " server ..."),
@@ -116,7 +116,9 @@ public class ConfigCommand {
             argument.then(optionArgument);
             onlyArgument.then(Commands.literal(option.getName())
                 .executes(context -> getOptionValue(context.getSource(), option, optionContext, false))
-            );
+            ).then(Commands.literal("remove").then(Commands.literal(option.getName())
+                .executes(context -> removeExplicitOptionValue(context.getSource(), option, optionContext))
+            ));
         }
         argument.then(onlyArgument);
         return argument;
@@ -239,7 +241,7 @@ public class ConfigCommand {
             case GLOBAL -> {
                 boolean success = Scissors.getConfiguration().setGlobalOption(option, value);
                 if(!success) throw SAME_GLOBAL_VALUE.create(monospace(option.getName()), bold(value.toString()));
-                source.sendSuccess("Set the explicit global value of the option " + monospace(option.getName()) + " to " + bold(value.toString()));
+                source.sendSuccess("Set the global value of the option " + monospace(option.getName()) + " to " + bold(value.toString()));
             }
             case PER_GUILD -> {
                 if(!(source.commandMessage().getChannel() instanceof GuildChannel guildChannel))
@@ -261,6 +263,35 @@ public class ConfigCommand {
         }
         Scissors.saveConfiguration();
         return getReturnValue(value);
+    }
+
+    private static <T> int removeExplicitOptionValue(ChatCommandSource source, Option<T> option, OptionContext optionContext) throws CommandSyntaxException {
+        switch(optionContext) {
+            case GLOBAL -> {
+                boolean success = Scissors.getConfiguration().removeGlobalExplicitOption(option);
+                if(!success) throw NO_GLOBAL_VALUE.create(monospace(option.getName()));
+                source.sendSuccess("Removed the global value of the option " + monospace(option.getName()));
+            }
+            case PER_GUILD -> {
+                if(!(source.commandMessage().getChannel() instanceof GuildChannel guildChannel))
+                    throw NOT_IN_GUILD.create();
+                if(canEditPerGuild(source.user(), guildChannel.getGuild())) {
+                    boolean success = Scissors.getConfiguration().removeExplicitOptionForGuild(option, source.commandMessage().getGuild());
+                    if(!success) throw NO_EXPLICIT_VALUE_IN_GUILD.create(monospace(option.getName()));
+                    source.sendSuccess("Removed the explicit value of the option " + monospace(option.getName()) + " for this server");
+                } else throw NO_PERMS_IN_GUILD.create();
+            }
+            case PER_CHANNEL -> {
+                if(canEditPerChannel(source.user(), source.commandMessage().getChannel())) {
+                    boolean success = Scissors.getConfiguration().removeExplicitOptionForChannel(option, source.commandMessage().getChannel());
+                    if(!success) throw NO_EXPLICIT_VALUE_IN_CHANNEL.create(monospace(option.getName()));
+                    source.sendSuccess("Removed the explicit value of the option " + monospace(option.getName()) + " for this channel");
+                } else throw NO_PERMS_IN_CHANNEL.create();
+            }
+            default -> throw INVALID_CONTEXT.create();
+        }
+        Scissors.saveConfiguration();
+        return 1;
     }
 
     private static int getReturnValue(Object value) {

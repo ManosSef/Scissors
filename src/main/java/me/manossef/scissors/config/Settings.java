@@ -28,6 +28,11 @@ public final class Settings {
         return !optionValue.equals(values.put(option, optionValue));
     }
 
+    public <T> boolean removeExplicit(Option<T> option) {
+        Objects.requireNonNull(option, "Option cannot be null");
+        return values.remove(option) != null;
+    }
+
     public boolean resetToDefault() {
         if(values.isEmpty()) return false;
         values.clear();

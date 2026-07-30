@@ -56,6 +56,22 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
         return perChannel.get(id).set(option, value);
     }
 
+    public <T> boolean removeGlobalExplicitOption(Option<T> option) {
+        return global.removeExplicit(option);
+    }
+
+    public <T> boolean removeExplicitOptionForGuild(Option<T> option, Guild guild) {
+        long id = guild.getIdLong();
+        if(perGuild.containsKey(id)) return perGuild.get(id).removeExplicit(option);
+        return false;
+    }
+
+    public <T> boolean removeExplicitOptionForChannel(Option<T> option, Channel channel) {
+        long id = channel.getIdLong();
+        if(perChannel.containsKey(id)) return perChannel.get(id).removeExplicit(option);
+        return false;
+    }
+
     public boolean resetGlobal() {
         return global.resetToDefault();
     }
