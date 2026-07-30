@@ -23,6 +23,8 @@ public class Util {
             return message;
         if(message.endsWith("```"))
             return message.substring(0, Message.MAX_CONTENT_LENGTH - 6) + "...```";
+        else if(message.endsWith("``"))
+            return message.substring(0, Message.MAX_CONTENT_LENGTH - 5) + "...``";
         else if(message.endsWith("`"))
             return message.substring(0, Message.MAX_CONTENT_LENGTH - 4) + "...`";
         else
