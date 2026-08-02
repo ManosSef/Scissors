@@ -33,10 +33,10 @@ public final class Settings {
         return values.remove(option) != null;
     }
 
-    public boolean resetToDefault() {
-        if(values.isEmpty()) return false;
-        values.clear();
-        return true;
+    public int resetToDefault() {
+        int result = values.size();
+        if(result > 0) values.clear();
+        return result;
     }
 
     Collection<OptionValue<?>> getValues() {

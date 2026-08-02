@@ -72,15 +72,17 @@ public record Configuration(Settings global, Map<Long, Settings> perGuild, Map<L
         return false;
     }
 
-    public boolean resetGlobal() {
+    public int resetGlobal() {
         return global.resetToDefault();
     }
 
-    public boolean resetForGuild(Guild guild) {
-        return perGuild.remove(guild.getIdLong()) != null;
+    public int resetForGuild(Guild guild) {
+        if(!perGuild.containsKey(guild.getIdLong())) return 0;
+        return perGuild.remove(guild.getIdLong()).resetToDefault();
     }
 
-    public boolean resetForChannel(Channel channel) {
-        return perChannel.remove(channel.getIdLong()) != null;
+    public int resetForChannel(Channel channel) {
+        if(!perChannel.containsKey(channel.getIdLong())) return 0;
+        return perChannel.remove(channel.getIdLong()).resetToDefault();
     }
 }
