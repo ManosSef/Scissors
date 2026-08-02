@@ -39,7 +39,7 @@ public class UserArgument implements ArgumentType<User> {
                 return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(legacyMiddle)).complete();
             }
         }
-        throw INVALID_MENTION.create();
+        throw INVALID_MENTION.createWithContext(reader);
     }
 
     public Collection<String> getExamples() {

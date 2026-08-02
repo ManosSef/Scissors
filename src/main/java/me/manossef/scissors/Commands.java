@@ -17,6 +17,7 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 public class Commands {
     public static final SimpleCommandExceptionType IO_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Something went wrong; please try again"));
     public static final SimpleCommandExceptionType USER_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No user was found"));
+    public static final SimpleCommandExceptionType GUILD_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No guild was found"));
     private static final CommandDispatcher<ChatCommandSource> DISPATCHER = new CommandDispatcher<>() {{
         registerCommands(this);
     }};
