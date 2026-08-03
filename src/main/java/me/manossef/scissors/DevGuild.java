@@ -1,6 +1,5 @@
 package me.manossef.scissors;
 
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.WebhookClient;
@@ -34,11 +33,9 @@ public class DevGuild {
     }
 
     public static void log(String message) {
-        if(Scissors.DISCORD_API.getStatus().equals(JDA.Status.SHUTDOWN) || Scissors.DISCORD_API.getStatus().equals(JDA.Status.SHUTTING_DOWN))
-            return;
-        if(logWebhook == null)
-            logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, SharedConstants.LOG_WEBHOOK_URL);
         new Thread(() -> {
+            if(logWebhook == null)
+                logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, SharedConstants.LOG_WEBHOOK_URL);
             String fixed = message.replace("`", "").strip();
             if(fixed.contains("\n")) {
                 logWebhook.sendMessage(Util.truncate(codeblock(fixed))).queue();
