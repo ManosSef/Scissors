@@ -1,5 +1,6 @@
 package me.manossef.scissors;
 
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.WebhookClient;
@@ -33,18 +34,18 @@ public class DevGuild {
     }
 
     public static void log(String message) {
-        try {
-            Scissors.DISCORD_API.awaitReady();
-        } catch(InterruptedException e) {
-            LOGGER.warn("The thread was interrupted!");
-        }
-        if(logWebhook == null) logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, SharedConstants.LOG_WEBHOOK_URL);
-        String fixed = message.replace("`", "").strip();
-        if(fixed.contains("\n")) {
-            logWebhook.sendMessage(Util.truncate(codeblock(fixed))).queue();
+        if(Scissors.DISCORD_API.getStatus().equals(JDA.Status.SHUTDOWN) || Scissors.DISCORD_API.getStatus().equals(JDA.Status.SHUTTING_DOWN))
             return;
-        }
-        logWebhook.sendMessage(Util.truncate(monospace(fixed))).queue();
+        if(logWebhook == null)
+            logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, SharedConstants.LOG_WEBHOOK_URL);
+        new Thread(() -> {
+            String fixed = message.replace("`", "").strip();
+            if(fixed.contains("\n")) {
+                logWebhook.sendMessage(Util.truncate(codeblock(fixed))).queue();
+                return;
+            }
+            logWebhook.sendMessage(Util.truncate(monospace(fixed))).queue();
+        }, "DevGuildLogger").start();
     }
 
     public static void logStatus(String message) {
