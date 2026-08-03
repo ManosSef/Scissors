@@ -17,7 +17,9 @@ import java.util.List;
 public class JiraCheckLoop implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(JiraCheckLoop.class);
     private static final long NANOS_PER_SECOND = 1_000_000_000L;
-    private static final long TIME_BETWEEN_LOOPS = 6000 * NANOS_PER_SECOND;
+    private static final long SECONDS_PER_MINUTE = 60L;
+    private static final long MINUTES_BETWEEN_LOOPS = 10L;
+    private static final long TIME_BETWEEN_LOOPS = MINUTES_BETWEEN_LOOPS * SECONDS_PER_MINUTE * NANOS_PER_SECOND;
 
     private CheckedIssues checkedIssues;
 
