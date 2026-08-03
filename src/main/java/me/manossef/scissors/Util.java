@@ -1,6 +1,7 @@
 package me.manossef.scissors;
 
 import com.google.gson.JsonSyntaxException;
+import me.manossef.scissors.config.InvalidConfigurationException;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.Message;
 import org.slf4j.Logger;
@@ -46,7 +47,10 @@ public class Util {
         try {
             return Scissors.GSON.fromJson(json, type);
         } catch(JsonSyntaxException e) {
-            LOGGER.error("Invalid or incorrect JSON in {}:\n{}", fileName, json, e);
+            LOGGER.error("Invalid JSON in {}:\n{}", fileName, json, e);
+            return null;
+        } catch(InvalidConfigurationException e) {
+            LOGGER.error("Invalid configuration:\n{}", json, e);
             return null;
         }
     }
