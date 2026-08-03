@@ -16,7 +16,8 @@ import java.util.List;
 
 public class JiraCheckLoop implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(JiraCheckLoop.class);
-    private static final int TIME_BETWEEN_LOOPS = 600000;
+    private static final long NANOS_PER_SECOND = 1_000_000_000L;
+    private static final long TIME_BETWEEN_LOOPS = 6000 * NANOS_PER_SECOND;
 
     private CheckedIssues checkedIssues;
 
@@ -24,19 +25,17 @@ public class JiraCheckLoop implements Runnable {
         this.checkedIssues = checkedIssues;
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
-        int stopwatch = 0;
+        long stopwatch = TIME_BETWEEN_LOOPS;
         Instant lastTimeCheck = Instant.now();
-        while(true) {
+        while(stopwatch >= 0) {
+            boolean runCheck = stopwatch >= TIME_BETWEEN_LOOPS;
             Instant now = Instant.now();
-            stopwatch += (int) Duration.between(lastTimeCheck, now).toMillis();
+            stopwatch += Duration.between(lastTimeCheck, now).toNanos();
             lastTimeCheck = now;
-            if(stopwatch >= TIME_BETWEEN_LOOPS) {
-                stopwatch -= TIME_BETWEEN_LOOPS;
-                continue;
-            }
+            if(runCheck) stopwatch -= TIME_BETWEEN_LOOPS;
+            else continue;
             try {
                 CheckedIssues newChecked = this.checkIssues();
                 List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
@@ -55,21 +54,20 @@ public class JiraCheckLoop implements Runnable {
                 LOGGER.warn("Something went wrong; ignoring and continuing as normal.");
             }
         }
+        Scissors.startJiraCheckLoop(this.checkedIssues);
     }
 
     private CheckedIssues checkIssues() {
         Issue[] fixedIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution = Done ORDER BY created ASC", "id,key").issues();
         List<Integer> checkedFixed;
-        if(fixedIssues != null)
-            checkedFixed = Arrays.stream(fixedIssues)
+        if(fixedIssues != null) checkedFixed = Arrays.stream(fixedIssues)
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
             .toList();
         else checkedFixed = this.checkedIssues.checkedFixed;
         Issue[] invalidIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution IN (Invalid, \"Won't Do\", \"Works as Intended\") ORDER BY created ASC", "id,key,resolution").issues();
         List<Integer> checkedInvalid;
-        if(invalidIssues != null)
-            checkedInvalid = Arrays.stream(invalidIssues)
+        if(invalidIssues != null) checkedInvalid = Arrays.stream(invalidIssues)
             .map(issue -> issue.key().replace("SCIS-", ""))
             .map(Integer::parseInt)
             .toList();

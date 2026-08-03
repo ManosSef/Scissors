@@ -46,8 +46,7 @@ public class Scissors {
             if(checkedIssues == null)
                 checkedIssues = new JiraCheckLoop.CheckedIssues(new ArrayList<>(), new ArrayList<>());
             LOGGER.debug("Retrieved previous checked issues: {}", checkedIssues);
-            Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues), "JiraCheckLoop");
-            jiraCheckLoop.start();
+            startJiraCheckLoop(checkedIssues);
         } catch(InterruptedException e) {
             LOGGER.warn("The thread was interrupted!");
         }
@@ -71,5 +70,10 @@ public class Scissors {
 
     public static void saveCheckedIssues(JiraCheckLoop.CheckedIssues checkedIssues) {
         Util.saveJsonToFile(SharedConstants.CHECKED_ISSUES_FILE_NAME, checkedIssues);
+    }
+
+    public static void startJiraCheckLoop(JiraCheckLoop.CheckedIssues checkedIssues) {
+        Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues), "JiraCheckLoop");
+        jiraCheckLoop.start();
     }
 }
