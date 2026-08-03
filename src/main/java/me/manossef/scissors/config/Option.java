@@ -7,7 +7,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public final class Option<T> {
+public sealed class Option<T> {
     private final String name;
     private final Class<T> type;
     private final Predicate<T> validator;
@@ -82,6 +82,20 @@ public final class Option<T> {
     }
 
     private static Option<Integer> integer(String name, Predicate<Integer> validator, ArgumentType<Integer> argumentType, int defaultValue) {
-        return new Option<>(name, Integer.class, validator, argumentType, defaultValue);
+        return new IntOption(name, validator, argumentType, defaultValue);
+    }
+
+    private static final class IntOption extends Option<Integer> {
+        private IntOption(String name, Predicate<Integer> validator, ArgumentType<Integer> argumentType, Integer defaultValue) {
+            super(name, Integer.class, validator, argumentType, defaultValue);
+        }
+
+        public OptionValue<Integer> castValue(Object value) {
+            if(value instanceof Number number) {
+                int i = number.intValue();
+                return new OptionValue<>(this, i);
+            }
+            throw new ClassCastException("Cannot cast " + value.getClass() + " to java.lang.Integer");
+        }
     }
 }
