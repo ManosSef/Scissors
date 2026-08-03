@@ -33,6 +33,11 @@ public class DevGuild {
     }
 
     public static void log(String message) {
+        try {
+            Scissors.DISCORD_API.awaitReady();
+        } catch(InterruptedException e) {
+            LOGGER.warn("The thread was interrupted!");
+        }
         if(logWebhook == null) logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, SharedConstants.LOG_WEBHOOK_URL);
         String fixed = message.replace("`", "").strip();
         if(fixed.contains("\n")) {
