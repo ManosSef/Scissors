@@ -62,6 +62,7 @@ public class JiraCheckLoop implements Runnable {
                 LOGGER.warn("Something went wrong; ignoring and continuing as normal.");
             }
         }
+        LOGGER.warn("Got stuck for too long; starting a new loop.");
         Scissors.startJiraCheckLoop(this.checkedIssues);
     }
 
