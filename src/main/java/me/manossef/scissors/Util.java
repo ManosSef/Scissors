@@ -97,6 +97,7 @@ public class Util {
             Issue.Fields.Issuetype.BUG,
             Issue.Fields.Project.SCIS,
             Scissors.DISCORD_API.getSelfUser().getId(),
+            null,
             null
         );
         if(issue.id() == null) {

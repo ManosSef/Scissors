@@ -11,9 +11,9 @@ import java.util.Map;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
 public record Issue(String id, String key, Fields fields, String[] errorMessages, Map<String, String> errors) {
-    public record Fields(Issuetype issuetype, Project project, Resolution resolution, String created, Priority priority,
-                         Status status, String summary, String description, IssueLink[] issuelinks,
-                         String customfield_10152, String customfield_10153) {
+    public record Fields(Issuetype issuetype, Project project, Resolution resolution, Priority priority, String summary,
+                         String description, CustomFieldOption customfield_10021, String customfield_10152,
+                         String customfield_10153) {
         public record Issuetype(String id, String name, String description) {
             public static final Issuetype BUG = Scissors.JIRA_API.getIssuetype("10009");
             public static final Issuetype FEATURE = Scissors.JIRA_API.getIssuetype("10048");
@@ -35,12 +35,12 @@ public record Issue(String id, String key, Fields fields, String[] errorMessages
             public static final Priority LOW = Scissors.JIRA_API.getPriority("5");
         }
 
-        public record Status(String id, String name) {
+        public record CustomFieldOption(String id, String value) {
+            public static final CustomFieldOption IMPEDIMENT = Scissors.JIRA_API.getCustomFieldOption("10019");
         }
 
-        public record IssueLink(String id, Type type, Issue inwardIssue, Issue outwardIssue) {
-            public record Type(String id, String name, String inward, String outward) {
-            }
+        public CustomFieldOption flagged() {
+            return this.customfield_10021;
         }
 
         public String doneInCommit() {
@@ -53,6 +53,7 @@ public record Issue(String id, String key, Fields fields, String[] errorMessages
     }
 
     public MessageEmbed makeEmbed() {
+        if(fields.flagged() != null) return new MessageEmbed(null, "Private issue", null, EmbedType.RICH, null, 0xDE6868, null, null, null, null, null, null, null, 0);
         List<MessageEmbed.Field> embedFields = new ArrayList<>();
         embedFields.add(new MessageEmbed.Field("Issue Type", this.fields.issuetype.name, true));
         embedFields.add(new MessageEmbed.Field("Resolution", this.fields.resolution == null ? "Unresolved" : "Resolved as " + bold(this.fields.resolution.name), true));

@@ -104,7 +104,8 @@ public class SuggestCommand {
             type,
             Issue.Fields.Project.SCIS,
             user.getId(),
-            priority
+            priority,
+            null
         );
         if(issue.id() == null) {
             List<String> errors = new ArrayList<>();

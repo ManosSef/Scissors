@@ -9,6 +9,7 @@ import me.manossef.scissors.jira.JiraAPI;
 import me.manossef.scissors.jira.JiraCheckLoop;
 import me.manossef.scissors.listeners.CommandListener;
 import me.manossef.scissors.listeners.MessageListeners;
+import me.manossef.scissors.listeners.SecretListener;
 import me.manossef.scissors.listeners.Startup;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -22,7 +23,7 @@ import java.util.random.RandomGenerator;
 public class Scissors {
     public static final JDA DISCORD_API = JDABuilder.createDefault(SharedConstants.TOKEN)
         .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_PRESENCES)
-        .addEventListeners(new Startup(), new CommandListener(), new MessageListeners())
+        .addEventListeners(new Startup(), new CommandListener(), new MessageListeners(), new SecretListener())
         .build();
     public static final JiraAPI JIRA_API = new JiraAPI("https://manossef.atlassian.net/rest/api/2/");
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Settings.class, new SettingsAdapter()).create();

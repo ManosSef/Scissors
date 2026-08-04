@@ -29,6 +29,11 @@ public record JiraAPI(String baseUrl) {
         return Scissors.GSON.fromJson(node.toString(), Issue.Fields.Priority.class);
     }
 
+    public Issue.Fields.CustomFieldOption getCustomFieldOption(String id) {
+        JsonNode node = get("customFieldOption/" + id);
+        return Scissors.GSON.fromJson(node.toString(), Issue.Fields.CustomFieldOption.class);
+    }
+
     public SearchResults searchIssues(String jql, String fields) {
         JsonNode node = getRequest("search/jql")
             .queryString("jql", jql)
@@ -40,9 +45,9 @@ public record JiraAPI(String baseUrl) {
         return Scissors.GSON.fromJson(node.toString(), SearchResults.class);
     }
 
-    public Issue createIssue(String summary, String description, Issue.Fields.Issuetype issuetype, Issue.Fields.Project project, String reporterUserID, Issue.Fields.Priority priority) {
+    public Issue createIssue(String summary, String description, Issue.Fields.Issuetype issuetype, Issue.Fields.Project project, String reporterUserID, Issue.Fields.Priority priority, Issue.Fields.CustomFieldOption flagged) {
         JsonNode node = post("issue", Scissors.GSON.toJson(new Issue(null, null, new Issue.Fields(
-            issuetype, project, null, null, priority, null, summary, description, null, null, reporterUserID
+            issuetype, project, null, priority, summary, description, flagged, null, reporterUserID
         ), null, null)));
         return Scissors.GSON.fromJson(node.toString(), Issue.class);
     }
