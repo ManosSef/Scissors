@@ -51,7 +51,7 @@ public class HelpCommand {
         builder.append("All available commands are listed below. To learn more about a command, use ").append(Commands.format("help <command>")).append(".");
         for(String line : LINES)
             builder.append("\n- ").append(line);
-        source.sendSuccess(builder.toString());
+        source.sendSuccess(builder.toString(), false);
         return LINES.size();
     }
 
@@ -65,7 +65,7 @@ public class HelpCommand {
             builder.delete(builder.length() - 2, builder.length());
         }
         builder.append("\n\n").append(helpText);
-        source.sendSuccess(builder.toString());
+        source.sendSuccess(builder.toString(), false);
         return 1;
     }
 }

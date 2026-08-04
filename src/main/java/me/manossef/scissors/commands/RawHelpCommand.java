@@ -17,7 +17,7 @@ public class RawHelpCommand {
         StringBuilder builder = new StringBuilder();
         for(String line : usage)
             builder.append("- ").append(Commands.format(line)).append("\n");
-        source.sendSuccess("All commands:\n" + builder);
+        source.sendSuccess("All commands:\n" + builder, false);
         return usage.length;
     }
 }

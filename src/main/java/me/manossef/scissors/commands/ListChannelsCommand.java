@@ -27,7 +27,7 @@ public class ListChannelsCommand {
         StringBuilder builder = new StringBuilder();
         List<GuildChannel> channels = guild.getChannels(true);
         for(GuildChannel channel : channels) builder.append(channel.toString()).append("\n");
-        source.sendSuccess(builder.toString());
+        source.sendSuccess(builder.toString(), false);
         return channels.size();
     }
 }

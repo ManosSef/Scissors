@@ -39,7 +39,7 @@ public class HangmanCommand {
 
     private static int startHangman(ChatCommandSource source, Hangman.Difficulty difficulty) throws CommandSyntaxException {
         if(Hangman.canStart()) {
-            source.sendSuccess("Starting a game of hangman of " + difficulty.toString().toLowerCase() + " difficulty");
+            source.sendSuccess("Starting a game of hangman of " + difficulty.toString().toLowerCase() + " difficulty", true);
             new Hangman(source.commandMessage().getChannel(), difficulty);
             return 1;
         }

@@ -12,7 +12,7 @@ public class NineCommand {
     }
 
     private static int compareNineToEight(ChatCommandSource source) {
-        source.sendSuccess("8 is, in fact, less than 9. You are correct!");
+        source.sendSuccess("8 is, in fact, less than 9. You are correct!", false);
         return 1;
     }
 }

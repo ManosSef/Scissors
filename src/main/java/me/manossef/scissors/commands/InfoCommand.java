@@ -52,17 +52,17 @@ public class InfoCommand {
             Commands.format("help"),
             Commands.format("suggest bug <summary>"),
             Commands.format("suggest feature <summary>"),
-            Commands.format("suggest improvement <summary>")));
+            Commands.format("suggest improvement <summary>")), false);
         return 1;
     }
 
     private static int sendDevServer(ChatCommandSource source) {
-        source.sendSuccess("My development server can be joined at https://discord.gg/FjRTdwBdM8");
+        source.sendSuccess("My development server can be joined at https://discord.gg/FjRTdwBdM8", false);
         return 1;
     }
 
     private static int sendGithub(ChatCommandSource source) {
-        source.sendSuccess("The GitHub repository where my code is hosted can be found at https://github.com/ManosSef/Scissors");
+        source.sendSuccess("The GitHub repository where my code is hosted can be found at https://github.com/ManosSef/Scissors", false);
         return 1;
     }
 
@@ -85,7 +85,7 @@ public class InfoCommand {
             monospace(Options.SCISSORS_RESPONSES.getName()),
             monospace(Options.SCISSORS_RESPONSE_CHANCE.getName()),
             monospace(Options.REACT_TO_PAPER.getName()),
-            monospace(Options.GPPCT_ON_INTEGERS_ONLY.getName())));
+            monospace(Options.GPPCT_ON_INTEGERS_ONLY.getName())), false);
         return 1;
     }
 }

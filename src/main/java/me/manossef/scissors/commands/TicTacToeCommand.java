@@ -42,7 +42,7 @@ public class TicTacToeCommand {
     }
 
     private static int startBotTicTacToeGame(ChatCommandSource source) {
-        source.sendSuccess("Starting a tic-tac-toe game with the bot");
+        source.sendSuccess("Starting a tic-tac-toe game with the bot", true);
         new TicTacToe(source.user(), Scissors.DISCORD_API.getSelfUser(), source.commandMessage().getChannel());
         return 1;
     }
@@ -53,7 +53,7 @@ public class TicTacToeCommand {
             return startBotTicTacToeGame(source);
         if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
         if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();
-        source.sendSuccess("Starting a tic-tac-toe game with " + user.getAsMention());
+        source.sendSuccess("Starting a tic-tac-toe game with " + user.getAsMention(), true);
         new TicTacToe(source.user(), user, source.commandMessage().getChannel());
         return 1;
     }

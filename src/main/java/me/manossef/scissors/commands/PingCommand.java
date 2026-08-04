@@ -54,7 +54,7 @@ public class PingCommand {
         OffsetDateTime now = OffsetDateTime.now();
         try {
             long ping = nanos ? Duration.between(messageTime, now).toNanos() : Duration.between(messageTime, now).toMillis();
-            source.sendSuccess("It took me " + monospace(ping + (nanos ? "ns" : "ms")) + " to reply to this command");
+            source.sendSuccess("It took me " + monospace(ping + (nanos ? "ns" : "ms")) + " to reply to this command", false);
             return (int) ping;
         } catch(ArithmeticException e) {
             throw TOO_LONG.create();
@@ -63,17 +63,17 @@ public class PingCommand {
 
     private static int pingDiscord(ChatCommandSource source) {
         Long ping = Scissors.DISCORD_API.getRestPing().complete();
-        source.sendSuccess("My ping to Discord is " + monospace(ping + "ms"));
+        source.sendSuccess("My ping to Discord is " + monospace(ping + "ms"), false);
         return ping.intValue();
     }
 
     private static int pong(ChatCommandSource source) {
-        source.sendSuccess("Pong!");
+        source.sendSuccess("Pong!", false);
         return 1;
     }
 
     private static int mentionMe(ChatCommandSource source) {
-        source.sendSuccess(SharedConstants.MY_MENTION);
+        source.sendSuccess(SharedConstants.MY_MENTION, false);
         return 1;
     }
 }

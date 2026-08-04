@@ -22,12 +22,14 @@ public record ChatCommandSource(Message commandMessage, User user) {
         return new ChatCommandSource(this.commandMessage, newUser);
     }
 
-    public void sendSuccess(String message) {
-        this.commandMessage.reply(truncate(Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " + message)).setAllowedMentions(Collections.emptyList()).queue();
+    public void sendSuccess(String message, boolean feedback) {
+        this.commandMessage.reply(truncate((feedback ? Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " : "") + message))
+                .setAllowedMentions(Collections.emptyList()).queue();
     }
 
-    public void sendSuccess(String message, MessageEmbed... embeds) {
-        this.commandMessage.reply(new MessageCreateBuilder().setContent(truncate(Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " + message)).setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
+    public void sendSuccess(String message, boolean feedback, MessageEmbed... embeds) {
+        this.commandMessage.reply(new MessageCreateBuilder().setContent(truncate((feedback ? Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " : "") + message))
+                .setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
     }
 
     public void sendFailure(String message) {

@@ -26,7 +26,7 @@ public class StopAllGamesCommand {
                 stopped++;
             }
         }
-        source.sendSuccess("Stopped all running games");
+        source.sendSuccess("Stopped all running games", true);
         return stopped;
     }
 }

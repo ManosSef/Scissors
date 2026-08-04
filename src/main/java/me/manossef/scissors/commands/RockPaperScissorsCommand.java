@@ -54,14 +54,14 @@ public class RockPaperScissorsCommand {
     private static int rockPaperScissors(ChatCommandSource source, RockPaperScissors.Move move) {
         int random = Scissors.RANDOM.nextInt(-1, 2);
         switch(random) {
-            case 0 -> source.sendSuccess("I chose " + bold(move.getName()) + "! It's a tie! Try again.");
+            case 0 -> source.sendSuccess("I chose " + bold(move.getName()) + "! It's a tie! Try again.", false);
             case -1 -> {
                 RockPaperScissors.Move botMove = switch(move) {
                     case ROCK -> RockPaperScissors.Move.SCISSORS;
                     case PAPER -> RockPaperScissors.Move.ROCK;
                     case SCISSORS -> RockPaperScissors.Move.PAPER;
                 };
-                source.sendSuccess("I chose " + bold(botMove.getName()) + "! You win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " " + italics("What?! How did I lose with scissors? This must be a glitch...") : ""));
+                source.sendSuccess("I chose " + bold(botMove.getName()) + "! You win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " " + italics("What?! How did I lose with scissors? This must be a glitch...") : ""), false);
             }
             case 1 -> {
                 RockPaperScissors.Move botMove = switch(move) {
@@ -69,7 +69,7 @@ public class RockPaperScissorsCommand {
                     case PAPER -> RockPaperScissors.Move.SCISSORS;
                     case SCISSORS -> RockPaperScissors.Move.ROCK;
                 };
-                source.sendSuccess("I chose " + bold(botMove.getName()) + "! I win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " " + italics("Yay! I win with scissors again! I mean, that was expected.") : ""));
+                source.sendSuccess("I chose " + bold(botMove.getName()) + "! I win!" + (botMove == RockPaperScissors.Move.SCISSORS ? " " + italics("Yay! I win with scissors again! I mean, that was expected.") : ""), false);
             }
         }
         return random;
@@ -80,7 +80,7 @@ public class RockPaperScissorsCommand {
         if(user.getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong()) throw NO_SCISSORS.create();
         if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
         if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();
-        source.sendSuccess("Starting a game of rock paper scissors with " + user.getAsMention());
+        source.sendSuccess("Starting a game of rock paper scissors with " + user.getAsMention(), true);
         new RockPaperScissors(source.user(), user, source.commandMessage().getChannel());
         return 1;
     }

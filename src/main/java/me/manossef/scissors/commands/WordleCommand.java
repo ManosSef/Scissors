@@ -43,7 +43,7 @@ public class WordleCommand {
 
     private static int startWordle(ChatCommandSource source, boolean hardMode) throws CommandSyntaxException {
         if(Wordle.canStart()) {
-            source.sendSuccess("Starting a game of Wordle" + (hardMode ? " in hard mode" : ""));
+            source.sendSuccess("Starting a game of Wordle" + (hardMode ? " in hard mode" : ""), true);
             new Wordle(source.commandMessage().getChannel(), hardMode);
             return 1;
         }
@@ -52,7 +52,7 @@ public class WordleCommand {
 
     private static int startWordle(ChatCommandSource source, boolean hardMode, String answer) throws CommandSyntaxException {
         if(Wordle.canStart()) {
-            source.sendSuccess("Starting a game of Wordle" + (hardMode ? " in hard mode" : ""));
+            source.sendSuccess("Starting a game of Wordle" + (hardMode ? " in hard mode" : ""), true);
             new Wordle(source.commandMessage().getChannel(), hardMode, answer);
             return 1;
         }

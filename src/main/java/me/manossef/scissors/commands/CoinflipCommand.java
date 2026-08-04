@@ -33,16 +33,16 @@ public class CoinflipCommand {
 
     private static int flipCoin(ChatCommandSource source) {
         int random = Scissors.RANDOM.nextInt(12000);
-        if(random < 5999) source.sendSuccess("You rolled " + bold("heads"));
-        else if(random < 11998) source.sendSuccess("You rolled " + bold("tails"));
+        if(random < 5999) source.sendSuccess("You rolled " + bold("heads"), false);
+        else if(random < 11998) source.sendSuccess("You rolled " + bold("tails"), false);
         else sendEdgeSuccess(source);
         return random;
     }
 
     private static int flipCoinNoFunnyBusiness(ChatCommandSource source) {
         boolean random = Scissors.RANDOM.nextBoolean();
-        if(random) source.sendSuccess("You rolled " + bold("heads"));
-        else source.sendSuccess("You rolled " + bold("tails"));
+        if(random) source.sendSuccess("You rolled " + bold("heads"), false);
+        else source.sendSuccess("You rolled " + bold("tails"), false);
         return random ? 1 : 0;
     }
 
@@ -53,6 +53,6 @@ public class CoinflipCommand {
     }
 
     private static void sendEdgeSuccess(ChatCommandSource source) {
-        source.sendSuccess(bold("The coin landed on the edge!") + " " + Emojis.COIN.getFormatted() + Emojis.FOUR_LEAF_CLOVER.getFormatted());
+        source.sendSuccess(bold("The coin landed on the edge!") + " " + Emojis.COIN.getFormatted() + Emojis.FOUR_LEAF_CLOVER.getFormatted(), false);
     }
 }

@@ -109,7 +109,7 @@ public class SuggestCommand {
             if(issue.errors() != null) errors.addAll(issue.errors().values());
             throw ISSUE_CREATION_FAILED.create(null, errors.toArray());
         }
-        source.sendSuccess("Successfully created issue " + issue.key() + ". Thanks for the feedback!");
+        source.sendSuccess("Successfully created issue " + issue.key() + ". Thanks for the feedback!", true);
         return 1;
     }
 

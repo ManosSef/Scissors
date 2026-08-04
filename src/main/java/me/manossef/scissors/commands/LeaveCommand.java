@@ -24,7 +24,7 @@ public class LeaveCommand {
     }
 
     private static int leave(ChatCommandSource source) {
-        source.sendSuccess("Leaving guild");
+        source.sendSuccess("Leaving guild", true);
         source.commandMessage().getGuild().leave().queue();
         return 1;
     }
@@ -32,7 +32,7 @@ public class LeaveCommand {
     private static int leave(ChatCommandSource source, long id) throws CommandSyntaxException {
         Guild guild = Scissors.DISCORD_API.getGuildById(id);
         if(guild == null) throw NOT_IN_GUILD.create();
-        source.sendSuccess("Leaving " + guild.getName());
+        source.sendSuccess("Leaving " + guild.getName(), true);
         guild.leave().queue();
         return 1;
     }

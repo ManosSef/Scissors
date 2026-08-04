@@ -21,7 +21,7 @@ public class ListGuildsCommand {
         List<Guild> guilds = Scissors.DISCORD_API.getGuilds();
         for(Guild guild : guilds)
             builder.append(guild.toString()).append("\n");
-        source.sendSuccess(builder.toString());
+        source.sendSuccess(builder.toString(), false);
         return guilds.size();
     }
 }

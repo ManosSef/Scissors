@@ -22,8 +22,8 @@ public class CatFactCommand {
         try {
             String body = Unirest.get("https://catfact.ninja/fact").asString().getBody();
             CatFact catFact = Scissors.GSON.fromJson(body, CatFact.class);
-            source.sendSuccess(catFact.fact);
-            return 1;
+            source.sendSuccess(catFact.fact, false);
+            return catFact.length;
         } catch(UnirestException e) {
             throw Commands.IO_EXCEPTION.create();
         }
