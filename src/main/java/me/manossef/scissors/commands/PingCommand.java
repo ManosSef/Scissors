@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.SharedConstants;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -28,6 +29,9 @@ public class PingCommand {
             )
             .then(Commands.literal("pong")
                 .executes(context -> pong(context.getSource()))
+            )
+            .then(Commands.literal("manos")
+                .executes(context -> mentionMe(context.getSource()))
             )
         );
         HelpCommand.addLine(baseLiteral, "Pings Discord, measures the bot's reaction time, or replies with \"Pong!\"");
@@ -65,6 +69,11 @@ public class PingCommand {
 
     private static int pong(ChatCommandSource source) {
         source.sendSuccess("Pong!");
+        return 1;
+    }
+
+    private static int mentionMe(ChatCommandSource source) {
+        source.sendSuccess(SharedConstants.MY_MENTION);
         return 1;
     }
 }
