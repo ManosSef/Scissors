@@ -33,6 +33,9 @@ public class PingCommand {
             .then(Commands.literal("manos")
                 .executes(context -> mentionMe(context.getSource()))
             )
+            .then(Commands.literal("manolhs")
+                .executes(context -> mentionMe(context.getSource()))
+            )
         );
         HelpCommand.addLine(baseLiteral, "Pings Discord, measures the bot's reaction time, or replies with \"Pong!\"");
         HelpCommand.addLiteral(baseLiteral, String.format("""
