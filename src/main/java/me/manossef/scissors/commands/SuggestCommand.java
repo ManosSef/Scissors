@@ -4,11 +4,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import kong.unirest.core.UnirestException;
-import me.manossef.scissors.*;
+import me.manossef.scissors.ChatCommandSource;
+import me.manossef.scissors.Commands;
+import me.manossef.scissors.Scissors;
+import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
@@ -33,16 +37,16 @@ public class SuggestCommand {
         String baseLiteral = "suggest";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendIssueTypeHint())
-            .then(argumentsForIssueType("bug", IssueType.BUG))
-            .then(argumentsForIssueType("feature", IssueType.FEATURE))
-            .then(argumentsForIssueType("improvement", IssueType.IMPROVEMENT))
-            .then(argumentsForIssueType("task", IssueType.TASK).requires(Commands.devRestricted()))
+            .then(argumentsForIssueType("bug", Issue.Fields.Issuetype.BUG, false))
+            .then(argumentsForIssueType("feature", Issue.Fields.Issuetype.FEATURE, false))
+            .then(argumentsForIssueType("improvement", Issue.Fields.Issuetype.IMPROVEMENT, false))
+            .then(argumentsForIssueType("task", Issue.Fields.Issuetype.TASK, false).requires(Commands.devRestricted()))
             .then(Commands.argument("reporter", UserArgument.user())
                 .requires(Commands.devRestricted())
-                .then(argumentsForIssueTypeWithUser("bug", IssueType.BUG))
-                .then(argumentsForIssueTypeWithUser("feature", IssueType.FEATURE))
-                .then(argumentsForIssueTypeWithUser("improvement", IssueType.IMPROVEMENT))
-                .then(argumentsForIssueTypeWithUser("task", IssueType.TASK))
+                .then(argumentsForIssueType("bug", Issue.Fields.Issuetype.BUG, true))
+                .then(argumentsForIssueType("feature", Issue.Fields.Issuetype.FEATURE, true))
+                .then(argumentsForIssueType("improvement", Issue.Fields.Issuetype.IMPROVEMENT, true))
+                .then(argumentsForIssueType("task", Issue.Fields.Issuetype.TASK, true))
             )
             .then(Commands.argument("summary", StringArgumentType.greedyString())
                 .executes(context -> sendIssueTypeHint())
@@ -64,44 +68,43 @@ public class SuggestCommand {
             Commands.format(baseLiteral + " improvement <summary>")));
     }
 
-    private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueType(String literal, IssueType type) {
+    private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueType(String literal, Issue.Fields.Issuetype type, boolean withUser) {
         return Commands.literal(literal)
-            .then(Commands.argument("summary", StringArgumentType.greedyString())
-                .executes(context -> {
-                    try {
-                        return createIssue(context.getSource(), type, context.getArgument("summary", String.class));
-                    } catch(UnirestException e) {
-                        throw Commands.IO_EXCEPTION.create();
-                    }
-                })
-            );
+            .then(argumentForPriority("vi", type, withUser, Issue.Fields.Priority.VERY_IMPORTANT))
+            .then(argumentForPriority("i", type, withUser, Issue.Fields.Priority.IMPORTANT))
+            .then(argumentForPriority("n", type, withUser, Issue.Fields.Priority.NORMAL))
+            .then(argumentForPriority("l", type, withUser, Issue.Fields.Priority.LOW))
+            .then(summaryArgument(type, withUser, null));
     }
 
-    private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueTypeWithUser(String literal, IssueType type) {
+    private static ArgumentBuilder<ChatCommandSource, ?> argumentForPriority(String literal, Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) {
         return Commands.literal(literal)
-            .then(Commands.argument("summary", StringArgumentType.greedyString())
-                .executes(context -> {
-                    try {
-                        return createIssue(context.getSource(), type, context.getArgument("summary", String.class), context.getArgument("reporter", User.class));
-                    } catch(UnirestException e) {
-                        throw Commands.IO_EXCEPTION.create();
-                    }
-                })
-            );
+            .requires(Commands.devRestricted())
+            .then(summaryArgument(type, withUser, priority));
     }
 
-    private static int createIssue(ChatCommandSource source, IssueType type, String summary) throws CommandSyntaxException {
-        return createIssue(source, type, summary, source.user());
+    private static ArgumentBuilder<ChatCommandSource, ?> summaryArgument(Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) {
+        return Commands.argument("summary", StringArgumentType.greedyString())
+            .executes(context -> createIssueWithContext(context, type, withUser, priority));
     }
 
-    private static int createIssue(ChatCommandSource source, IssueType type, String summary, User user) throws CommandSyntaxException {
+    private static int createIssueWithContext(CommandContext<ChatCommandSource> context, Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) throws CommandSyntaxException {
+        try {
+            return createIssue(context.getSource(), type, context.getArgument("summary", String.class), withUser ? context.getArgument("reporter", User.class) : context.getSource().user(), priority);
+        } catch(UnirestException e) {
+            throw Commands.IO_EXCEPTION.create();
+        }
+    }
+
+    private static int createIssue(ChatCommandSource source, Issue.Fields.Issuetype type, String summary, User user, Issue.Fields.Priority priority) throws CommandSyntaxException {
         if(user == null) throw Commands.USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
             "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: " + source.commandMessage().getJumpUrl(),
-            Scissors.JIRA_API.getIssuetype(type.id),
-            Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
-            user.getId()
+            type,
+            Issue.Fields.Project.SCIS,
+            user.getId(),
+            priority
         );
         if(issue.id() == null) {
             List<String> errors = new ArrayList<>();
@@ -115,18 +118,5 @@ public class SuggestCommand {
 
     private static int sendIssueTypeHint() throws CommandSyntaxException {
         throw NO_ISSUE_TYPE.create();
-    }
-
-    private enum IssueType {
-        BUG(SharedConstants.ISSUETYPE_BUG_ID),
-        FEATURE(SharedConstants.ISSUETYPE_FEATURE_ID),
-        IMPROVEMENT(SharedConstants.ISSUETYPE_IMPROVEMENT_ID),
-        TASK(SharedConstants.ISSUETYPE_TASK_ID);
-
-        private final String id;
-
-        IssueType(String id) {
-            this.id = id;
-        }
     }
 }

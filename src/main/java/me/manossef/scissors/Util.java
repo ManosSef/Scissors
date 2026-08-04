@@ -94,9 +94,10 @@ public class Util {
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
             description + "\nStack trace:\n{noformat}" + getStackTrace(exception) + "{noformat}",
-            Scissors.JIRA_API.getIssuetype(SharedConstants.ISSUETYPE_BUG_ID),
-            Scissors.JIRA_API.getProject(SharedConstants.PROJECT_SCIS_ID),
-            Scissors.DISCORD_API.getSelfUser().getId()
+            Issue.Fields.Issuetype.BUG,
+            Issue.Fields.Project.SCIS,
+            Scissors.DISCORD_API.getSelfUser().getId(),
+            null
         );
         if(issue.id() == null) {
             StringBuilder builder = new StringBuilder();

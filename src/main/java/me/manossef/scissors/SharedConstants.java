@@ -20,13 +20,6 @@ public class SharedConstants {
 
     public static final String COMMAND_PREFIX = "8<";
 
-    public static final String ISSUETYPE_BUG_ID = "10009";
-    public static final String ISSUETYPE_FEATURE_ID = "10048";
-    public static final String ISSUETYPE_IMPROVEMENT_ID = "10049";
-    public static final String ISSUETYPE_TASK_ID = "10147";
-
-    public static final String PROJECT_SCIS_ID = "10039";
-
     public static final String FILE_DIRECTORY = IS_STAGING ? "storage/" : "/storage/";
     public static final String CHECKED_ISSUES_FILE_NAME = "checked_issues.json";
     public static final String CONFIG_FILE_NAME = "config.json";

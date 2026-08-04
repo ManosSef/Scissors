@@ -1,5 +1,6 @@
 package me.manossef.scissors.jira.objects;
 
+import me.manossef.scissors.Scissors;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
@@ -14,15 +15,24 @@ public record Issue(String id, String key, Fields fields, String[] errorMessages
                          Status status, String summary, String description, IssueLink[] issuelinks,
                          String customfield_10152, String customfield_10153) {
         public record Issuetype(String id, String name, String description) {
+            public static final Issuetype BUG = Scissors.JIRA_API.getIssuetype("10009");
+            public static final Issuetype FEATURE = Scissors.JIRA_API.getIssuetype("10048");
+            public static final Issuetype IMPROVEMENT = Scissors.JIRA_API.getIssuetype("10049");
+            public static final Issuetype TASK = Scissors.JIRA_API.getIssuetype("10147");
         }
 
         public record Project(String id, String key, String name) {
+            public static final Project SCIS = Scissors.JIRA_API.getProject("10039");
         }
 
         public record Resolution(String id, String name, String description) {
         }
 
         public record Priority(String id, String name) {
+            public static final Priority VERY_IMPORTANT = Scissors.JIRA_API.getPriority("1");
+            public static final Priority IMPORTANT = Scissors.JIRA_API.getPriority("2");
+            public static final Priority NORMAL = Scissors.JIRA_API.getPriority("4");
+            public static final Priority LOW = Scissors.JIRA_API.getPriority("5");
         }
 
         public record Status(String id, String name) {
