@@ -64,6 +64,7 @@ public record JiraAPI(String baseUrl) {
             .header("Accept", "application/json");
     }
 
+    @SuppressWarnings("SameParameterValue")
     private JsonNode post(String endpoint, String body) {
         return Unirest.post(baseUrl + endpoint)
             .basicAuth(SharedConstants.JIRA_EMAIL, SharedConstants.JIRA_API_TOKEN)

@@ -28,7 +28,7 @@ public class SettingsAdapter extends TypeAdapter<Settings> {
     }
 
     @Override
-    public Settings read(JsonReader in) throws IOException {
+    public Settings read(JsonReader in) {
         try {
             Set<OptionValue<?>> values = new HashSet<>();
             Map<String, ?> map = Scissors.GSON.fromJson(in, Map.class);

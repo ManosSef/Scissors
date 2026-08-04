@@ -65,16 +65,7 @@ public sealed class Option<T> {
         return new Option<>(name, Boolean.class, b -> true, BoolArgumentType.bool(), defaultValue);
     }
 
-    static Option<Integer> integer(String name, int defaultValue) {
-        return integer(name, i -> true, IntegerArgumentType.integer(), defaultValue);
-    }
-
-    static Option<Integer> integer(String name, int defaultValue, int min) {
-        if(defaultValue < min)
-            throw new IllegalArgumentException("The default value must be greater than or equal to min");
-        return integer(name, i -> i >= min, IntegerArgumentType.integer(min), defaultValue);
-    }
-
+    @SuppressWarnings("SameParameterValue")
     static Option<Integer> integer(String name, int defaultValue, int min, int max) {
         if(defaultValue < min || defaultValue > max)
             throw new IllegalArgumentException("The default value must be between min and max inclusive");
