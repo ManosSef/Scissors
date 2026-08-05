@@ -10,6 +10,7 @@ import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
@@ -40,11 +41,16 @@ public class IssueCommand {
     private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException {
         try {
             Issue issue = Scissors.JIRA_API.getIssue(issueKey);
-            if(issue.id() == null || issue.fields().flagged() != null) throw ISSUE_NOT_FOUND.create(issueKey);
+            if(issue.id() == null || !canSeeIssue(source, issue)) throw ISSUE_NOT_FOUND.create(issueKey);
             source.sendSuccess("Successfully found issue " + issueKey + ":", false, issue.makeEmbed());
             return 1;
         } catch(UnirestException e) {
             throw Commands.IO_EXCEPTION.create();
         }
+    }
+
+    private static boolean canSeeIssue(ChatCommandSource source, Issue issue) {
+        if(issue.fields().flagged() == null) return true;
+        return source.commandMessage().getChannel() instanceof PrivateChannel && source.user().getId().equals(issue.fields().reporterUserID());
     }
 }
