@@ -12,7 +12,7 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
 public record Issue(String id, String key, Fields fields, String[] errorMessages, Map<String, String> errors) {
     public record Fields(Issuetype issuetype, Project project, Resolution resolution, Priority priority, String summary,
-                         String description, CustomFieldOption customfield_10021, String customfield_10152,
+                         String description, CustomFieldOption[] customfield_10021, String customfield_10152,
                          String customfield_10153) {
         public record Issuetype(String id, String name, String description) {
             public static final Issuetype BUG = Scissors.JIRA_API.getIssuetype("10009");
@@ -39,7 +39,7 @@ public record Issue(String id, String key, Fields fields, String[] errorMessages
             public static final CustomFieldOption IMPEDIMENT = Scissors.JIRA_API.getCustomFieldOption("10019");
         }
 
-        public CustomFieldOption flagged() {
+        public CustomFieldOption[] flagged() {
             return this.customfield_10021;
         }
 
