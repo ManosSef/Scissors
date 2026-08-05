@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.IntFunction;
@@ -282,12 +283,10 @@ public class ConfigCommand {
                 StringBuilder builder = new StringBuilder("Here are the values of all options for this server:");
                 for(Option<?> option : Options.values()) {
                     builder.append("\n- ").append(monospace(option.getName())).append(": ");
-                    Object value = Scissors.getConfiguration().getOptionForGuildOnly(option, source.commandMessage().getGuild());
-                    if(value == null) {
-                        builder.append("no explicit value; effective value: ");
-                        value = Scissors.getConfiguration().getOptionForGuild(option, source.commandMessage().getGuild());
-                    }
-                    builder.append(bold(value.toString()));
+                    Optional<?> value = Scissors.getConfiguration().getOptionForGuildOnly(option, source.commandMessage().getGuild());
+                    if(value.isEmpty()) builder.append("no explicit value; effective value: ")
+                        .append(bold(Scissors.getConfiguration().getOptionForGuild(option, source.commandMessage().getGuild()).toString()));
+                    else builder.append(bold(value.orElseThrow().toString()));
                 }
                 source.sendSuccess(builder.toString(), false);
             }
@@ -295,12 +294,10 @@ public class ConfigCommand {
                 StringBuilder builder = new StringBuilder("Here are the values of all options for this channel:");
                 for(Option<?> option : Options.values()) {
                     builder.append("\n- ").append(monospace(option.getName())).append(": ");
-                    Object value = Scissors.getConfiguration().getOptionForChannelOnly(option, source.commandMessage().getChannel());
-                    if(value == null) {
-                        builder.append("no explicit value; effective value: ");
-                        value = Scissors.getConfiguration().getOptionForChannel(option, source.commandMessage().getChannel());
-                    }
-                    builder.append(bold(value.toString()));
+                    Optional<?> value = Scissors.getConfiguration().getOptionForChannelOnly(option, source.commandMessage().getChannel());
+                    if(value.isEmpty()) builder.append("no explicit value; effective value: ")
+                        .append(bold(Scissors.getConfiguration().getOptionForChannel(option, source.commandMessage().getChannel()).toString()));
+                    else builder.append(bold(value.orElseThrow().toString()));
                 }
                 source.sendSuccess(builder.toString(), false);
             }
@@ -309,12 +306,10 @@ public class ConfigCommand {
                 StringBuilder builder = new StringBuilder("Here are the values of all options for the server \"" + guild.getName() + "\":");
                 for(Option<?> option : Options.values()) {
                     builder.append("\n- ").append(monospace(option.getName())).append(": ");
-                    Object value = Scissors.getConfiguration().getOptionForGuildOnly(option, guild);
-                    if(value == null) {
-                        builder.append("no explicit value; effective value: ");
-                        value = Scissors.getConfiguration().getOptionForGuild(option, guild);
-                    }
-                    builder.append(bold(value.toString()));
+                    Optional<?> value = Scissors.getConfiguration().getOptionForGuildOnly(option, guild);
+                    if(value.isEmpty()) builder.append("no explicit value; effective value: ")
+                        .append(bold(Scissors.getConfiguration().getOptionForGuild(option, guild).toString()));
+                    else builder.append(bold(value.orElseThrow().toString()));
                 }
                 source.sendSuccess(builder.toString(), false);
             }
@@ -324,12 +319,10 @@ public class ConfigCommand {
                 StringBuilder builder = new StringBuilder("Here are the values of all options for " + channel.getAsMention() + ":");
                 for(Option<?> option : Options.values()) {
                     builder.append("\n- ").append(monospace(option.getName())).append(": ");
-                    Object value = Scissors.getConfiguration().getOptionForChannelOnly(option, channel);
-                    if(value == null) {
-                        builder.append("no explicit value; effective value: ");
-                        value = Scissors.getConfiguration().getOptionForChannel(option, channel);
-                    }
-                    builder.append(bold(value.toString()));
+                    Optional<?> value = Scissors.getConfiguration().getOptionForChannelOnly(option, channel);
+                    if(value.isEmpty()) builder.append("no explicit value; effective value: ")
+                        .append(bold(Scissors.getConfiguration().getOptionForChannel(option, channel).toString()));
+                    else builder.append(bold(value.orElseThrow().toString()));
                 }
                 source.sendSuccess(builder.toString(), false);
             }
