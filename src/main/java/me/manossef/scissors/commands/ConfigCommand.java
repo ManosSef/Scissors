@@ -222,7 +222,7 @@ public class ConfigCommand {
     }
 
     private static int dumpConfig(ChatCommandSource source) {
-        source.sendSuccess(Scissors.getConfiguration().toString(), false);
+        source.sendSuccess(Scissors.GSON.toJson(Scissors.getConfiguration()).replaceAll("[ \r\n]", ""), false);
         return 1;
     }
 
