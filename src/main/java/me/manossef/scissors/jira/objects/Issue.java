@@ -53,7 +53,6 @@ public record Issue(String id, String key, Fields fields, String[] errorMessages
     }
 
     public MessageEmbed makeEmbed() {
-        if(fields.flagged() != null) return new MessageEmbed(null, "Private issue", null, EmbedType.RICH, null, 0xDE6868, null, null, null, null, null, null, null, 0);
         List<MessageEmbed.Field> embedFields = new ArrayList<>();
         embedFields.add(new MessageEmbed.Field("Issue Type", this.fields.issuetype.name, true));
         embedFields.add(new MessageEmbed.Field("Resolution", this.fields.resolution == null ? "Unresolved" : "Resolved as " + bold(this.fields.resolution.name), true));
