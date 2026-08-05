@@ -2,6 +2,7 @@ package me.manossef.scissors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.Strictness;
 import me.manossef.scissors.config.Configuration;
 import me.manossef.scissors.config.Settings;
 import me.manossef.scissors.config.SettingsAdapter;
@@ -26,7 +27,8 @@ public class Scissors {
         .addEventListeners(new Startup(), new CommandListener(), new MessageListeners(), new SecretListener())
         .build();
     public static final JiraAPI JIRA_API = new JiraAPI("https://manossef.atlassian.net/rest/api/2/");
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Settings.class, new SettingsAdapter()).create();
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting()
+        .registerTypeAdapter(Settings.class, new SettingsAdapter()).setStrictness(Strictness.STRICT).create();
     public static final RandomGenerator RANDOM = RandomGenerator.of("L64X128MixRandom");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Scissors.class);
