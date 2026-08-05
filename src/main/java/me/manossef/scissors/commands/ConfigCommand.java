@@ -163,32 +163,38 @@ public class ConfigCommand {
                 Option values can apply either to a whole server or to a specific channel. The effective value of an option for a channel is the value explicitly applied to it if any, or the value applied to the server if any, or the default value. \
                 Option values persist across restarts of the bot.
                 
-                Here are all available syntaxes for this command:
-                - %1$s: Returns the values of all options for the server/channel the command was run in. For each option, the explicitly applied value is returned, falling back to the effective value if no explicit value exists.
-                - %2$s: Returns the effective value of the specified option for the server/channel the command was run in.
-                - %3$s: Sets the value of the specified option for the server/channel the command was run in to the specified value.
-                - %4$s: Removes the explicitly applied values of all options for the server/channel the command was run in.
-                - %5$s: Returns the explicitly applied value of the specified option for the server/channel the command was run in. Fails if this option has not been given an explicit value for this server/channel.
-                - %6$s: Removes the explicitly applied value of the specified option for the server/channel the command was run in. Fails if this option has not been given an explicit value for this server/channel.
+                For all syntaxes, %12$s can be any one of the following:
+                - %7$s: The command will apply to the whole server it was run in.
+                - %8$s: The command will apply to the channel it was run in.
+                - %13$s: The command will apply to the specified channel, so long as it's in the same server the command was run in. Channels can be specified either by their ID or by their mention (%14$s format).
                 
-                Use %7$s as the first argument to affect the server, and %8$s to affect the channel the command was run in.
+                Here are all available syntaxes for this command:
+                - %1$s: Returns the values of all options. For each option, the explicitly applied value is returned, falling back to the effective value if no explicit value exists.
+                - %2$s: Returns the effective value of the specified option.
+                - %3$s: Sets the value of the specified option to the specified value.
+                - %4$s: Removes the explicitly applied values of all options.
+                - %5$s: Returns the explicitly applied value of the specified option. Fails if this option has not been given an explicit value for this scope.
+                - %6$s: Removes the explicitly applied value of the specified option. Fails if this option has not been given an explicit value for this scope.
                 
                 %9$s commands always fail if run in a DM.
                 
                 You need the "Manage Server" permission to run %9$s commands, and the "Manage Channel" permission in the respective channel to run %10$s commands.
                 
                 Use %11$s to see all available options.""",
-            Commands.format(baseLiteral + " (server|channel)"),
-            Commands.format(baseLiteral + " (server|channel) <option>"),
-            Commands.format(baseLiteral + " (server|channel) <option> <value>"),
-            Commands.format(baseLiteral + " (server|channel) reset"),
-            Commands.format(baseLiteral + " (server|channel) explicit <option>"),
-            Commands.format(baseLiteral + " (server|channel) explicit remove <option>"),
+            Commands.format(baseLiteral + " <scope>"),
+            Commands.format(baseLiteral + " <scope> <option>"),
+            Commands.format(baseLiteral + " <scope> <option> <value>"),
+            Commands.format(baseLiteral + " <scope> reset"),
+            Commands.format(baseLiteral + " <scope> explicit <option>"),
+            Commands.format(baseLiteral + " <scope> explicit remove <option>"),
             monospace("server"),
             monospace("channel"),
             Commands.format(baseLiteral + " server ..."),
             Commands.format(baseLiteral + " channel ..."),
-            Commands.format("info options")));
+            Commands.format("info options"),
+            monospace("<scope>"),
+            monospace("channel <channel>"),
+            monospace("<#ID>")));
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> optionsArguments(ArgumentBuilder<ChatCommandSource, ?> argument, OptionContextFunction optionContext) {
