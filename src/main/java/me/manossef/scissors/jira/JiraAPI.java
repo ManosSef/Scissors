@@ -47,7 +47,8 @@ public record JiraAPI(String baseUrl) {
 
     public Issue createIssue(String summary, String description, Issue.Fields.Issuetype issuetype, Issue.Fields.Project project, String reporterUserID, Issue.Fields.Priority priority, Issue.Fields.CustomFieldOption flagged) {
         JsonNode node = post("issue", Scissors.GSON.toJson(new Issue(null, null, new Issue.Fields(
-            issuetype, project, null, priority, summary, description, flagged, null, reporterUserID
+            issuetype, project, null, priority, summary, description,
+            flagged == null ? null : new Issue.Fields.CustomFieldOption[]{flagged}, null, reporterUserID
         ), null, null)));
         return Scissors.GSON.fromJson(node.toString(), Issue.class);
     }
