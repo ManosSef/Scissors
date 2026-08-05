@@ -1,10 +1,10 @@
 package me.manossef.scissors.config;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Options {
-    private static final Map<String, Option<?>> OPTIONS = new HashMap<>();
+    private static final Map<String, Option<?>> OPTIONS = new LinkedHashMap<>();
 
     public static final Option<Boolean> GPPCT_RESPONSES = register(Option.bool("gppctResponses", true));
     public static final Option<Integer> GPPCT_RESPONSE_CHANCE = register(Option.integer("gppctResponseChance", 10, 0, 100));
