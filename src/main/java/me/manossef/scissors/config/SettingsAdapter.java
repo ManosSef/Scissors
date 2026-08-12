@@ -36,22 +36,22 @@ public class SettingsAdapter extends TypeAdapter<Settings> {
             if(map.isEmpty()) return new Settings();
             if(map.keySet().stream().findFirst().orElseThrow().equals("values")) {
                 LegacyFormat legacyFormat = Scissors.GSON.fromJson(Scissors.GSON.toJson(map), LegacyFormat.class);
-                for(LegacyFormat.Entry entry : legacyFormat.values) {
-                    Option<?> option = Options.getByName(entry.option);
-                    OptionValue<?> optionValue = option.castValue(entry.value);
-                    values.add(optionValue);
-                }
+                for(LegacyFormat.Entry entry : legacyFormat.values)
+                    addValue(entry.option, entry.value, values);
                 return new Settings(values);
             }
-            for(Map.Entry<String, ?> entry : map.entrySet()) {
-                Option<?> option = Options.getByName(entry.getKey());
-                OptionValue<?> optionValue = option.castValue(entry.getValue());
-                values.add(optionValue);
-            }
+            for(Map.Entry<String, ?> entry : map.entrySet())
+                addValue(entry.getKey(), entry.getValue(), values);
             return new Settings(values);
         } catch(RuntimeException e) {
             throw new InvalidConfigurationException(e);
         }
+    }
+
+    private static void addValue(String key, Object value, Set<OptionValue<?>> values) {
+        Option<?> option = Options.getByName(key);
+        OptionValue<?> optionValue = Options.upgradeIfLegacy(option.castValue(value));
+        values.add(optionValue);
     }
 
     private record LegacyFormat(Entry[] values) {

@@ -1,10 +1,12 @@
 package me.manossef.scissors.config;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Options {
     private static final Map<String, Option<?>> OPTIONS = new LinkedHashMap<>();
+    private static final Map<String, Option<?>> LEGACY_OPTIONS = new HashMap<>();
 
     public static final Option<Boolean> GPPCT_RESPONSES = register(Option.bool("gppctResponses", true));
     public static final Option<Integer> GPPCT_RESPONSE_CHANCE = register(Option.integer("gppctResponseChance", 10, 0, 100));
@@ -24,8 +26,23 @@ public class Options {
         return option;
     }
 
+    static OptionValue<?> upgradeIfLegacy(OptionValue<?> value) {
+        /*if(!isLegacy(value.option().getName()))*/ return value; // currently no legacy options
+    }
+
     private static <T> Option<T> register(Option<T> option) {
         OPTIONS.put(option.getName(), option);
         return option;
+    }
+
+    private static <T> Option<T> registerLegacy(Option<T> option) {
+        LEGACY_OPTIONS.put(option.getName(), option);
+        return option;
+    }
+
+    private static boolean isLegacy(String name) {
+        if(LEGACY_OPTIONS.containsKey(name)) return true;
+        if(OPTIONS.containsKey(name)) return false;
+        throw new IllegalArgumentException("Unknown option: " + name);
     }
 }
