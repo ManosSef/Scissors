@@ -3,6 +3,7 @@ package me.manossef.scissors.config;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import me.manossef.scissors.arguments.EnumArgument;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -72,6 +73,10 @@ public sealed class Option<T> {
         return integer(name, i -> i >= min && i <= max, IntegerArgumentType.integer(min, max), defaultValue);
     }
 
+    static <E extends Enum<E>> Option<E> enumOp(String name, Class<E> type, E defaultValue) {
+        return new EnumOption<>(name, type, e -> true, EnumArgument.of(type), defaultValue);
+    }
+
     private static Option<Integer> integer(String name, Predicate<Integer> validator, ArgumentType<Integer> argumentType, int defaultValue) {
         return new IntOption(name, validator, argumentType, defaultValue);
     }
@@ -87,6 +92,16 @@ public sealed class Option<T> {
                 return new OptionValue<>(this, i);
             }
             throw new ClassCastException("Cannot cast " + value.getClass() + " to java.lang.Integer");
+        }
+    }
+
+    private static final class EnumOption<E extends Enum<E>> extends Option<E> {
+        private EnumOption(String name, Class<E> type, Predicate<E> validator, ArgumentType<E> argumentType, E defaultValue) {
+            super(name, type, validator, argumentType, defaultValue);
+        }
+
+        public OptionValue<E> castValue(Object value) {
+            return new OptionValue<>(this, Enum.valueOf(this.getType(), value.toString()));
         }
     }
 }
