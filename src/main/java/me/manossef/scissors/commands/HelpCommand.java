@@ -6,15 +6,14 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class HelpCommand {
     private static final String BASE_LITERAL = "help";
     private static final LiteralArgumentBuilder<ChatCommandSource> BASE_ARGUMENT = Commands.literal(BASE_LITERAL)
         .executes(context -> showHelpMessage(context.getSource()));
-    private static final List<String> LINES = new ArrayList<>();
+    private static final Set<String> LINES = new TreeSet<>();
 
     public static void addLine(String baseLiteral, String line, String... aliases) {
         StringBuilder builder = new StringBuilder();
@@ -42,7 +41,6 @@ public class HelpCommand {
                 - %s: Explains the specified command in detail. Lists all available syntaxes for it, describes what each one does, and mentions any situations in which the command fails.""",
             Commands.format(BASE_LITERAL),
             Commands.format(BASE_LITERAL + " <command>")));
-        LINES.sort(Comparator.naturalOrder());
         dispatcher.register(BASE_ARGUMENT);
     }
 

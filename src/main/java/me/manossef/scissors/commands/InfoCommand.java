@@ -1,15 +1,29 @@
 package me.manossef.scissors.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.LiteralMessage;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.Options;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.italics;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class InfoCommand {
+    private static final SimpleCommandExceptionType IMPOSSIBLE_ERROR = new SimpleCommandExceptionType(new LiteralMessage("This error should not have happened! Options should have been bootstrapped by now!"));
+    private static final Set<String> OPTIONS = new TreeSet<>();
+
+    public static void addOption(Option<?> option, String line) {
+        OPTIONS.add(monospace(option.getName()) + ": " + line);
+    }
+
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "info";
         dispatcher.register(Commands.literal(baseLiteral)
@@ -66,26 +80,12 @@ public class InfoCommand {
         return 1;
     }
 
-    private static int sendOptions(ChatCommandSource source) {
-        source.sendSuccess(String.format("""
-                Here are all my configuration options, which can be queried or edited using %3$s:
-                - %4$s: Whether counting responses are posted. The value is either %1$s or %2$s.
-                - %5$s: The chance (from 0 to 100) that a response to each new message with only a number is posted.
-                - %6$s: Whether responses to pings are posted. The value is either %1$s or %2$s.
-                - %7$s: Whether responses to mentions of scissors are posted. The value is either %1$s or %2$s.
-                - %8$s: The chance (from 0 to 100) that a response to each new message with a mention of scissors is posted.
-                - %9$s: Whether the bot reacts to mentions of paper with the scissors emoji. The value is either %1$s or %2$s.
-                - %10$s: Whether counting responses are posted for integers only (instead of all real numbers). The value is either %1$s or %2$s.""",
-            monospace("true"),
-            monospace("false"),
-            Commands.format("config"),
-            monospace(Options.GPPCT_RESPONSES.getName()),
-            monospace(Options.GPPCT_RESPONSE_CHANCE.getName()),
-            monospace(Options.PING_RESPONSES.getName()),
-            monospace(Options.SCISSORS_RESPONSES.getName()),
-            monospace(Options.SCISSORS_RESPONSE_CHANCE.getName()),
-            monospace(Options.REACT_TO_PAPER.getName()),
-            monospace(Options.GPPCT_ON_INTEGERS_ONLY.getName())), false);
-        return 1;
+    private static int sendOptions(ChatCommandSource source) throws CommandSyntaxException {
+        if(Options.values().length != OPTIONS.size()) throw IMPOSSIBLE_ERROR.create();
+        StringBuilder builder = new StringBuilder("Here are all my configuration options, which can be queried or edited using " + Commands.format("config") + ":");
+        for(String line : OPTIONS)
+            builder.append("\n- ").append(line);
+        source.sendSuccess(builder.toString(), false);
+        return OPTIONS.size();
     }
 }
