@@ -61,10 +61,7 @@ public class MessageListeners extends ListenerAdapter {
 
     private boolean promptsGPPCT(Message message, Configuration config) {
         MessageChannelUnion channel = message.getChannel();
-        return message.getContentRaw().matches("^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?$")
-            && (message.getContentRaw().matches("^[0-9]+$")
-                || !config.getOptionForChannel(Options.GPPCT_ON_INTEGERS_ONLY, message.getChannel()))
-            && channel.canTalk()
+        return message.getContentRaw().matches(config.getOptionForChannel(Options.GPPCT_HANDLING, message.getChannel()).getRegex())
             && config.getOptionForChannel(Options.GPPCT_RESPONSES, channel)
             && (!isDisallowedForGPPCT(channel) || config.getOptionForChannelOnly(Options.GPPCT_RESPONSES, channel).isPresent())
             && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Options.GPPCT_RESPONSE_CHANCE, channel);
@@ -73,14 +70,12 @@ public class MessageListeners extends ListenerAdapter {
     private boolean promptsPing(Message message, Configuration config) {
         MessageChannelUnion channel = message.getChannel();
         return message.getContentRaw().contains(Scissors.DISCORD_API.getSelfUser().getAsMention())
-            && channel.canTalk()
             && config.getOptionForChannel(Options.PING_RESPONSES, channel);
     }
 
     private boolean promptsScissors(Message message, Configuration config) {
         MessageChannelUnion channel = message.getChannel();
         return message.getContentRaw().toLowerCase().contains("scissors")
-            && channel.canTalk()
             && config.getOptionForChannel(Options.SCISSORS_RESPONSES, channel)
             && Scissors.RANDOM.nextInt(100) < config.getOptionForChannel(Options.SCISSORS_RESPONSE_CHANCE, channel);
     }
@@ -93,7 +88,6 @@ public class MessageListeners extends ListenerAdapter {
             && referencedMessage.getContentRaw().equals("A number?! At this time of year? At this time of day? In this part of the country? " + strike("Localized entirely within your kitchen?!"))
             && referencedMessage.getMessageReference() != null
             && message.getContentRaw().toLowerCase().replaceAll("[^a-z]+", "").equals("yes")
-            && channel.canTalk()
             && config.getOptionForChannel(Options.GPPCT_RESPONSES, channel);
     }
 
