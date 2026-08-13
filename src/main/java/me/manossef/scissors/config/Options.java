@@ -39,7 +39,7 @@ public class Options {
     public static final Option<GPPCTHandling> GPPCT_HANDLING = register(
         Option.enumOp("gppctHandling", GPPCTHandling.class, GPPCTHandling.NUMBER), """
                 The kinds of numbers counting responses are posted to. The value can be %s to reply to all numbers, %s to only reply to integers, %s to only reply to non-negative integers, \
-                or %s to only reply to messages with only digits (including leading zeroes).""".formatted(Arrays.stream(GPPCTHandling.values()).map(Enum::toString).toArray())
+                or %s to only reply to messages with only digits (including leading zeroes).""".formatted(Arrays.stream(GPPCTHandling.values()).map(v -> monospace(v.toString())).toArray())
     );
 
     private static final Map<String, Option<?>> LEGACY_OPTIONS = new HashMap<>();

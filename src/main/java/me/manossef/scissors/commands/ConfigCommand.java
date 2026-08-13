@@ -29,7 +29,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 
-import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class ConfigCommand {
@@ -276,7 +275,7 @@ public class ConfigCommand {
                 StringBuilder builder = new StringBuilder("Here are the global values of all options:");
                 for(Option<?> option : Options.values())
                     builder.append("\n- ").append(monospace(option.getName())).append(": ")
-                        .append(bold(Scissors.getConfiguration().getGlobalOption(option).toString()));
+                        .append(monospace(Scissors.getConfiguration().getGlobalOption(option).toString()));
                 source.sendSuccess(builder.toString(), false);
             }
             case SOURCE_GUILD -> {
@@ -285,8 +284,8 @@ public class ConfigCommand {
                     builder.append("\n- ").append(monospace(option.getName())).append(": ");
                     Optional<?> value = Scissors.getConfiguration().getOptionForGuildOnly(option, source.commandMessage().getGuild());
                     if(value.isEmpty()) builder.append("no explicit value; effective value: ")
-                        .append(bold(Scissors.getConfiguration().getOptionForGuild(option, source.commandMessage().getGuild()).toString()));
-                    else builder.append(bold(value.orElseThrow().toString()));
+                        .append(monospace(Scissors.getConfiguration().getOptionForGuild(option, source.commandMessage().getGuild()).toString()));
+                    else builder.append(monospace(value.orElseThrow().toString()));
                 }
                 source.sendSuccess(builder.toString(), false);
             }
@@ -296,8 +295,8 @@ public class ConfigCommand {
                     builder.append("\n- ").append(monospace(option.getName())).append(": ");
                     Optional<?> value = Scissors.getConfiguration().getOptionForChannelOnly(option, source.commandMessage().getChannel());
                     if(value.isEmpty()) builder.append("no explicit value; effective value: ")
-                        .append(bold(Scissors.getConfiguration().getOptionForChannel(option, source.commandMessage().getChannel()).toString()));
-                    else builder.append(bold(value.orElseThrow().toString()));
+                        .append(monospace(Scissors.getConfiguration().getOptionForChannel(option, source.commandMessage().getChannel()).toString()));
+                    else builder.append(monospace(value.orElseThrow().toString()));
                 }
                 source.sendSuccess(builder.toString(), false);
             }
@@ -308,8 +307,8 @@ public class ConfigCommand {
                     builder.append("\n- ").append(monospace(option.getName())).append(": ");
                     Optional<?> value = Scissors.getConfiguration().getOptionForGuildOnly(option, guild);
                     if(value.isEmpty()) builder.append("no explicit value; effective value: ")
-                        .append(bold(Scissors.getConfiguration().getOptionForGuild(option, guild).toString()));
-                    else builder.append(bold(value.orElseThrow().toString()));
+                        .append(monospace(Scissors.getConfiguration().getOptionForGuild(option, guild).toString()));
+                    else builder.append(monospace(value.orElseThrow().toString()));
                 }
                 source.sendSuccess(builder.toString(), false);
             }
@@ -321,8 +320,8 @@ public class ConfigCommand {
                     builder.append("\n- ").append(monospace(option.getName())).append(": ");
                     Optional<?> value = Scissors.getConfiguration().getOptionForChannelOnly(option, channel);
                     if(value.isEmpty()) builder.append("no explicit value; effective value: ")
-                        .append(bold(Scissors.getConfiguration().getOptionForChannel(option, channel).toString()));
-                    else builder.append(bold(value.orElseThrow().toString()));
+                        .append(monospace(Scissors.getConfiguration().getOptionForChannel(option, channel).toString()));
+                    else builder.append(monospace(value.orElseThrow().toString()));
                 }
                 source.sendSuccess(builder.toString(), false);
             }
@@ -336,39 +335,39 @@ public class ConfigCommand {
         switch(optionContext.type()) {
             case GLOBAL -> {
                 value = Scissors.getConfiguration().getGlobalOption(option);
-                source.sendSuccess(GLOBAL_GET_SUCCESS.apply(monospace(option.getName()), bold(value.toString())), false);
+                source.sendSuccess(GLOBAL_GET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString())), false);
             }
             case SOURCE_GUILD -> {
                 if(!(source.commandMessage().getChannel() instanceof GuildChannel))
                     throw NOT_IN_GUILD.create();
                 if(defaultToHigherPower) {
                     value = Scissors.getConfiguration().getOptionForGuild(option, source.commandMessage().getGuild());
-                    source.sendSuccess(GUILD_GET_SUCCESS.apply(monospace(option.getName()), bold(value.toString())), false);
+                    source.sendSuccess(GUILD_GET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString())), false);
                 } else {
                     value = Scissors.getConfiguration().getOptionForGuildOnly(option, source.commandMessage().getGuild())
                         .orElseThrow(() -> GUILD_EXPLICIT_ERROR.create(monospace(option.getName())));
-                    source.sendSuccess(GUILD_EXPLICIT_SUCCESS.apply(monospace(option.getName()), bold(value.toString())), false);
+                    source.sendSuccess(GUILD_EXPLICIT_SUCCESS.apply(monospace(option.getName()), monospace(value.toString())), false);
                 }
             }
             case SOURCE_CHANNEL -> {
                 if(defaultToHigherPower) {
                     value = Scissors.getConfiguration().getOptionForChannel(option, source.commandMessage().getChannel());
-                    source.sendSuccess(CHANNEL_GET_SUCCESS.apply(monospace(option.getName()), bold(value.toString())), false);
+                    source.sendSuccess(CHANNEL_GET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString())), false);
                 } else {
                     value = Scissors.getConfiguration().getOptionForChannelOnly(option, source.commandMessage().getChannel())
                         .orElseThrow(() -> CHANNEL_EXPLICIT_ERROR.create(monospace(option.getName())));
-                    source.sendSuccess(CHANNEL_EXPLICIT_SUCCESS.apply(monospace(option.getName()), bold(value.toString())), false);
+                    source.sendSuccess(CHANNEL_EXPLICIT_SUCCESS.apply(monospace(option.getName()), monospace(value.toString())), false);
                 }
             }
             case SPECIFIC_GUILD -> {
                 Guild guild = optionContext.target.right().orElseThrow().left().orElseThrow();
                 if(defaultToHigherPower) {
                     value = Scissors.getConfiguration().getOptionForGuild(option, guild);
-                    source.sendSuccess(GUILD_ID_GET_SUCCESS.apply(monospace(option.getName()), bold(value.toString()), guild.getName()), false);
+                    source.sendSuccess(GUILD_ID_GET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString()), guild.getName()), false);
                 } else {
                     value = Scissors.getConfiguration().getOptionForGuildOnly(option, guild)
                         .orElseThrow(() -> GUILD_ID_EXPLICIT_ERROR.create(monospace(option.getName()), guild.getName()));
-                    source.sendSuccess(GUILD_ID_EXPLICIT_SUCCESS.apply(monospace(option.getName()), bold(value.toString()), guild.getName()), false);
+                    source.sendSuccess(GUILD_ID_EXPLICIT_SUCCESS.apply(monospace(option.getName()), monospace(value.toString()), guild.getName()), false);
                 }
             }
             case SPECIFIC_CHANNEL -> {
@@ -376,11 +375,11 @@ public class ConfigCommand {
                 canSeeChannelFromOutside(source, channel);
                 if(defaultToHigherPower) {
                     value = Scissors.getConfiguration().getOptionForChannel(option, channel);
-                    source.sendSuccess(CHANNEL_ID_GET_SUCCESS.apply(monospace(option.getName()), bold(value.toString()), channel.getAsMention()), false);
+                    source.sendSuccess(CHANNEL_ID_GET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString()), channel.getAsMention()), false);
                 } else {
                     value = Scissors.getConfiguration().getOptionForChannelOnly(option, channel)
                         .orElseThrow(() -> CHANNEL_ID_EXPLICIT_ERROR.create(monospace(option.getName()), channel.getAsMention()));
-                    source.sendSuccess(CHANNEL_ID_EXPLICIT_SUCCESS.apply(monospace(option.getName()), bold(value.toString()), channel.getAsMention()), false);
+                    source.sendSuccess(CHANNEL_ID_EXPLICIT_SUCCESS.apply(monospace(option.getName()), monospace(value.toString()), channel.getAsMention()), false);
                 }
             }
             default -> throw INVALID_CONTEXT.create();
@@ -394,37 +393,37 @@ public class ConfigCommand {
         switch(optionContext.type()) {
             case GLOBAL -> {
                 boolean success = Scissors.getConfiguration().setGlobalOption(option, value);
-                if(!success) throw GLOBAL_SET_ERROR.create(monospace(option.getName()), bold(value.toString()));
-                source.sendSuccess(GLOBAL_SET_SUCCESS.apply(monospace(option.getName()), bold(value.toString())), true);
+                if(!success) throw GLOBAL_SET_ERROR.create(monospace(option.getName()), monospace(value.toString()));
+                source.sendSuccess(GLOBAL_SET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString())), true);
             }
             case SOURCE_GUILD -> {
                 if(!(source.commandMessage().getChannel() instanceof GuildChannel guildChannel))
                     throw NOT_IN_GUILD.create();
                 if(canEditPerGuild(source.user(), guildChannel.getGuild())) {
                     boolean success = Scissors.getConfiguration().setOptionForGuild(option, value, source.commandMessage().getGuild());
-                    if(!success) throw GUILD_SET_ERROR.create(monospace(option.getName()), bold(value.toString()));
-                    source.sendSuccess(GUILD_SET_SUCCESS.apply(monospace(option.getName()), bold(value.toString())), true);
+                    if(!success) throw GUILD_SET_ERROR.create(monospace(option.getName()), monospace(value.toString()));
+                    source.sendSuccess(GUILD_SET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString())), true);
                 } else throw NO_PERMS_IN_GUILD.create();
             }
             case SOURCE_CHANNEL -> {
                 if(canEditPerChannel(source.user(), source.commandMessage().getChannel())) {
                     boolean success = Scissors.getConfiguration().setOptionForChannel(option, value, source.commandMessage().getChannel());
-                    if(!success) throw CHANNEL_SET_ERROR.create(monospace(option.getName()), bold(value.toString()));
-                    source.sendSuccess(CHANNEL_SET_SUCCESS.apply(monospace(option.getName()), bold(value.toString())), true);
+                    if(!success) throw CHANNEL_SET_ERROR.create(monospace(option.getName()), monospace(value.toString()));
+                    source.sendSuccess(CHANNEL_SET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString())), true);
                 } else throw NO_PERMS_IN_CHANNEL.create();
             }
             case SPECIFIC_GUILD -> {
                 Guild guild = optionContext.target.right().orElseThrow().left().orElseThrow();
                 boolean success = Scissors.getConfiguration().setOptionForGuild(option, value, guild);
-                if(!success) throw GUILD_ID_SET_ERROR.create(monospace(option.getName()), bold(value.toString()), guild.getName());
-                source.sendSuccess(GUILD_ID_SET_SUCCESS.apply(monospace(option.getName()), bold(value.toString()), guild.getName()), true);
+                if(!success) throw GUILD_ID_SET_ERROR.create(monospace(option.getName()), monospace(value.toString()), guild.getName());
+                source.sendSuccess(GUILD_ID_SET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString()), guild.getName()), true);
             }
             case SPECIFIC_CHANNEL -> {
                 Channel channel = optionContext.target.right().orElseThrow().right().orElseThrow();
                 if(canEditChannelFromOutside(source, channel)) {
                     boolean success = Scissors.getConfiguration().setOptionForChannel(option, value, channel);
-                    if(!success) throw CHANNEL_ID_SET_ERROR.create(monospace(option.getName()), bold(value.toString()), channel.getAsMention());
-                    source.sendSuccess(CHANNEL_ID_SET_SUCCESS.apply(monospace(option.getName()), bold(value.toString()), channel.getAsMention()), true);
+                    if(!success) throw CHANNEL_ID_SET_ERROR.create(monospace(option.getName()), monospace(value.toString()), channel.getAsMention());
+                    source.sendSuccess(CHANNEL_ID_SET_SUCCESS.apply(monospace(option.getName()), monospace(value.toString()), channel.getAsMention()), true);
                 } else throw NO_PERMS_IN_TARGET_CHANNEL.create(channel.getAsMention());
             }
             default -> throw INVALID_CONTEXT.create();
