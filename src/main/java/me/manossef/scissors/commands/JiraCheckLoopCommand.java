@@ -25,6 +25,9 @@ public class JiraCheckLoopCommand {
             .then(Commands.literal("restart")
                 .executes(context -> restart(context.getSource()))
             )
+            .then(Commands.literal("issues")
+                .executes(context -> getCheckedIssues(context.getSource()))
+            )
         );
     }
 
@@ -56,9 +59,19 @@ public class JiraCheckLoopCommand {
             source.sendSuccess("Started a new Jira check loop", true);
             return 2;
         }
+        JiraCheckLoop.CheckedIssues checkedIssues = jcl.getCheckedIssues();
         jcl.interrupt();
-        Scissors.startJiraCheckLoop();
+        Scissors.startJiraCheckLoop(checkedIssues);
         source.sendSuccess("Stopped the currently running Jira check loop and started a new one", true);
+        return 1;
+    }
+
+    private static int getCheckedIssues(ChatCommandSource source) throws CommandSyntaxException {
+        JiraCheckLoop jcl = Scissors.getJiraCheckLoop();
+        if(jcl == null) throw NO_LOOP.create();
+        if(jcl.isInterrupted()) throw ALREADY_INTERRUPTED.create();
+        if(!jcl.isAlive()) throw NOT_RUNNING.create();
+        source.sendSuccess(jcl.getCheckedIssues().toString(), false);
         return 1;
     }
 }

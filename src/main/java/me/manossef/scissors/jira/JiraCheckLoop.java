@@ -69,6 +69,10 @@ public class JiraCheckLoop extends Thread {
         Scissors.startJiraCheckLoop(this.checkedIssues);
     }
 
+    public CheckedIssues getCheckedIssues() {
+        return this.checkedIssues;
+    }
+
     private CheckedIssues checkIssues() {
         Issue[] fixedIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution = Done ORDER BY created ASC", "id,key").issues();
         List<Integer> checkedFixed;
