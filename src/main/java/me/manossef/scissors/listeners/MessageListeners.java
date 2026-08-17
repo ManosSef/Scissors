@@ -11,8 +11,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.time.LocalDate;
 import java.time.Month;
+import java.time.MonthDay;
 import java.util.Collections;
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class MessageListeners extends ListenerAdapter {
     }
 
     private static boolean isApril1st() {
-        LocalDate now = LocalDate.now();
+        MonthDay now = MonthDay.now();
         return now.getMonth().equals(Month.APRIL) && now.getDayOfMonth() == 1;
     }
 }

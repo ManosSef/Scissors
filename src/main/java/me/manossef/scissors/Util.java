@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,20 +34,13 @@ public class Util {
     }
 
     public static <T> T getJsonFromFile(String fileName, Class<T> type) {
-        StringBuilder builder = new StringBuilder();
+        String json = "";
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(SharedConstants.FILE_DIRECTORY + fileName));
-            String line;
-            while((line = reader.readLine()) != null)
-                builder.append(line).append("\n");
-            reader.close();
+            json = Files.readString(Path.of(SharedConstants.FILE_DIRECTORY, fileName));
+            return Scissors.GSON.fromJson(json, type);
         } catch(IOException e) {
             LOGGER.error("Failed to read the {} file.", fileName);
             return null;
-        }
-        String json = builder.toString();
-        try {
-            return Scissors.GSON.fromJson(json, type);
         } catch(JsonSyntaxException e) {
             LOGGER.error("Invalid JSON in {}:\n{}", fileName, json, e);
             return null;
@@ -57,10 +52,7 @@ public class Util {
 
     public static void saveJsonToFile(String fileName, Object object) {
         try {
-            boolean ignored = new File(SharedConstants.FILE_DIRECTORY).mkdirs();
-            BufferedWriter writer = new BufferedWriter(new FileWriter(SharedConstants.FILE_DIRECTORY + fileName));
-            writer.write(Scissors.GSON.toJson(object));
-            writer.close();
+            Files.writeString(Path.of(SharedConstants.FILE_DIRECTORY, fileName), Scissors.GSON.toJson(object));
         } catch(IOException e) {
             LOGGER.error("Failed to save the {} file.", fileName);
         }
@@ -69,7 +61,7 @@ public class Util {
     public static void loadWords(String fileName, List<String> list, String logError) {
         try {
             list.clear();
-            Reader fileReader = SharedConstants.IS_STAGING ? new FileReader("staging_resources/" + fileName) : new InputStreamReader(Objects.requireNonNull(Scissors.class.getResourceAsStream("/" + fileName)));
+            Reader fileReader = new InputStreamReader(Objects.requireNonNull(Scissors.class.getResourceAsStream("/" + fileName)));
             BufferedReader reader = new BufferedReader(fileReader);
             String line;
             while((line = reader.readLine()) != null) list.add(line.toLowerCase());

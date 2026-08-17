@@ -73,6 +73,7 @@ public sealed class Option<T> {
         return integer(name, i -> i >= min && i <= max, IntegerArgumentType.integer(min, max), defaultValue);
     }
 
+    @SuppressWarnings("SameParameterValue")
     static <E extends Enum<E>> Option<E> enumOp(String name, Class<E> type, E defaultValue) {
         return new EnumOption<>(name, type, e -> true, EnumArgument.of(type), defaultValue);
     }
