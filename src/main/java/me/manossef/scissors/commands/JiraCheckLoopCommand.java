@@ -12,7 +12,8 @@ import me.manossef.scissors.jira.JiraCheckLoop;
 public class JiraCheckLoopCommand {
     private static final SimpleCommandExceptionType NO_LOOP = new SimpleCommandExceptionType(new LiteralMessage("No Jira check loop is running"));
     private static final SimpleCommandExceptionType NOT_RUNNING = new SimpleCommandExceptionType(new LiteralMessage("The current Jira check loop is not running"));
-    private static final SimpleCommandExceptionType INTERRUPTED = new SimpleCommandExceptionType(new LiteralMessage("The current Jira check loop is already interrupted"));
+    private static final SimpleCommandExceptionType INTERRUPTED = new SimpleCommandExceptionType(new LiteralMessage("The current Jira check loop is interrupted"));
+    private static final SimpleCommandExceptionType ALREADY_INTERRUPTED = new SimpleCommandExceptionType(new LiteralMessage("The current Jira check loop is already interrupted"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         dispatcher.register(Commands.literal("jcl")
@@ -30,6 +31,7 @@ public class JiraCheckLoopCommand {
     private static int check(ChatCommandSource source) throws CommandSyntaxException {
         JiraCheckLoop jcl = Scissors.getJiraCheckLoop();
         if(jcl == null) throw NO_LOOP.create();
+        if(jcl.isInterrupted()) throw INTERRUPTED.create();
         if(jcl.isAlive()) {
             source.sendSuccess("Running loop: " + jcl, false);
             return 1;
@@ -40,7 +42,7 @@ public class JiraCheckLoopCommand {
     private static int stop(ChatCommandSource source) throws CommandSyntaxException {
         JiraCheckLoop jcl = Scissors.getJiraCheckLoop();
         if(jcl == null) throw NO_LOOP.create();
-        if(jcl.isInterrupted()) throw INTERRUPTED.create();
+        if(jcl.isInterrupted()) throw ALREADY_INTERRUPTED.create();
         if(!jcl.isAlive()) throw NOT_RUNNING.create();
         jcl.interrupt();
         source.sendSuccess("Stopped the Jira check loop", true);

@@ -34,6 +34,7 @@ public class JiraCheckLoop extends Thread {
         this.stopwatch = TIME_BETWEEN_LOOPS;
         Instant lastTimeCheck = Instant.now();
         while(this.stopwatch >= 0) {
+            if(Thread.interrupted()) return;
             boolean runCheck = this.stopwatch >= TIME_BETWEEN_LOOPS;
             Instant now = Instant.now();
             this.stopwatch += Duration.between(lastTimeCheck, now).toNanos();
