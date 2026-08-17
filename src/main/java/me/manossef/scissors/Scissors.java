@@ -34,6 +34,7 @@ public class Scissors {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scissors.class);
 
     private static Configuration config;
+    private static JiraCheckLoop jcl;
 
     public static void main(String[] args) {
         try {
@@ -67,6 +68,10 @@ public class Scissors {
         return Util.getJsonFromFile(SharedConstants.CHECKED_ISSUES_FILE_NAME, JiraCheckLoop.CheckedIssues.class);
     }
 
+    public static JiraCheckLoop getJiraCheckLoop() {
+        return jcl;
+    }
+
     public static void saveConfiguration() {
         Util.saveJsonToFile(SharedConstants.CONFIG_FILE_NAME, config);
     }
@@ -75,8 +80,13 @@ public class Scissors {
         Util.saveJsonToFile(SharedConstants.CHECKED_ISSUES_FILE_NAME, checkedIssues);
     }
 
+    public static void startJiraCheckLoop() {
+        jcl = new JiraCheckLoop(getCheckedIssues());
+        jcl.start();
+    }
+
     public static void startJiraCheckLoop(JiraCheckLoop.CheckedIssues checkedIssues) {
-        Thread jiraCheckLoop = new Thread(new JiraCheckLoop(checkedIssues), "JiraCheckLoop");
-        jiraCheckLoop.start();
+        jcl = new JiraCheckLoop(checkedIssues);
+        jcl.start();
     }
 }

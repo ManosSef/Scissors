@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class JiraCheckLoop implements Runnable {
+public class JiraCheckLoop extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(JiraCheckLoop.class);
     private static final long NANOS_PER_SECOND = 1_000_000_000L;
     private static final long SECONDS_PER_MINUTE = 60L;
@@ -22,21 +22,23 @@ public class JiraCheckLoop implements Runnable {
     private static final long TIME_BETWEEN_LOOPS = MINUTES_BETWEEN_LOOPS * SECONDS_PER_MINUTE * NANOS_PER_SECOND;
 
     private CheckedIssues checkedIssues;
+    private long stopwatch;
 
     public JiraCheckLoop(CheckedIssues checkedIssues) {
         this.checkedIssues = checkedIssues;
+        this.setName("JiraCheckLoop");
     }
 
     @Override
     public void run() {
-        long stopwatch = TIME_BETWEEN_LOOPS;
+        this.stopwatch = TIME_BETWEEN_LOOPS;
         Instant lastTimeCheck = Instant.now();
-        while(stopwatch >= 0) {
-            boolean runCheck = stopwatch >= TIME_BETWEEN_LOOPS;
+        while(this.stopwatch >= 0) {
+            boolean runCheck = this.stopwatch >= TIME_BETWEEN_LOOPS;
             Instant now = Instant.now();
-            stopwatch += Duration.between(lastTimeCheck, now).toNanos();
+            this.stopwatch += Duration.between(lastTimeCheck, now).toNanos();
             lastTimeCheck = now;
-            if(runCheck) stopwatch -= TIME_BETWEEN_LOOPS;
+            if(runCheck) this.stopwatch -= TIME_BETWEEN_LOOPS;
             else continue;
             try {
                 CheckedIssues newChecked = this.checkIssues();
@@ -84,6 +86,10 @@ public class JiraCheckLoop implements Runnable {
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
         LOGGER.debug("Checked issues, found: {}", found);
         return found;
+    }
+
+    public String toString() {
+        return "JiraCheckLoop[stopwatch=" + this.stopwatch + "]";
     }
 
     public record CheckedIssues(List<Integer> checkedFixed, List<Integer> checkedInvalid) {

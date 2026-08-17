@@ -81,6 +81,7 @@ public class Commands {
         TicTacToeCommand.register(dispatcher);
         WordleCommand.register(dispatcher);
         NineCommand.register(dispatcher);
+        JiraCheckLoopCommand.register(dispatcher);
         LeaveCommand.register(dispatcher);
         ListChannelsCommand.register(dispatcher);
         ListGuildsCommand.register(dispatcher);
