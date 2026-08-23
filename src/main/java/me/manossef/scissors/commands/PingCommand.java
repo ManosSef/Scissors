@@ -4,10 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
-import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.*;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -76,7 +73,7 @@ public class PingCommand {
     }
 
     private static int mentionMe(ChatCommandSource source) {
-        source.sendSuccess(SharedConstants.MY_MENTION, false);
+        source.sendSuccess(Messages.MY_MENTION, false);
         return 1;
     }
 }

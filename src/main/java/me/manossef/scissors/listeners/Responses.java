@@ -7,7 +7,7 @@ import java.util.List;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 
-public class Messages {
+public class Responses {
     static final List<String> GPPCT_RESPONSES = List.of(
         "As part of the Great Purge of Pointless Counting Threads (GPPCT), this channel has been closed due to the following criteria: " + bold("Not a counting channel."),
         "RAHHH! No counting!",

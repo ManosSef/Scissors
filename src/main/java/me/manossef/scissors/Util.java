@@ -1,29 +1,11 @@
 package me.manossef.scissors;
 
 import me.manossef.scissors.jira.objects.Issue;
-import net.dv8tion.jda.api.entities.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Util {
     private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
-
-    public static String getMessageLinkWithInfo(Message message) {
-        return message.getJumpUrl() + " (channel: " + message.getChannelId() + ", message: " + message.getId() + ")";
-    }
-
-    public static String truncate(String message) {
-        if(message.length() <= Message.MAX_CONTENT_LENGTH)
-            return message;
-        if(message.endsWith("```"))
-            return message.substring(0, Message.MAX_CONTENT_LENGTH - 6) + "...```";
-        else if(message.endsWith("``"))
-            return message.substring(0, Message.MAX_CONTENT_LENGTH - 5) + "...``";
-        else if(message.endsWith("`"))
-            return message.substring(0, Message.MAX_CONTENT_LENGTH - 4) + "...`";
-        else
-            return message.substring(0, Message.MAX_CONTENT_LENGTH - 3) + "...";
-    }
 
     public static void createIssueForException(Throwable exception) {
         createIssueForException(exception, "", "");

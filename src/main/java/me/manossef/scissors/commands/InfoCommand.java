@@ -6,7 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
-import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.Messages;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.Options;
 
@@ -61,7 +61,7 @@ public class InfoCommand {
                 I was created by %s. If this says "unknown user" for you, %s
                 
                 If you'd like to know what I can do, type %s. You can also type %s if you find something wrong with me, %s if you'd like to suggest a new feature for me, or %s if you have an idea for improving me.""",
-            SharedConstants.MY_MENTION,
+            Messages.MY_MENTION,
             italics("how did I get here?"),
             Commands.format("help"),
             Commands.format("suggest bug <summary>"),

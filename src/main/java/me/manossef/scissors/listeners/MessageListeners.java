@@ -27,13 +27,13 @@ public class MessageListeners extends ListenerAdapter {
         if(content.startsWith(SharedConstants.COMMAND_PREFIX)) return;
         Configuration config = Scissors.getConfiguration();
         if(this.promptsGPPCT(message, config))
-            replyWithRandomMessage(message, isApril1st() ? Messages.GPPCT_APRIL_FOOLS_RESPONSES : content.equals("67") ? Messages.GPPCT_BRAINROT_RESPONSES : Messages.GPPCT_RESPONSES, "GPPCT");
+            replyWithRandomMessage(message, isApril1st() ? Responses.GPPCT_APRIL_FOOLS_RESPONSES : content.equals("67") ? Responses.GPPCT_BRAINROT_RESPONSES : Responses.GPPCT_RESPONSES, "GPPCT");
         else if(this.promptsPing(message, config))
-            replyWithRandomMessage(message, Messages.PING_RESPONSES, "ping");
+            replyWithRandomMessage(message, Responses.PING_RESPONSES, "ping");
         else if(this.promptsMeme(message, config))
-            replyWithRandomMessage(message, Messages.MEME_RESPONSES, "meme");
+            replyWithRandomMessage(message, Responses.MEME_RESPONSES, "meme");
         else if(this.promptsScissors(message, config))
-            replyWithRandomMessage(message, Messages.SCISSORS_RESPONSES, "scissors");
+            replyWithRandomMessage(message, Responses.SCISSORS_RESPONSES, "scissors");
         if(message.getContentRaw().toLowerCase().contains("paper") && config.getOptionForChannel(Options.REACT_TO_PAPER, message.getChannel()))
             message.addReaction(Emojis.SCISSORS).onErrorMap(e -> null).queue();
     }
@@ -42,7 +42,7 @@ public class MessageListeners extends ListenerAdapter {
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
         if(event.getMessageAuthorIdLong() != Scissors.DISCORD_API.getSelfUser().getIdLong()) return;
         if(!event.getEmoji().equals(Emojis.WASTEBASKET)) return;
-        if(event.getUserIdLong() != SharedConstants.MY_USER_ID) return;
+        if(event.getUserIdLong() != me.manossef.scissors.Messages.MY_USER_ID) return;
         event.retrieveMessage().onSuccess(message -> message.delete().queue()).queue();
     }
 
@@ -53,10 +53,10 @@ public class MessageListeners extends ListenerAdapter {
                 .mentionRepliedUser(false)
                 .setAllowedMentions(Collections.emptyList())
                 .queue();
-            DevGuild.logResponse("Posted a " + responseType + " response to " + Util.getMessageLinkWithInfo(message));
+            DevGuild.logResponse("Posted a " + responseType + " response to " + me.manossef.scissors.Messages.getLinkWithInfo(message));
             return;
         }
-        DevGuild.logResponse("Could not post a " + responseType + " response to " + Util.getMessageLinkWithInfo(message) + "; no permission to talk");
+        DevGuild.logResponse("Could not post a " + responseType + " response to " + me.manossef.scissors.Messages.getLinkWithInfo(message) + "; no permission to talk");
     }
 
     private boolean promptsGPPCT(Message message, Configuration config) {

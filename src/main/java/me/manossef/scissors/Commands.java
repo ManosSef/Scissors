@@ -34,13 +34,13 @@ public class Commands {
         String username = user.getName().replace("_", "\\_");
         try {
             int result = DISPATCHER.execute(command, source);
-            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Util.getMessageLinkWithInfo(message) + " and succeeded with return value " + result));
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and succeeded with return value " + result));
         } catch(CommandSyntaxException e) {
             source.sendFailure(e.getMessage());
-            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Util.getMessageLinkWithInfo(message) + " and failed"));
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and failed"));
         } catch(Exception e) {
             source.sendError(e.getMessage());
-            DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Util.getMessageLinkWithInfo(message) + " and threw an exception:"), e);
+            DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and threw an exception:"), e);
             Util.createIssueForException(e, "Command error: ", "Command: {{" + command + "}}");
         }
     }
@@ -93,7 +93,7 @@ public class Commands {
     }
 
     public static Predicate<ChatCommandSource> devRestricted() {
-        return source -> source.user().getIdLong() == SharedConstants.MY_USER_ID;
+        return source -> source.user().getIdLong() == Messages.MY_USER_ID;
     }
 
     public static String format(String command) {

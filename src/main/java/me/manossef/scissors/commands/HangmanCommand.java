@@ -6,11 +6,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
-import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.Messages;
 import me.manossef.scissors.puzzles.Hangman;
 
 public class HangmanCommand {
-    private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start hangman games in this session. Please yell at " + SharedConstants.MY_MENTION + " to restart me"));
+    private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start hangman games in this session. Please yell at " + Messages.MY_MENTION + " to restart me"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "hangman";

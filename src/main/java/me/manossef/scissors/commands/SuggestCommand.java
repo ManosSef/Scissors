@@ -9,10 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import kong.unirest.core.UnirestException;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
-import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.*;
 import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
@@ -62,7 +59,7 @@ public class SuggestCommand {
                 - %s: Creates a work item with the "Improvement" issue type. This should be used to suggest improvements to the bot's existing features.
                 
                 Fails if the provided summary is longer than 255 characters, or if anything else goes wrong while trying to submit the work item.""",
-            SharedConstants.MY_MENTION,
+            Messages.MY_MENTION,
             Commands.format(baseLiteral + " bug <summary>"),
             Commands.format(baseLiteral + " feature <summary>"),
             Commands.format(baseLiteral + " improvement <summary>")));

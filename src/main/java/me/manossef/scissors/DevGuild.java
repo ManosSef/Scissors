@@ -38,10 +38,10 @@ public class DevGuild {
                 logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, System.getenv("SCISSORS_LOGGER_WEBHOOK"));
             String fixed = message.replace("`", "").strip();
             if(fixed.contains("\n")) {
-                logWebhook.sendMessage(Util.truncate(codeblock(fixed))).queue();
+                logWebhook.sendMessage(Messages.truncate(codeblock(fixed))).queue();
                 return;
             }
-            logWebhook.sendMessage(Util.truncate(monospace(fixed))).queue();
+            logWebhook.sendMessage(Messages.truncate(monospace(fixed))).queue();
         }, "DevGuildLogger").start();
     }
 
@@ -73,7 +73,7 @@ public class DevGuild {
     public static void logMessage(String message, MessageChannel channel) {
         if(channel == null) return;
         if(message.length() > Message.MAX_CONTENT_LENGTH) {
-            channel.sendMessage(Util.truncate(message)).queue();
+            channel.sendMessage(Messages.truncate(message)).queue();
             LOGGER.warn("Could not log entire message: {}", message);
             return;
         }

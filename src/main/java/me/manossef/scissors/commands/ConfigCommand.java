@@ -8,10 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.*;
 import me.manossef.commoncode.function.TriFunction;
 import me.manossef.commoncode.objects.Either;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
-import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.*;
 import me.manossef.scissors.arguments.ChannelArgument;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.OptionValue;
@@ -483,7 +480,7 @@ public class ConfigCommand {
 
     private static boolean canEditPerGuild(User user, Guild guild) throws CommandSyntaxException {
         long userId = user.getIdLong();
-        if(userId == SharedConstants.MY_USER_ID) return true;
+        if(userId == Messages.MY_USER_ID) return true;
         Member member = guild.retrieveMemberById(userId).complete();
         if(member == null) throw IMPOSSIBLE_ERROR.create();
         return member.hasPermission(Permission.MANAGE_SERVER);
@@ -491,7 +488,7 @@ public class ConfigCommand {
 
     private static boolean canEditPerChannel(User user, Channel channel) throws CommandSyntaxException {
         long userId = user.getIdLong();
-        if(userId == SharedConstants.MY_USER_ID) return true;
+        if(userId == Messages.MY_USER_ID) return true;
         if(!(channel instanceof GuildChannel guildChannel)) return true;
         Member member = guildChannel.getGuild().retrieveMemberById(userId).complete();
         if(member == null) throw IMPOSSIBLE_ERROR.create();
@@ -500,7 +497,7 @@ public class ConfigCommand {
 
     private static void canSeeChannelFromOutside(ChatCommandSource source, Channel channel) throws CommandSyntaxException {
         long userId = source.user().getIdLong();
-        if(userId == SharedConstants.MY_USER_ID) return;
+        if(userId == Messages.MY_USER_ID) return;
         Channel sourceChannel = source.commandMessage().getChannel();
         if(!(sourceChannel instanceof GuildChannel sourceGuildChannel)) {
             if(sourceChannel.getIdLong() == channel.getIdLong()) return;
