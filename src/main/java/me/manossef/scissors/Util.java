@@ -59,13 +59,10 @@ public class Util {
     }
 
     public static void loadWords(String fileName, List<String> list, String logError) {
-        try {
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(
+            Objects.requireNonNull(Scissors.class.getResourceAsStream("/" + fileName))))) {
             list.clear();
-            Reader fileReader = new InputStreamReader(Objects.requireNonNull(Scissors.class.getResourceAsStream("/" + fileName)));
-            BufferedReader reader = new BufferedReader(fileReader);
-            String line;
-            while((line = reader.readLine()) != null) list.add(line.toLowerCase());
-            reader.close();
+            list.addAll(reader.lines().toList());
         } catch(IOException e) {
             LOGGER.error("Failed to load the list of words from the {} file.", fileName, e);
             DevGuild.logStatus(logError);
