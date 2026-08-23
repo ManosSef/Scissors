@@ -1,8 +1,8 @@
 package me.manossef.scissors.puzzles;
 
 import me.manossef.scissors.Commands;
+import me.manossef.scissors.Resources;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.Util;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -23,7 +23,7 @@ public class Hangman extends Puzzle {
     private static final List<String> WORDS = new ArrayList<>();
 
     static {
-        Util.loadWords("hangman_words.txt", WORDS, "Failed to initialize the list of words for hangman games. All " + Commands.format("hangman") + " commands will fail during this session.");
+        Resources.loadWords("hangman_words.txt", WORDS, "Failed to initialize the list of words for hangman games. All " + Commands.format("hangman") + " commands will fail during this session.");
     }
 
     private Message message;

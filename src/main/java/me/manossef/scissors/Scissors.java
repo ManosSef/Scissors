@@ -63,11 +63,11 @@ public class Scissors {
     }
 
     private static Configuration getConfigFromFile() {
-        return Util.getJsonFromFile(CONFIG_FILE_NAME, Configuration.class);
+        return Resources.getJsonFromFile(CONFIG_FILE_NAME, Configuration.class);
     }
 
     private static JiraCheckLoop.CheckedIssues getCheckedIssues() {
-        return Util.getJsonFromFile(CHECKED_ISSUES_FILE_NAME, JiraCheckLoop.CheckedIssues.class);
+        return Resources.getJsonFromFile(CHECKED_ISSUES_FILE_NAME, JiraCheckLoop.CheckedIssues.class);
     }
 
     public static JiraCheckLoop getJiraCheckLoop() {
@@ -75,11 +75,11 @@ public class Scissors {
     }
 
     public static void saveConfiguration() {
-        Util.saveJsonToFile(CONFIG_FILE_NAME, config);
+        Resources.saveJsonToFile(CONFIG_FILE_NAME, config);
     }
 
     public static void saveCheckedIssues(JiraCheckLoop.CheckedIssues checkedIssues) {
-        Util.saveJsonToFile(CHECKED_ISSUES_FILE_NAME, checkedIssues);
+        Resources.saveJsonToFile(CHECKED_ISSUES_FILE_NAME, checkedIssues);
     }
 
     public static void startJiraCheckLoop() {
