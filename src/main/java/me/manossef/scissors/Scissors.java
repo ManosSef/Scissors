@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.random.RandomGenerator;
 
 public class Scissors {
-    public static final JDA DISCORD_API = JDABuilder.createDefault(SharedConstants.TOKEN)
+    public static final JDA DISCORD_API = JDABuilder.createDefault(System.getenv("SCISSORS_BOT_TOKEN"))
         .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_PRESENCES)
         .addEventListeners(new Startup(), new CommandListener(), new MessageListeners(), new SecretListener())
         .build();
@@ -32,6 +32,8 @@ public class Scissors {
     public static final RandomGenerator RANDOM = RandomGenerator.of("L64X128MixRandom");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Scissors.class);
+    private static final String CHECKED_ISSUES_FILE_NAME = "checked_issues.json";
+    private static final String CONFIG_FILE_NAME = "config.json";
 
     private static Configuration config;
     private static JiraCheckLoop jcl;
@@ -61,11 +63,11 @@ public class Scissors {
     }
 
     private static Configuration getConfigFromFile() {
-        return Util.getJsonFromFile(SharedConstants.CONFIG_FILE_NAME, Configuration.class);
+        return Util.getJsonFromFile(CONFIG_FILE_NAME, Configuration.class);
     }
 
     private static JiraCheckLoop.CheckedIssues getCheckedIssues() {
-        return Util.getJsonFromFile(SharedConstants.CHECKED_ISSUES_FILE_NAME, JiraCheckLoop.CheckedIssues.class);
+        return Util.getJsonFromFile(CHECKED_ISSUES_FILE_NAME, JiraCheckLoop.CheckedIssues.class);
     }
 
     public static JiraCheckLoop getJiraCheckLoop() {
@@ -73,11 +75,11 @@ public class Scissors {
     }
 
     public static void saveConfiguration() {
-        Util.saveJsonToFile(SharedConstants.CONFIG_FILE_NAME, config);
+        Util.saveJsonToFile(CONFIG_FILE_NAME, config);
     }
 
     public static void saveCheckedIssues(JiraCheckLoop.CheckedIssues checkedIssues) {
-        Util.saveJsonToFile(SharedConstants.CHECKED_ISSUES_FILE_NAME, checkedIssues);
+        Util.saveJsonToFile(CHECKED_ISSUES_FILE_NAME, checkedIssues);
     }
 
     public static void startJiraCheckLoop() {

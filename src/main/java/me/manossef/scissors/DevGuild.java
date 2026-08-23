@@ -35,7 +35,7 @@ public class DevGuild {
     public static void log(String message) {
         new Thread(() -> {
             if(logWebhook == null)
-                logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, SharedConstants.LOG_WEBHOOK_URL);
+                logWebhook = WebhookClient.createClient(Scissors.DISCORD_API, System.getenv("SCISSORS_LOGGER_WEBHOOK"));
             String fixed = message.replace("`", "").strip();
             if(fixed.contains("\n")) {
                 logWebhook.sendMessage(Util.truncate(codeblock(fixed))).queue();

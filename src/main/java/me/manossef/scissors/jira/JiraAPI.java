@@ -4,11 +4,13 @@ import kong.unirest.core.GetRequest;
 import kong.unirest.core.JsonNode;
 import kong.unirest.core.Unirest;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.SharedConstants;
 import me.manossef.scissors.jira.objects.Issue;
 import me.manossef.scissors.jira.objects.SearchResults;
 
 public record JiraAPI(String baseUrl) {
+    private static final String JIRA_EMAIL = System.getenv("JIRA_ALT_EMAIL");
+    private static final String JIRA_API_TOKEN = System.getenv("JIRA_ALT_API_TOKEN");
+
     public Issue getIssue(String key) {
         JsonNode node = get("issue/" + key);
         return Scissors.GSON.fromJson(node.toString(), Issue.class);
@@ -61,14 +63,14 @@ public record JiraAPI(String baseUrl) {
 
     private GetRequest getRequest(String endpoint) {
         return Unirest.get(baseUrl + endpoint)
-            .basicAuth(SharedConstants.JIRA_EMAIL, SharedConstants.JIRA_API_TOKEN)
+            .basicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
             .header("Accept", "application/json");
     }
 
     @SuppressWarnings("SameParameterValue")
     private JsonNode post(String endpoint, String body) {
         return Unirest.post(baseUrl + endpoint)
-            .basicAuth(SharedConstants.JIRA_EMAIL, SharedConstants.JIRA_API_TOKEN)
+            .basicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
             .header("Accept", "application/json")
             .header("Content-Type", "application/json")
             .body(body)
