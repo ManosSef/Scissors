@@ -1,6 +1,6 @@
 package me.manossef.scissors;
 
-public class SharedConstants {
+public class Environment {
     private static final String ENVIRONMENT = System.getenv("SCISSORS_ENVIRONMENT");
 
     static {

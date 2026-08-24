@@ -4,17 +4,17 @@ import me.manossef.scissors.jira.objects.Issue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Util {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
+public class Issues {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Issues.class);
 
-    public static void createIssueForException(Throwable exception) {
-        createIssueForException(exception, "", "");
+    public static void createForException(Throwable exception) {
+        createForException(exception, "", "");
     }
 
-    public static void createIssueForException(Throwable exception, String summaryPrefix, String description) {
+    public static void createForException(Throwable exception, String summaryPrefix, String description) {
         String summary = summaryPrefix + exception.getClass().getName();
         if(exception.getMessage() != null) summary += ": " + exception.getMessage();
-        if(SharedConstants.IS_STAGING) {
+        if(Environment.IS_STAGING) {
             LOGGER.info("Not creating issue in staging, summary would be: {}", summary);
             return;
         }

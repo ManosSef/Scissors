@@ -42,7 +42,7 @@ public class Commands {
         } catch(Exception e) {
             source.sendError(e.getMessage());
             DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and threw an exception:"), e);
-            Util.createIssueForException(e, "Command error: ", "Command: {{" + command + "}}");
+            Issues.createForException(e, "Command error: ", "Command: {{" + command + "}}");
         }
     }
 
@@ -89,7 +89,7 @@ public class Commands {
         RawHelpCommand.register(dispatcher);
         StopAllGamesCommand.register(dispatcher);
         HelpCommand.register(dispatcher);
-        if(SharedConstants.IS_STAGING)
+        if(Environment.IS_STAGING)
             ManualErrorCommand.register(dispatcher);
     }
 
