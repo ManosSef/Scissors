@@ -12,16 +12,6 @@ import java.util.Collections;
 public record ChatCommandSource(Message commandMessage, User user) {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatCommandSource.class);
 
-    public ChatCommandSource withMessage(Message newMessage) {
-        if(newMessage == this.commandMessage) return this;
-        return new ChatCommandSource(newMessage, this.user);
-    }
-
-    public ChatCommandSource withUser(User newUser) {
-        if(newUser == this.user) return this;
-        return new ChatCommandSource(this.commandMessage, newUser);
-    }
-
     public void sendSuccess(String message, boolean feedback) {
         this.commandMessage.reply(truncate((feedback ? Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " : "") + message))
                 .setAllowedMentions(Collections.emptyList()).queue();

@@ -9,7 +9,7 @@ import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.LazilyFormattedText;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.arguments.UserArgument;
+import me.manossef.scissors.arguments.UserArgumentType;
 import me.manossef.scissors.games.RockPaperScissors;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -33,7 +33,7 @@ public class RockPaperScissorsCommand {
             .then(Commands.literal("scissors")
                 .executes(context -> rockPaperScissors(context.getSource(), RockPaperScissors.Move.SCISSORS))
             )
-            .then(Commands.argument("opponent", UserArgument.user())
+            .then(Commands.argument("opponent", UserArgumentType.user())
                 .executes(context -> startRockPaperScissorsGame(context.getSource(), context.getArgument("opponent", User.class)))
             )
         );

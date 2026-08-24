@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.arguments.UserArgument;
+import me.manossef.scissors.arguments.UserArgumentType;
 import me.manossef.scissors.games.TicTacToe;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -24,7 +24,7 @@ public class TicTacToeCommand {
             .then(Commands.literal("bot")
                 .executes(context -> startBotTicTacToeGame(context.getSource()))
             )
-            .then(Commands.argument("opponent", UserArgument.user())
+            .then(Commands.argument("opponent", UserArgumentType.user())
                 .executes(context -> startTicTacToeGame(context.getSource(), context.getArgument("opponent", User.class)))
             )
         );

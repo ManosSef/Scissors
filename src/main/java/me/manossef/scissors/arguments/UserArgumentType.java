@@ -12,13 +12,13 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class UserArgument implements ArgumentType<User> {
+public class UserArgumentType implements ArgumentType<User> {
     private static final SimpleCommandExceptionType INVALID_MENTION = new SimpleCommandExceptionType(new LiteralMessage("Invalid user mention"));
     public static final SimpleCommandExceptionType USER_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No user was found"));
     private static final Collection<String> EXAMPLES = Arrays.asList("611151083141857286", "<@611151083141857286>");
 
-    public static UserArgument user() {
-        return new UserArgument();
+    public static UserArgumentType user() {
+        return new UserArgumentType();
     }
 
     @Override

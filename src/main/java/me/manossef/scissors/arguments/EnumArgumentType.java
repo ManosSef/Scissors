@@ -7,17 +7,17 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.commoncode.TypeChecks;
 
-public class EnumArgument<E extends Enum<E>> implements ArgumentType<E> {
+public class EnumArgumentType<E extends Enum<E>> implements ArgumentType<E> {
     private static final SimpleCommandExceptionType INVALID_CONSTANT = new SimpleCommandExceptionType(new LiteralMessage("Invalid value"));
 
     private final Class<E> type;
 
-    public EnumArgument(Class<E> type) {
+    public EnumArgumentType(Class<E> type) {
         this.type = type;
     }
 
-    public static <T extends Enum<T>> EnumArgument<T> of(Class<T> type) {
-        return new EnumArgument<>(type);
+    public static <T extends Enum<T>> EnumArgumentType<T> enumArg(Class<T> type) {
+        return new EnumArgumentType<>(type);
     }
 
     @Override

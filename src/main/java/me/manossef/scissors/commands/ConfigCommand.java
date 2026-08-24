@@ -12,7 +12,7 @@ import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Messages;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.arguments.ChannelArgument;
+import me.manossef.scissors.arguments.ChannelArgumentType;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.OptionValue;
 import me.manossef.scissors.config.Options;
@@ -153,7 +153,7 @@ public class ConfigCommand {
                 }).requires(Commands.devRestricted()))
             )
             .then(optionsArguments(Commands.literal("channel"), context -> new OptionContext(Either.ofLeft(OptionContext.Source.CHANNEL)))
-                .then(optionsArguments(Commands.argument("channel", ChannelArgument.channel()), context -> new OptionContext(Either.ofRight(Either.ofRight(context.getArgument("channel", Channel.class))))))
+                .then(optionsArguments(Commands.argument("channel", ChannelArgumentType.channel()), context -> new OptionContext(Either.ofRight(Either.ofRight(context.getArgument("channel", Channel.class))))))
             )
         );
         HelpCommand.addLine(baseLiteral, s -> "Queries or edits the bot's settings.");

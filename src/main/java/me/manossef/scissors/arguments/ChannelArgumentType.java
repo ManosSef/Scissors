@@ -12,13 +12,13 @@ import net.dv8tion.jda.api.entities.channel.Channel;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class ChannelArgument implements ArgumentType<Channel> {
+public class ChannelArgumentType implements ArgumentType<Channel> {
     private static final SimpleCommandExceptionType INVALID_MENTION = new SimpleCommandExceptionType(new LiteralMessage("Invalid channel mention"));
     private static final SimpleCommandExceptionType CHANNEL_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No channel was found"));
     private static final Collection<String> EXAMPLES = Arrays.asList("1428451434373845114", "<#1428451434373845114>");
 
-    public static ChannelArgument channel() {
-        return new ChannelArgument();
+    public static ChannelArgumentType channel() {
+        return new ChannelArgumentType();
     }
 
     @Override

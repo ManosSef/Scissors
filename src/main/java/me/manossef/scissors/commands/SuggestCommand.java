@@ -9,7 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
 import kong.unirest.core.UnirestException;
 import me.manossef.scissors.*;
-import me.manossef.scissors.arguments.UserArgument;
+import me.manossef.scissors.arguments.UserArgumentType;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -39,7 +39,7 @@ public class SuggestCommand {
             .then(argumentsForIssueType("feature", Issue.Fields.Issuetype.FEATURE, false))
             .then(argumentsForIssueType("improvement", Issue.Fields.Issuetype.IMPROVEMENT, false))
             .then(argumentsForIssueType("task", Issue.Fields.Issuetype.TASK, false).requires(Commands.devRestricted()))
-            .then(Commands.argument("reporter", UserArgument.user())
+            .then(Commands.argument("reporter", UserArgumentType.user())
                 .requires(Commands.devRestricted())
                 .then(argumentsForIssueType("bug", Issue.Fields.Issuetype.BUG, true))
                 .then(argumentsForIssueType("feature", Issue.Fields.Issuetype.FEATURE, true))

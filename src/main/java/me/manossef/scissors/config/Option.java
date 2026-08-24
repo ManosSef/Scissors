@@ -3,8 +3,8 @@ package me.manossef.scissors.config;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import me.manossef.scissors.arguments.EnumArgument;
-import me.manossef.scissors.arguments.LengthLimitedStringArgument;
+import me.manossef.scissors.arguments.EnumArgumentType;
+import me.manossef.scissors.arguments.LengthLimitedStringArgumentType;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -76,12 +76,12 @@ public sealed class Option<T> {
 
     @SuppressWarnings("SameParameterValue")
     static <E extends Enum<E>> Option<E> enumOp(String name, Class<E> type, E defaultValue) {
-        return new EnumOption<>(name, type, e -> true, EnumArgument.of(type), defaultValue);
+        return new EnumOption<>(name, type, e -> true, EnumArgumentType.enumArg(type), defaultValue);
     }
 
     @SuppressWarnings("SameParameterValue")
     static Option<String> string(String name, int charLimit, String defaultValue) {
-        return new Option<>(name, String.class, s -> s.length() <= charLimit, LengthLimitedStringArgument.of(charLimit), defaultValue);
+        return new Option<>(name, String.class, s -> s.length() <= charLimit, LengthLimitedStringArgumentType.string(charLimit), defaultValue);
     }
 
     private static final class IntOption extends Option<Integer> {
