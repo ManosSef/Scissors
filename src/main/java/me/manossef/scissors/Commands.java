@@ -7,8 +7,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.*;
 import me.manossef.scissors.commands.*;
+import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 import java.util.function.Predicate;
 
@@ -28,7 +30,8 @@ public class Commands {
     }
 
     public static void dispatch(Message message, User user) {
-        String command = message.getContentRaw().replaceFirst(SharedConstants.COMMAND_PREFIX, "").strip();
+        String prefix = getPrefix(message.getChannel());
+        String command = message.getContentRaw().replaceFirst(prefix, "").strip();
         if(command.isEmpty()) return;
         source = source.withMessage(message).withUser(user);
         String username = user.getName().replace("_", "\\_");
@@ -96,8 +99,21 @@ public class Commands {
         return source -> source.user().getIdLong() == Messages.MY_USER_ID;
     }
 
-    public static String format(String command) {
-        return monospace(SharedConstants.COMMAND_PREFIX + command);
+    public static String format(String command, Channel channel) {
+        return monospace(getPrefix(channel) + command);
+    }
+
+    public static String defaultFormat(String command) {
+        return monospace(Options.COMMAND_PREFIX.getDefaultValue() + command);
+    }
+
+    public static String getPrefix(Channel channel) {
+        return Scissors.getConfiguration().getOptionForChannel(Options.COMMAND_PREFIX, channel);
+    }
+
+    public static LazilyFormattedText.ExceptionType lazyExceptionWithCommand(String message, String command) {
+        return new LazilyFormattedText.ExceptionType(
+            source -> message.formatted(Commands.format(command, source.commandMessage().getChannel())));
     }
 
     private static class BuiltInExceptions implements BuiltInExceptionProvider {

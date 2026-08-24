@@ -95,7 +95,7 @@ public class Responses {
         "You'd better not want to throw a rock at me",
         "At your service!",
         "0% AI!",
-        "Type " + Commands.format("help") + " to get started!",
+        "Type " + Commands.defaultFormat("help") + " to get started!", // TODO depend on channel
         "Best paper cutting performance on the market!",
         "Cutting edge technology!",
         "Whomst has awakened the ancient one?"

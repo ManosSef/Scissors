@@ -4,7 +4,11 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import me.manossef.scissors.*;
+import me.manossef.scissors.ChatCommandSource;
+import me.manossef.scissors.Commands;
+import me.manossef.scissors.Messages;
+import me.manossef.scissors.Scissors;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -34,19 +38,22 @@ public class PingCommand {
                 .executes(context -> mentionMe(context.getSource()))
             )
         );
-        HelpCommand.addLine(baseLiteral, "Pings Discord, measures the bot's reaction time, or replies with \"Pong!\"");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
-                Checks if or how quickly the bot replies to requests.
-               
-                Here are all available syntaxes for this command:
-                - %s: Measures how long it takes for the bot to reply to this command in milliseconds.
-                - %s: Measures how long it takes for the bot to reply to this command in nanoseconds.
-                - %s: Pings Discord's API.
-                - %s: Replies with "Pong!\"""",
-            Commands.format(baseLiteral),
-            Commands.format(baseLiteral + " nanos"),
-            Commands.format(baseLiteral + " discord"),
-            Commands.format(baseLiteral + " pong")));
+        HelpCommand.addLine(baseLiteral, s -> "Pings Discord, measures the bot's reaction time, or replies with \"Pong!\"");
+        HelpCommand.addLiteral(baseLiteral, source -> {
+            Channel channel = source.commandMessage().getChannel();
+            return String.format("""
+                    Checks if or how quickly the bot replies to requests.
+                   
+                    Here are all available syntaxes for this command:
+                    - %s: Measures how long it takes for the bot to reply to this command in milliseconds.
+                    - %s: Measures how long it takes for the bot to reply to this command in nanoseconds.
+                    - %s: Pings Discord's API.
+                    - %s: Replies with "Pong!\"""",
+                Commands.format(baseLiteral, channel),
+                Commands.format(baseLiteral + " nanos", channel),
+                Commands.format(baseLiteral + " discord", channel),
+                Commands.format(baseLiteral + " pong", channel));
+        });
     }
 
     private static int pingUser(ChatCommandSource source, boolean nanos) throws CommandSyntaxException {

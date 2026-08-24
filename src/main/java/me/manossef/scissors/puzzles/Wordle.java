@@ -1,6 +1,9 @@
 package me.manossef.scissors.puzzles;
 
-import me.manossef.scissors.*;
+import me.manossef.scissors.Commands;
+import me.manossef.scissors.Emojis;
+import me.manossef.scissors.Resources;
+import me.manossef.scissors.Scissors;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -22,8 +25,8 @@ public class Wordle extends Puzzle {
     private static final int MAX_GUESSES = 6;
 
     static {
-        Resources.loadWords("wordle_words.txt", WORDS, "Failed to initialize the list of words for Wordle games. All " + Commands.format("wordle") + " commands will fail during this session.");
-        Resources.loadWords("wordle_answers.txt", ANSWERS, "Failed to initialize the list of answers for Wordle games. All " + Commands.format("wordle") + " commands will fail during this session.");
+        Resources.loadWords("wordle_words.txt", WORDS, "Failed to initialize the list of words for Wordle games. All " + Commands.defaultFormat("wordle") + " commands will fail during this session.");
+        Resources.loadWords("wordle_answers.txt", ANSWERS, "Failed to initialize the list of answers for Wordle games. All " + Commands.defaultFormat("wordle") + " commands will fail during this session.");
     }
 
     private Message message;

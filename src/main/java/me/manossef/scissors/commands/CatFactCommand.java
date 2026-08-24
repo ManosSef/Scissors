@@ -14,8 +14,8 @@ public class CatFactCommand {
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> getCatFact(context.getSource()))
         );
-        HelpCommand.addLine(baseLiteral, "Replies with a random fact about cats.");
-        HelpCommand.addLiteral(baseLiteral, "Replies with a random fact about cats. Facts are sourced from https://catfact.ninja/fact.");
+        HelpCommand.addLine(baseLiteral, s -> "Replies with a random fact about cats.");
+        HelpCommand.addLiteral(baseLiteral, s -> "Replies with a random fact about cats. Facts are sourced from https://catfact.ninja/fact.");
     }
 
     private static int getCatFact(ChatCommandSource source) throws CommandSyntaxException {

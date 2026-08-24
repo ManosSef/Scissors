@@ -11,6 +11,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
@@ -61,29 +62,32 @@ public class RollCommand {
                 )
             )
         );
-        HelpCommand.addLine(baseLiteral, "Rolls a random number from a range.");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
-                Rolls a random number from a specific range.
-                
-                Here are the available syntaxes for this command:
-                - %3$s: If %2$s is an integer (from 1 to %9$s), rolls an integer from 1 to %2$s (inclusive). Otherwise, rolls a decimal number from 0 to %2$s with at most 9 decimal digits.
-                - %4$s: Rolls a number from %1$s to %2$s. If both %1$s and %2$s are integers (from %10$s to %9$s), only rolls integers. Otherwise, rolls any decimal number in the range with at most 9 decimal digits.
-                - %7$s: Rolls an integer from 1 to %2$s (inclusive). %2$s must be at most %11$s.
-                - %8$s: Rolls an integer from %1$s to %2$s. %1$s and %2$s must be between %12$s and %11$s (inclusive).
-                - %5$s: Rolls a decimal number from 0 to %2$s with at most 17 decimal digits.
-                - %6$s: Rolls a decimal number from %1$s to %2$s with at most 17 decimal digits.""",
-            monospace("<min>"),
-            monospace("<max>"),
-            Commands.format(baseLiteral + " <max>"),
-            Commands.format(baseLiteral + " <min> <max>"),
-            Commands.format(baseLiteral + " double <max>"),
-            Commands.format(baseLiteral + " double <min> <max>"),
-            Commands.format(baseLiteral + " long <max>"),
-            Commands.format(baseLiteral + " long <min> <max>"),
-            Integer.MAX_VALUE,
-            Integer.MIN_VALUE,
-            Long.MAX_VALUE,
-            Long.MIN_VALUE));
+        HelpCommand.addLine(baseLiteral, s -> "Rolls a random number from a range.");
+        HelpCommand.addLiteral(baseLiteral, source -> {
+            Channel channel = source.commandMessage().getChannel();
+            return String.format("""
+                    Rolls a random number from a specific range.
+                    
+                    Here are the available syntaxes for this command:
+                    - %3$s: If %2$s is an integer (from 1 to %9$s), rolls an integer from 1 to %2$s (inclusive). Otherwise, rolls a decimal number from 0 to %2$s with at most 9 decimal digits.
+                    - %4$s: Rolls a number from %1$s to %2$s. If both %1$s and %2$s are integers (from %10$s to %9$s), only rolls integers. Otherwise, rolls any decimal number in the range with at most 9 decimal digits.
+                    - %7$s: Rolls an integer from 1 to %2$s (inclusive). %2$s must be at most %11$s.
+                    - %8$s: Rolls an integer from %1$s to %2$s. %1$s and %2$s must be between %12$s and %11$s (inclusive).
+                    - %5$s: Rolls a decimal number from 0 to %2$s with at most 17 decimal digits.
+                    - %6$s: Rolls a decimal number from %1$s to %2$s with at most 17 decimal digits.""",
+                monospace("<min>"),
+                monospace("<max>"),
+                Commands.format(baseLiteral + " <max>", channel),
+                Commands.format(baseLiteral + " <min> <max>", channel),
+                Commands.format(baseLiteral + " double <max>", channel),
+                Commands.format(baseLiteral + " double <min> <max>", channel),
+                Commands.format(baseLiteral + " long <max>", channel),
+                Commands.format(baseLiteral + " long <min> <max>", channel),
+                Integer.MAX_VALUE,
+                Integer.MIN_VALUE,
+                Long.MAX_VALUE,
+                Long.MIN_VALUE);
+        });
     }
 
     private static int roll(ChatCommandSource source, int max) throws CommandSyntaxException {

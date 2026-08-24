@@ -3,7 +3,7 @@ package me.manossef.scissors.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
-import me.manossef.scissors.SharedConstants;
+import me.manossef.scissors.config.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ public class RawHelpCommand {
         String[] usage = dispatcher.getAllUsage(dispatcher.getRoot(), source, true);
         StringBuilder builder = new StringBuilder();
         for(String line : usage)
-            builder.append("- ").append(SharedConstants.COMMAND_PREFIX).append(line).append("\n");
+            builder.append("- ").append(Options.COMMAND_PREFIX.getDefaultValue()).append(line).append("\n");
         LOGGER.info(builder.toString());
         source.sendSuccess("Logged all command syntaxes", true);
         return usage.length;

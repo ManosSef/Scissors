@@ -7,12 +7,12 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import kong.unirest.core.UnirestException;
 import me.manossef.scissors.*;
 import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,14 +26,15 @@ public class SuggestCommand {
         for(Object error : errors) builder.append("\n- ").append(error);
         return new LiteralMessage("The following error(s) occurred while trying to create the issue: " + builder);
     });
-    private static final SimpleCommandExceptionType NO_ISSUE_TYPE = new SimpleCommandExceptionType(new LiteralMessage(
-        "Please add " + monospace("bug") + ", " + monospace("feature") + " or " + monospace("improvement") + " after " + Commands.format("suggest") + " depending on what you're suggesting"
-    ));
+    private static final LazilyFormattedText.ExceptionType NO_ISSUE_TYPE = Commands.lazyExceptionWithCommand(
+        "Please add " + monospace("bug") + ", " + monospace("feature") + " or " + monospace("improvement") + " after %s depending on what you're suggesting",
+        "suggest"
+    );
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "suggest";
         dispatcher.register(Commands.literal(baseLiteral)
-            .executes(context -> sendIssueTypeHint())
+            .executes(context -> sendIssueTypeHint(context.getSource()))
             .then(argumentsForIssueType("bug", Issue.Fields.Issuetype.BUG, false))
             .then(argumentsForIssueType("feature", Issue.Fields.Issuetype.FEATURE, false))
             .then(argumentsForIssueType("improvement", Issue.Fields.Issuetype.IMPROVEMENT, false))
@@ -46,23 +47,26 @@ public class SuggestCommand {
                 .then(argumentsForIssueType("task", Issue.Fields.Issuetype.TASK, true))
             )
             .then(Commands.argument("summary", StringArgumentType.greedyString())
-                .executes(context -> sendIssueTypeHint())
+                .executes(context -> sendIssueTypeHint(context.getSource()))
             )
         );
-        HelpCommand.addLine(baseLiteral, "Posts a suggestion for the bot.");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
-                Posts a suggestion or bug report for the bot. A work item with the provided summary is created in the bot's internal Jira instance for %s to eventually take a look at.
-                
-                Here are the available syntaxes for this command:
-                - %s: Creates a work item with the "Bug" issue type. This should be used to report bugs.
-                - %s: Creates a work item with the "New Feature" issue type. This should be used to suggest new features to be added to the bot.
-                - %s: Creates a work item with the "Improvement" issue type. This should be used to suggest improvements to the bot's existing features.
-                
-                Fails if the provided summary is longer than 255 characters, or if anything else goes wrong while trying to submit the work item.""",
-            Messages.MY_MENTION,
-            Commands.format(baseLiteral + " bug <summary>"),
-            Commands.format(baseLiteral + " feature <summary>"),
-            Commands.format(baseLiteral + " improvement <summary>")));
+        HelpCommand.addLine(baseLiteral, s -> "Posts a suggestion for the bot.");
+        HelpCommand.addLiteral(baseLiteral, source -> {
+            Channel channel = source.commandMessage().getChannel();
+            return String.format("""
+                    Posts a suggestion or bug report for the bot. A work item with the provided summary is created in the bot's internal Jira instance for %s to eventually take a look at.
+                    
+                    Here are the available syntaxes for this command:
+                    - %s: Creates a work item with the "Bug" issue type. This should be used to report bugs.
+                    - %s: Creates a work item with the "New Feature" issue type. This should be used to suggest new features to be added to the bot.
+                    - %s: Creates a work item with the "Improvement" issue type. This should be used to suggest improvements to the bot's existing features.
+                    
+                    Fails if the provided summary is longer than 255 characters, or if anything else goes wrong while trying to submit the work item.""",
+                Messages.MY_MENTION,
+                Commands.format(baseLiteral + " bug <summary>", channel),
+                Commands.format(baseLiteral + " feature <summary>", channel),
+                Commands.format(baseLiteral + " improvement <summary>", channel));
+        });
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueType(String literal, Issue.Fields.Issuetype type, boolean withUser) {
@@ -114,7 +118,7 @@ public class SuggestCommand {
         return 1;
     }
 
-    private static int sendIssueTypeHint() throws CommandSyntaxException {
-        throw NO_ISSUE_TYPE.create();
+    private static int sendIssueTypeHint(ChatCommandSource source) throws CommandSyntaxException {
+        throw NO_ISSUE_TYPE.create(source);
     }
 }

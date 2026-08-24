@@ -23,7 +23,7 @@ public class Hangman extends Puzzle {
     private static final List<String> WORDS = new ArrayList<>();
 
     static {
-        Resources.loadWords("hangman_words.txt", WORDS, "Failed to initialize the list of words for hangman games. All " + Commands.format("hangman") + " commands will fail during this session.");
+        Resources.loadWords("hangman_words.txt", WORDS, "Failed to initialize the list of words for hangman games. All " + Commands.defaultFormat("hangman") + " commands will fail during this session.");
     }
 
     private Message message;

@@ -11,6 +11,7 @@ import me.manossef.scissors.squaredle.PuzzleData;
 import me.manossef.scissors.squaredle.PuzzleUtil;
 import me.manossef.scissors.squaredle.TodayConfig;
 import me.manossef.scissors.squaredle.TodayConfigReader;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
@@ -25,16 +26,19 @@ public class SquaredleCommand {
                 .executes(context -> sendDailySquaredle(context.getSource(), true))
             )
         );
-        HelpCommand.addLine(baseLiteral, "Displays information about today's Squaredle puzzle.");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
-                Provides information about today's Squaredle (https://squaredle.app/) puzzle. Displays the grid with emoji, and reports the word count (including the number of words of each length), the bonus word count, a hint for the \
-                Bonus Word of the Day (the same as in-game), the difficulty, and the author.
-                
-                Here are the available syntaxes for this command:
-                - %s: Provides information about today's Squaredle puzzle.
-                - %s: Provides information about today's Squaredle Express puzzle.""",
-            Commands.format(baseLiteral),
-            Commands.format(baseLiteral + " xp")));
+        HelpCommand.addLine(baseLiteral, s -> "Displays information about today's Squaredle puzzle.");
+        HelpCommand.addLiteral(baseLiteral, source -> {
+            Channel channel = source.commandMessage().getChannel();
+            return String.format("""
+                    Provides information about today's Squaredle (https://squaredle.app/) puzzle. Displays the grid with emoji, and reports the word count (including the number of words of each length), the bonus word count, a hint for the \
+                    Bonus Word of the Day (the same as in-game), the difficulty, and the author.
+                    
+                    Here are the available syntaxes for this command:
+                    - %s: Provides information about today's Squaredle puzzle.
+                    - %s: Provides information about today's Squaredle Express puzzle.""",
+                Commands.format(baseLiteral, channel),
+                Commands.format(baseLiteral + " xp", channel));
+        });
     }
 
     private static int sendDailySquaredle(ChatCommandSource source, boolean xp) throws CommandSyntaxException {

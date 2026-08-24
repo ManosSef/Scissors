@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import me.manossef.scissors.arguments.EnumArgument;
+import me.manossef.scissors.arguments.LengthLimitedStringArgument;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -70,7 +71,7 @@ public sealed class Option<T> {
     static Option<Integer> integer(String name, int defaultValue, int min, int max) {
         if(defaultValue < min || defaultValue > max)
             throw new IllegalArgumentException("The default value must be between min and max inclusive");
-        return integer(name, i -> i >= min && i <= max, IntegerArgumentType.integer(min, max), defaultValue);
+        return new IntOption(name, i -> i >= min && i <= max, IntegerArgumentType.integer(min, max), defaultValue);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -78,8 +79,9 @@ public sealed class Option<T> {
         return new EnumOption<>(name, type, e -> true, EnumArgument.of(type), defaultValue);
     }
 
-    private static Option<Integer> integer(String name, Predicate<Integer> validator, ArgumentType<Integer> argumentType, int defaultValue) {
-        return new IntOption(name, validator, argumentType, defaultValue);
+    @SuppressWarnings("SameParameterValue")
+    static Option<String> string(String name, int charLimit, String defaultValue) {
+        return new Option<>(name, String.class, s -> s.length() <= charLimit, LengthLimitedStringArgument.of(charLimit), defaultValue);
     }
 
     private static final class IntOption extends Option<Integer> {

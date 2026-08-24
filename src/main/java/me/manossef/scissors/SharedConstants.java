@@ -9,6 +9,4 @@ public class SharedConstants {
     }
 
     public static final boolean IS_STAGING = "staging".equalsIgnoreCase(ENVIRONMENT);
-
-    public static final String COMMAND_PREFIX = "8<";
 }

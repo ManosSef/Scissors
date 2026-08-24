@@ -10,6 +10,7 @@ import me.manossef.scissors.Scissors;
 import me.manossef.scissors.arguments.UserArgument;
 import me.manossef.scissors.games.TicTacToe;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
@@ -27,18 +28,21 @@ public class TicTacToeCommand {
                 .executes(context -> startTicTacToeGame(context.getSource(), context.getArgument("opponent", User.class)))
             )
         );
-        HelpCommand.addLine(baseLiteral, "Starts a tic-tac-toe game between you and the bot or another user.");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
-                Starts a game of tic-tac-toe between you and the bot or the specified user.
-                
-                Here are all available syntaxes for this command:
-                - %s: Starts a game of tic-tac-toe between you and the bot.
-                - %s: Starts a game of tic-tac-toe between you and the specified user. Fails if the specified user does not exist in the server, is the same as the user running the command, or is a bot other than Scissors.
-                
-                For the %s argument, you can use a user ID or a mention (ping) of the user in question.""",
-            Commands.format(baseLiteral + " bot"),
-            Commands.format(baseLiteral + " <opponent>"),
-            monospace("<opponent>")));
+        HelpCommand.addLine(baseLiteral, s -> "Starts a tic-tac-toe game between you and the bot or another user.");
+        HelpCommand.addLiteral(baseLiteral, source -> {
+            Channel channel = source.commandMessage().getChannel();
+            return String.format("""
+                    Starts a game of tic-tac-toe between you and the bot or the specified user.
+                    
+                    Here are all available syntaxes for this command:
+                    - %s: Starts a game of tic-tac-toe between you and the bot.
+                    - %s: Starts a game of tic-tac-toe between you and the specified user. Fails if the specified user does not exist in the server, is the same as the user running the command, or is a bot other than Scissors.
+                    
+                    For the %s argument, you can use a user ID or a mention (ping) of the user in question.""",
+                Commands.format(baseLiteral + " bot", channel),
+                Commands.format(baseLiteral + " <opponent>", channel),
+                monospace("<opponent>"));
+        });
     }
 
     private static int startBotTicTacToeGame(ChatCommandSource source) {

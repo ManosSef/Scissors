@@ -1,7 +1,11 @@
 package me.manossef.scissors.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import me.manossef.scissors.*;
+import me.manossef.scissors.ChatCommandSource;
+import me.manossef.scissors.Commands;
+import me.manossef.scissors.Emojis;
+import me.manossef.scissors.Scissors;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
@@ -18,17 +22,20 @@ public class CoinflipCommand {
                 .executes(context -> rollEdge(context.getSource()))
             )
         );
-        HelpCommand.addLine(baseLiteral, "Flips a coin.");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
-                Flips a coin and returns either %s or %s.
-                
-                Here are all available syntaxes for this command:
-                - %s: Flips a coin.
-                - %s: Flips a coin with no funny business.""",
-            bold("heads"),
-            bold("tails"),
-            Commands.format(baseLiteral),
-            Commands.format(baseLiteral + " nofunnybusiness")));
+        HelpCommand.addLine(baseLiteral, s -> "Flips a coin.");
+        HelpCommand.addLiteral(baseLiteral, source -> {
+            Channel channel = source.commandMessage().getChannel();
+            return String.format("""
+                    Flips a coin and returns either %s or %s.
+                    
+                    Here are all available syntaxes for this command:
+                    - %s: Flips a coin.
+                    - %s: Flips a coin with no funny business.""",
+                bold("heads"),
+                bold("tails"),
+                Commands.format(baseLiteral, channel),
+                Commands.format(baseLiteral + " nofunnybusiness", channel));
+        });
     }
 
     private static int flipCoin(ChatCommandSource source) {

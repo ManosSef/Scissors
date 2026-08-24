@@ -41,6 +41,10 @@ public class Options {
                 The kinds of numbers counting responses are posted to. The value can be %s to reply to all numbers, %s to only reply to integers, %s to only reply to non-negative integers, \
                 or %s to only reply to messages with only digits (including leading zeroes).""".formatted(Arrays.stream(GPPCTHandling.values()).map(v -> monospace(v.toString())).toArray())
     );
+    public static final Option<String> COMMAND_PREFIX = register(
+        Option.string("commandPrefix", 10, "8<"),
+        "The prefix that command messages must start with."
+    );
 
     private static final Map<String, Option<?>> LEGACY_OPTIONS = new HashMap<>();
     private static final Option<Boolean> GPPCT_ON_INTEGERS_ONLY = registerLegacy(Option.bool("gppctOnIntegersOnly", false));

@@ -24,8 +24,8 @@ public class IssueCommand {
                 .executes(context -> getIssue(context.getSource(), "SCIS-" + context.getArgument("number", Integer.class)))
             )
         );
-        HelpCommand.addLine(baseLiteral, "Fetches a work item from the bot's internal Jira instance and shows information about it.");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
+        HelpCommand.addLine(baseLiteral, s -> "Fetches a work item from the bot's internal Jira instance and shows information about it.");
+        HelpCommand.addLiteral(baseLiteral, source -> String.format("""
                 Fetches a work item from the bot's internal Jira instance and displays information about it with an embed. The work item to be fetched has the key %s, where %s is the specified number.
                 
                 The embed is colored gray if the work item is unresolved, green if it's resolved as "Done" and red if it's resolved with any other resolution.
@@ -35,7 +35,7 @@ public class IssueCommand {
                 Fails if there is no work item with the specified number.""",
             monospace("SCIS-<#>"),
             monospace("<#>"),
-            Commands.format(baseLiteral + " <number>")));
+            Commands.format(baseLiteral + " <number>", source.commandMessage().getChannel())));
     }
 
     private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException {

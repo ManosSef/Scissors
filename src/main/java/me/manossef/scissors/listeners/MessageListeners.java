@@ -24,7 +24,7 @@ public class MessageListeners extends ListenerAdapter {
         Message message = event.getMessage();
         if(message.getAuthor().isBot() || message.getAuthor().isSystem()) return;
         String content = message.getContentRaw();
-        if(content.startsWith(SharedConstants.COMMAND_PREFIX)) return;
+        if(content.startsWith(Commands.getPrefix(message.getChannel()))) return;
         Configuration config = Scissors.getConfiguration();
         if(this.promptsGPPCT(message, config))
             replyWithRandomMessage(message, isApril1st() ? Responses.GPPCT_APRIL_FOOLS_RESPONSES : content.equals("67") ? Responses.GPPCT_BRAINROT_RESPONSES : Responses.GPPCT_RESPONSES, "GPPCT");

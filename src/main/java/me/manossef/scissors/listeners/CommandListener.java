@@ -1,7 +1,6 @@
 package me.manossef.scissors.listeners;
 
 import me.manossef.scissors.Commands;
-import me.manossef.scissors.SharedConstants;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -14,7 +13,7 @@ public class CommandListener extends ListenerAdapter {
         MessageChannel channel = event.getChannel();
         if(!channel.canTalk()) return;
         Message message = event.getMessage();
-        if(!message.getContentRaw().startsWith(SharedConstants.COMMAND_PREFIX)) return;
+        if(!message.getContentRaw().startsWith(Commands.getPrefix(channel))) return;
         User user = event.getAuthor();
         if(user.isBot() || user.isSystem()) return;
         Commands.dispatch(message, user);

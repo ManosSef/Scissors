@@ -9,6 +9,7 @@ import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Messages;
 import me.manossef.scissors.puzzles.Wordle;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 public class WordleCommand {
     private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start Wordle games in this session. Please yell at " + Messages.MY_MENTION + " to restart me"));
@@ -28,17 +29,20 @@ public class WordleCommand {
                 )
             )
         );
-        HelpCommand.addLine(baseLiteral, "Starts a game of Wordle.");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
-                Starts a game of Wordle. A message that will keep track of your progress is posted after this command is run. Replying to that message with a 5-letter word will guess that word, causing the bot to edit the message \
-                to reveal the colors for each letter in the word.
-                
-                Here are all available syntaxes for this command:
-                - %s: Starts a normal game of Wordle.
-                - %s: Starts a game of Wordle in hard mode, which works like the hard mode in the New York Times' Wordle.""",
-            Commands.format(baseLiteral),
-            Commands.format(baseLiteral + " hard")
-        ));
+        HelpCommand.addLine(baseLiteral, s -> "Starts a game of Wordle.");
+        HelpCommand.addLiteral(baseLiteral, source -> {
+            Channel channel = source.commandMessage().getChannel();
+            return String.format("""
+                    Starts a game of Wordle. A message that will keep track of your progress is posted after this command is run. Replying to that message with a 5-letter word will guess that word, causing the bot to edit the message \
+                    to reveal the colors for each letter in the word.
+                    
+                    Here are all available syntaxes for this command:
+                    - %s: Starts a normal game of Wordle.
+                    - %s: Starts a game of Wordle in hard mode, which works like the hard mode in the New York Times' Wordle.""",
+                Commands.format(baseLiteral, channel),
+                Commands.format(baseLiteral + " hard", channel)
+            );
+        });
     }
 
     private static int startWordle(ChatCommandSource source, boolean hardMode) throws CommandSyntaxException {

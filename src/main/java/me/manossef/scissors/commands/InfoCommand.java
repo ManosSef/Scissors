@@ -9,6 +9,7 @@ import me.manossef.scissors.Commands;
 import me.manossef.scissors.Messages;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.Options;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -38,20 +39,24 @@ public class InfoCommand {
                 .executes(context -> sendOptions(context.getSource()))
             )
         );
-        HelpCommand.addLine(baseLiteral, "Provides information about the bot.");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
-                Provides information about the bot.
-                
-                Here are the available syntaxes for this command:
-                - %s: Makes the bot introduce itself.
-                - %s: Posts the invite link to the bot's development server.
-                - %s: Posts the link to the bot's GitHub repository.""",
-            Commands.format(baseLiteral),
-            Commands.format(baseLiteral + " devserver"),
-            Commands.format(baseLiteral + " github")));
+        HelpCommand.addLine(baseLiteral, s -> "Provides information about the bot.");
+        HelpCommand.addLiteral(baseLiteral, source -> {
+            Channel channel = source.commandMessage().getChannel();
+            return String.format("""
+                    Provides information about the bot.
+                    
+                    Here are the available syntaxes for this command:
+                    - %s: Makes the bot introduce itself.
+                    - %s: Posts the invite link to the bot's development server.
+                    - %s: Posts the link to the bot's GitHub repository.""",
+                Commands.format(baseLiteral, channel),
+                Commands.format(baseLiteral + " devserver", channel),
+                Commands.format(baseLiteral + " github", channel));
+        });
     }
 
     private static int sendGenericInfo(ChatCommandSource source) {
+        Channel channel = source.commandMessage().getChannel();
         source.sendSuccess(String.format("""
                 Hi! I'm a Discord bot that can do one or two things. Mostly cutting paper.
                 
@@ -63,10 +68,10 @@ public class InfoCommand {
                 If you'd like to know what I can do, type %s. You can also type %s if you find something wrong with me, %s if you'd like to suggest a new feature for me, or %s if you have an idea for improving me.""",
             Messages.MY_MENTION,
             italics("how did I get here?"),
-            Commands.format("help"),
-            Commands.format("suggest bug <summary>"),
-            Commands.format("suggest feature <summary>"),
-            Commands.format("suggest improvement <summary>")), false);
+            Commands.format("help", channel),
+            Commands.format("suggest bug <summary>", channel),
+            Commands.format("suggest feature <summary>", channel),
+            Commands.format("suggest improvement <summary>", channel)), false);
         return 1;
     }
 
@@ -82,7 +87,7 @@ public class InfoCommand {
 
     private static int sendOptions(ChatCommandSource source) throws CommandSyntaxException {
         if(Options.values().length != OPTIONS.size()) throw IMPOSSIBLE_ERROR.create();
-        StringBuilder builder = new StringBuilder("Here are all my configuration options, which can be queried or edited using " + Commands.format("config") + ":");
+        StringBuilder builder = new StringBuilder("Here are all my configuration options, which can be queried or edited using " + Commands.format("config", source.commandMessage().getChannel()) + ":");
         for(String line : OPTIONS)
             builder.append("\n- ").append(line);
         source.sendSuccess(builder.toString(), false);

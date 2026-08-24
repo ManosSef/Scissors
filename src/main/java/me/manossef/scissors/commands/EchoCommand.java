@@ -27,14 +27,14 @@ public class EchoCommand {
                 .executes(context -> echo(context.getSource(), context.getArgument("text", String.class)))
             )
         );
-        HelpCommand.addLine(baseLiteral, "Posts a message as the bot.");
-        HelpCommand.addLiteral(baseLiteral, String.format("""
+        HelpCommand.addLine(baseLiteral, s -> "Posts a message as the bot.");
+        HelpCommand.addLiteral(baseLiteral, source -> String.format("""
                 Deletes your command message and posts a new message with the provided text as the bot.
                 
                 Syntax: %s
                 
                 Fails when the bot doesn't have permission to delete messages. Always fails when used in a DM.""",
-            Commands.format(baseLiteral + " <text>")));
+            Commands.format(baseLiteral + " <text>", source.commandMessage().getChannel())));
     }
 
     private static int echo(ChatCommandSource source, String message) throws CommandSyntaxException {
