@@ -23,7 +23,6 @@ public class Commands {
     private static final CommandDispatcher<ChatCommandSource> DISPATCHER = new CommandDispatcher<>() {{
         registerCommands(this);
     }};
-    private static ChatCommandSource source = new ChatCommandSource(null, null);
 
     static {
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = new BuiltInExceptions();
@@ -33,7 +32,7 @@ public class Commands {
         String prefix = getPrefix(message.getChannel());
         String command = message.getContentRaw().replaceFirst(prefix, "").strip();
         if(command.isEmpty()) return;
-        source = source.withMessage(message).withUser(user);
+        ChatCommandSource source = new ChatCommandSource(message, user);
         String username = user.getName().replace("_", "\\_");
         try {
             int result = DISPATCHER.execute(command, source);
