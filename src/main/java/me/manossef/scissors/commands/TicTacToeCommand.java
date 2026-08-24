@@ -52,7 +52,6 @@ public class TicTacToeCommand {
     }
 
     private static int startTicTacToeGame(ChatCommandSource source, User user) throws CommandSyntaxException {
-        if(user == null) throw Commands.USER_NOT_FOUND.create();
         if(user.isBot() && user.getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong())
             return startBotTicTacToeGame(source);
         if(user.isBot() || user.isSystem()) throw NO_BOTS.create();

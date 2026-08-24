@@ -81,7 +81,6 @@ public class RockPaperScissorsCommand {
     }
 
     private static int startRockPaperScissorsGame(ChatCommandSource source, User user) throws CommandSyntaxException {
-        if(user == null) throw Commands.USER_NOT_FOUND.create();
         if(user.getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong()) throw NO_SCISSORS.create(source);
         if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
         if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();

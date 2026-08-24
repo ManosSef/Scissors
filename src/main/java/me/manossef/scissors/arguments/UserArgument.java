@@ -14,6 +14,7 @@ import java.util.Collection;
 
 public class UserArgument implements ArgumentType<User> {
     private static final SimpleCommandExceptionType INVALID_MENTION = new SimpleCommandExceptionType(new LiteralMessage("Invalid user mention"));
+    public static final SimpleCommandExceptionType USER_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No user was found"));
     private static final Collection<String> EXAMPLES = Arrays.asList("611151083141857286", "<@611151083141857286>");
 
     public static UserArgument user() {
@@ -25,18 +26,24 @@ public class UserArgument implements ArgumentType<User> {
         String remaining = reader.getRemaining().split(" ")[0];
         if(TypeChecks.isLong(remaining)) {
             reader.setCursor(reader.getCursor() + remaining.length());
-            return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(remaining)).complete();
+            User user = Scissors.DISCORD_API.retrieveUserById(Long.parseLong(remaining)).complete();
+            if(user == null) throw USER_NOT_FOUND.create();
+            return user;
         }
         if(remaining.startsWith("<@") && remaining.endsWith(">")) {
             String middle = remaining.substring(2, remaining.length() - 1);
             if(TypeChecks.isLong(middle)) {
                 reader.setCursor(reader.getCursor() + remaining.length());
-                return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(middle)).complete();
+                User user = Scissors.DISCORD_API.retrieveUserById(Long.parseLong(middle)).complete();
+                if(user == null) throw USER_NOT_FOUND.create();
+                return user;
             }
             String legacyMiddle = middle.replaceFirst("!", "");
             if(middle.startsWith("!") && TypeChecks.isLong(legacyMiddle)) {
                 reader.setCursor(reader.getCursor() + remaining.length());
-                return Scissors.DISCORD_API.retrieveUserById(Long.parseLong(legacyMiddle)).complete();
+                User user = Scissors.DISCORD_API.retrieveUserById(Long.parseLong(legacyMiddle)).complete();
+                if(user == null) throw USER_NOT_FOUND.create();
+                return user;
             }
         }
         throw INVALID_MENTION.createWithContext(reader);

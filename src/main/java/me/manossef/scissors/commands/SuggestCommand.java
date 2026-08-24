@@ -98,7 +98,6 @@ public class SuggestCommand {
     }
 
     private static int createIssue(ChatCommandSource source, Issue.Fields.Issuetype type, String summary, User user, Issue.Fields.Priority priority) throws CommandSyntaxException {
-        if(user == null) throw Commands.USER_NOT_FOUND.create();
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
             "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: " + source.commandMessage().getJumpUrl(),
