@@ -26,20 +26,22 @@ public class ChannelArgument implements ArgumentType<Channel> {
         String remaining = reader.getRemaining().split(" ")[0];
         if(TypeChecks.isLong(remaining)) {
             reader.setCursor(reader.getCursor() + remaining.length());
-            Channel channel = Scissors.DISCORD_API.getChannelById(Channel.class, Long.parseLong(remaining));
-            if(channel == null) throw CHANNEL_NOT_FOUND.create();
-            return channel;
+            return this.getChannel(remaining);
         }
         if(remaining.startsWith("<#") && remaining.endsWith(">")) {
             String middle = remaining.substring(2, remaining.length() - 1);
             if(TypeChecks.isLong(middle)) {
                 reader.setCursor(reader.getCursor() + remaining.length());
-                Channel channel = Scissors.DISCORD_API.getChannelById(Channel.class, Long.parseLong(middle));
-                if(channel == null) throw CHANNEL_NOT_FOUND.create();
-                return channel;
+                return this.getChannel(middle);
             }
         }
         throw INVALID_MENTION.createWithContext(reader);
+    }
+
+    private Channel getChannel(String id) throws CommandSyntaxException {
+        Channel channel = Scissors.DISCORD_API.getChannelById(Channel.class, Long.parseLong(id));
+        if(channel == null) throw CHANNEL_NOT_FOUND.create();
+        return channel;
     }
 
     public Collection<String> getExamples() {

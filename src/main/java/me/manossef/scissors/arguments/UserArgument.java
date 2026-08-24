@@ -26,27 +26,31 @@ public class UserArgument implements ArgumentType<User> {
         String remaining = reader.getRemaining().split(" ")[0];
         if(TypeChecks.isLong(remaining)) {
             reader.setCursor(reader.getCursor() + remaining.length());
-            User user = Scissors.DISCORD_API.retrieveUserById(Long.parseLong(remaining)).complete();
-            if(user == null) throw USER_NOT_FOUND.create();
-            return user;
+            return this.getUser(remaining);
         }
         if(remaining.startsWith("<@") && remaining.endsWith(">")) {
             String middle = remaining.substring(2, remaining.length() - 1);
             if(TypeChecks.isLong(middle)) {
                 reader.setCursor(reader.getCursor() + remaining.length());
-                User user = Scissors.DISCORD_API.retrieveUserById(Long.parseLong(middle)).complete();
-                if(user == null) throw USER_NOT_FOUND.create();
-                return user;
+                return this.getUser(middle);
             }
             String legacyMiddle = middle.replaceFirst("!", "");
             if(middle.startsWith("!") && TypeChecks.isLong(legacyMiddle)) {
                 reader.setCursor(reader.getCursor() + remaining.length());
-                User user = Scissors.DISCORD_API.retrieveUserById(Long.parseLong(legacyMiddle)).complete();
-                if(user == null) throw USER_NOT_FOUND.create();
-                return user;
+                return this.getUser(legacyMiddle);
             }
         }
         throw INVALID_MENTION.createWithContext(reader);
+    }
+
+    private User getUser(String id) throws CommandSyntaxException {
+        try {
+            User user = Scissors.DISCORD_API.retrieveUserById(Long.parseLong(id)).complete();
+            if(user == null) throw USER_NOT_FOUND.create();
+            return user;
+        } catch(RuntimeException e) {
+            throw USER_NOT_FOUND.create();
+        }
     }
 
     public Collection<String> getExamples() {
