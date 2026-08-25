@@ -12,6 +12,10 @@ import java.util.Collections;
 public record ChatCommandSource(Message commandMessage, User user) {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatCommandSource.class);
 
+    public static ChatCommandSource of(Message message) {
+        return new ChatCommandSource(message, message.getAuthor());
+    }
+
     public void sendSuccess(String message, boolean feedback) {
         this.commandMessage.reply(truncate((feedback ? Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " : "") + message))
                 .setAllowedMentions(Collections.emptyList()).queue();
