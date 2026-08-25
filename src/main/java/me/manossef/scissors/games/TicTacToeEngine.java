@@ -1,9 +1,9 @@
 package me.manossef.scissors.games;
 
+import me.manossef.commoncode.MyArrays;
 import me.manossef.scissors.Scissors;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TicTacToeEngine {
@@ -21,14 +21,14 @@ public class TicTacToeEngine {
 
     private static boolean isWinning(char[][] grid, Slot slot) {
         if(grid[slot.row][slot.column] != ' ') return false;
-        char[][] testingGrid = deepCopyOf(grid);
+        char[][] testingGrid = MyArrays.deepCopyOf(grid);
         testingGrid[slot.row][slot.column] = 'O';
         return getStatus(testingGrid) == Game.Status.PLAYER_2_WON;
     }
 
     private static boolean isLosing(char[][] grid, Slot slot) {
         if(grid[slot.row][slot.column] != ' ') return false;
-        char[][] testingGrid = deepCopyOf(grid);
+        char[][] testingGrid = MyArrays.deepCopyOf(grid);
         testingGrid[slot.row][slot.column] = 'X';
         return getStatus(testingGrid) == Game.Status.PLAYER_1_WON;
     }
@@ -68,13 +68,6 @@ public class TicTacToeEngine {
         }
         for(char[] row : grid) for(char c : row) if(c == ' ') return Game.Status.ONGOING;
         return Game.Status.DRAW;
-    }
-
-    private static char[][] deepCopyOf(char[][] original) {
-        char[][] result = new char[original.length][];
-        for(int i = 0; i < original.length; i++)
-            result[i] = Arrays.copyOf(original[i], original[i].length);
-        return result;
     }
 
     public record Slot(int row, int column) {
