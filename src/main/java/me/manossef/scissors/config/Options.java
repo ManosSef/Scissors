@@ -22,7 +22,7 @@ public class Options {
     );
     public static final Option<Boolean> PING_RESPONSES = register(
         Option.bool("pingResponses", true),
-        "Whether responses to pings are posted. The value is either %s or %s.".formatted(monospace("true"), monospace("false"))
+        "Whether responses to messages mentioning the bot are posted. The value is either %s or %s.".formatted(monospace("true"), monospace("false"))
     );
     public static final Option<Boolean> SCISSORS_RESPONSES = register(
         Option.bool("scissorsResponses", true),
@@ -44,6 +44,10 @@ public class Options {
     public static final Option<String> COMMAND_PREFIX = register(
         Option.string("commandPrefix", 10, "8<"),
         "The prefix that command messages must start with."
+    );
+    public static final Option<Integer> PING_RESPONSE_CHANCE = register(
+        Option.integer("pingResponseChance", 100, 0, 100),
+        "The chance (from 0 to 100) that a response to each new message mentioning the bot is posted."
     );
 
     private static final Map<String, Option<?>> LEGACY_OPTIONS = new HashMap<>();
