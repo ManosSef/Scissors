@@ -15,6 +15,7 @@ import java.util.function.Function;
 
 public enum ResponseType {
     GPPCT(ResponseChecks::getGPPCTResponses, ResponseChecks::promptsGPPCT, Options.GPPCT_RESPONSES, Options.GPPCT_RESPONSE_CHANCE),
+    BIRTHDAY(s -> Responses.BIRTHDAY_RESPONSES, ResponseChecks::promptsBirthday),
     PING(s -> Responses.PING_RESPONSES, ResponseChecks::promptsPing, Options.PING_RESPONSES, Options.PING_RESPONSE_CHANCE),
     MEME(s -> Responses.MEME_RESPONSES, ResponseChecks::promptsMeme, Options.GPPCT_RESPONSES),
     SCISSORS(s -> Responses.SCISSORS_RESPONSES, ResponseChecks::promptsScissors, Options.SCISSORS_RESPONSES, Options.SCISSORS_RESPONSE_CHANCE);
@@ -51,7 +52,7 @@ public enum ResponseType {
     }
 
     public boolean shouldRespondTo(Message message, Configuration config) {
-        if(this.enabled == null) return true;
+        if(this.enabled == null) return this.messageChecker.test(message, config);
         Channel channel;
         return this.messageChecker.test(message, config)
             && config.getOptionForChannel(this.enabled, (channel = message.getChannel()))

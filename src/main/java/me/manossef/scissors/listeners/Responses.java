@@ -81,6 +81,13 @@ public class Responses {
         s -> Emojis.SMILING_FACE_WITH_HEART_EYES.getFormatted(),
         s -> "YAY NUMBERS"
     );
+    static final List<LazilyFormattedText> GPPCT_BIRTHDAY_RESPONSES = List.of(
+        s -> "Not on my birthday!",
+        s -> "You don't even respect me on my birthday?",
+        s -> "What have I done to suffer on my birthday?",
+        s -> "You must be terrible at giving birthday gifts",
+        s -> Emojis.LOUDLY_CRYING_FACE.getFormatted()
+    );
     static final List<LazilyFormattedText> SCISSORS_RESPONSES = List.of(
         s -> "RAHHH!",
         s -> "Did someboady call me?",
@@ -103,5 +110,11 @@ public class Responses {
     );
     static final List<LazilyFormattedText> MEME_RESPONSES = List.of(
         s -> "May I see it?"
+    );
+    static final List<LazilyFormattedText> BIRTHDAY_RESPONSES = List.of(
+        s -> "Thank you!",
+        s -> "Thanks!",
+        s -> Emojis.RED_HEART.getFormatted(),
+        s -> Emojis.HEART_HANDS.getFormatted()
     );
 }
