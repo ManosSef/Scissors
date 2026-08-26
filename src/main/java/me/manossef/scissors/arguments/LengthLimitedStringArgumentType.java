@@ -23,10 +23,9 @@ public class LengthLimitedStringArgumentType implements ArgumentType<String> {
     public String parse(StringReader reader) throws CommandSyntaxException {
         int position = reader.getCursor();
         String argument = reader.readString();
-        int length = argument.length();
-        if(length > maxLength) {
+        if(argument.length() > this.maxLength) {
             reader.setCursor(position);
-            throw TOO_LONG.createWithContext(reader, length);
+            throw TOO_LONG.createWithContext(reader, this.maxLength);
         }
         return argument;
     }
