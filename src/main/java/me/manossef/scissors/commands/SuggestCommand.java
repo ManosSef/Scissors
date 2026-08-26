@@ -8,6 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
 import me.manossef.scissors.*;
+import me.manossef.scissors.arguments.LengthLimitedStringArgumentType;
 import me.manossef.scissors.arguments.UserArgumentType;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
@@ -85,7 +86,7 @@ public class SuggestCommand {
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> summaryArgument(Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) {
-        return Commands.argument("summary", StringArgumentType.greedyString())
+        return Commands.argument("summary", LengthLimitedStringArgumentType.greedyString(255))
             .executes(context -> createIssueWithContext(context, type, withUser, priority));
     }
 

@@ -12,7 +12,7 @@ public class EnumArgumentType<E extends Enum<E>> implements ArgumentType<E> {
 
     private final Class<E> type;
 
-    public EnumArgumentType(Class<E> type) {
+    private EnumArgumentType(Class<E> type) {
         this.type = type;
     }
 
