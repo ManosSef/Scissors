@@ -78,16 +78,6 @@
             <version>2.14.0</version>
         </dependency>
         <dependency>
-            <groupId>com.konghq</groupId>
-            <artifactId>unirest-java-core</artifactId>
-            <version>4.10.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.konghq</groupId>
-            <artifactId>unirest-modules-gson</artifactId>
-            <version>4.10.1</version>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.6.3</version>

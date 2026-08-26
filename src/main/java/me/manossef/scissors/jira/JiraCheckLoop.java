@@ -1,6 +1,5 @@
 package me.manossef.scissors.jira;
 
-import kong.unirest.core.UnirestException;
 import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
@@ -8,6 +7,7 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class JiraCheckLoop extends Thread {
                 }
                 this.checkedIssues = newChecked;
                 Scissors.saveCheckedIssues(newChecked);
-            } catch(UnirestException e) {
+            } catch(UncheckedIOException e) {
                 LOGGER.warn("Something went wrong; ignoring and continuing as normal.");
             }
         }

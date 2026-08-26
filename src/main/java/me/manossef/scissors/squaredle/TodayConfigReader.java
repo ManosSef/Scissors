@@ -1,8 +1,11 @@
 package me.manossef.scissors.squaredle;
 
-import kong.unirest.core.Unirest;
 import me.manossef.scissors.Scissors;
+import okhttp3.Request;
+import okhttp3.Response;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +30,13 @@ public class TodayConfigReader {
     }
 
     private static String getConfig() {
-        return Unirest.get("https://squaredle.app/api/today-puzzle-config.js").asString().getBody();
+        Request request = new Request.Builder().url("https://squaredle.app/api/today-puzzle-config.js").build();
+        try(Response response = Scissors.HTTP_CLIENT.newCall(request).execute()) {
+            if(!response.isSuccessful()) return null;
+            return response.body().string();
+        } catch(IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private record PuzzleConfig(Map<String, PuzzleData> puzzles) {

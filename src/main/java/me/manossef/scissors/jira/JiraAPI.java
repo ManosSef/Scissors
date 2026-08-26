@@ -1,80 +1,84 @@
 package me.manossef.scissors.jira;
 
-import kong.unirest.core.GetRequest;
-import kong.unirest.core.JsonNode;
-import kong.unirest.core.Unirest;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
 import me.manossef.scissors.jira.objects.SearchResults;
+import okhttp3.*;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.Base64;
 
 public record JiraAPI(String baseUrl) {
     private static final String JIRA_EMAIL = System.getenv("JIRA_ALT_EMAIL");
     private static final String JIRA_API_TOKEN = System.getenv("JIRA_ALT_API_TOKEN");
 
     public Issue getIssue(String key) {
-        JsonNode node = get("issue/" + key);
-        return Scissors.GSON.fromJson(node.toString(), Issue.class);
+        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "issue/" + key)), Issue.class);
     }
 
     public Issue.Fields.Issuetype getIssuetype(String id) {
-        JsonNode node = get("issuetype/" + id);
-        return Scissors.GSON.fromJson(node.toString(), Issue.Fields.Issuetype.class);
+        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "issuetype/" + id)), Issue.Fields.Issuetype.class);
     }
 
     public Issue.Fields.Project getProject(String id) {
-        JsonNode node = get("project/" + id);
-        return Scissors.GSON.fromJson(node.toString(), Issue.Fields.Project.class);
+        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "project/" + id)), Issue.Fields.Project.class);
     }
 
     public Issue.Fields.Priority getPriority(String id) {
-        JsonNode node = get("priority/" + id);
-        return Scissors.GSON.fromJson(node.toString(), Issue.Fields.Priority.class);
+        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "priority/" + id)), Issue.Fields.Priority.class);
     }
 
     public Issue.Fields.CustomFieldOption getCustomFieldOption(String id) {
-        JsonNode node = get("customFieldOption/" + id);
-        return Scissors.GSON.fromJson(node.toString(), Issue.Fields.CustomFieldOption.class);
+        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "customFieldOption/" + id)), Issue.Fields.CustomFieldOption.class);
     }
 
     public SearchResults searchIssues(String jql, String fields) {
-        JsonNode node = getRequest("search/jql")
-            .queryString("jql", jql)
-            .queryString("maxResults", "1000")
-            .queryString("fields", fields)
-            .asJson()
-            .getBody();
-        if(node == null) return new SearchResults(null);
-        return Scissors.GSON.fromJson(node.toString(), SearchResults.class);
+        HttpUrl url = HttpUrl.get(this.baseUrl + "search/jql").newBuilder()
+            .addQueryParameter("jql", jql)
+            .addQueryParameter("maxResults", "1000")
+            .addQueryParameter("fields", fields)
+            .build();
+        return Scissors.GSON.fromJson(get(url), SearchResults.class);
     }
 
     public Issue createIssue(String summary, String description, Issue.Fields.Issuetype issuetype, Issue.Fields.Project project, String reporterUserID, Issue.Fields.Priority priority, Issue.Fields.CustomFieldOption flagged) {
-        JsonNode node = post("issue", Scissors.GSON.toJson(new Issue(null, null, new Issue.Fields(
+        String node = post(HttpUrl.get(this.baseUrl + "issue"), Scissors.GSON.toJson(new Issue(null, null, new Issue.Fields(
             issuetype, project, null, priority, summary, description,
             flagged == null ? null : new Issue.Fields.CustomFieldOption[]{flagged}, null, reporterUserID
         ), null, null)));
-        return Scissors.GSON.fromJson(node.toString(), Issue.class);
+        return Scissors.GSON.fromJson(node, Issue.class);
     }
 
-    private JsonNode get(String endpoint) {
-        return getRequest(endpoint)
-            .asJson()
-            .getBody();
+    private String get(HttpUrl endpoint) {
+        Request request = new Request.Builder()
+            .url(endpoint)
+            .header("Authorization", this.getAuthHeader())
+            .build();
+        try(Response response = Scissors.HTTP_CLIENT.newCall(request).execute()) {
+            if(!response.isSuccessful()) return null;
+            return response.body().string();
+        } catch(IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
-    private GetRequest getRequest(String endpoint) {
-        return Unirest.get(baseUrl + endpoint)
-            .basicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
-            .header("Accept", "application/json");
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private JsonNode post(String endpoint, String body) {
-        return Unirest.post(baseUrl + endpoint)
-            .basicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
+    private String post(HttpUrl endpoint, String body) {
+        Request request = new Request.Builder()
+            .url(endpoint)
+            .post(RequestBody.create(body, MediaType.get("application/json")))
+            .header("Authorization", this.getAuthHeader())
             .header("Accept", "application/json")
-            .header("Content-Type", "application/json")
-            .body(body)
-            .asJson()
-            .getBody();
+            .build();
+        try(Response response = Scissors.HTTP_CLIENT.newCall(request).execute()) {
+            if(!response.isSuccessful()) return null;
+            return response.body().string();
+        } catch(IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private String getAuthHeader() {
+        return "Basic " + new String(Base64.getEncoder().encode((JIRA_EMAIL + ":" + JIRA_API_TOKEN).getBytes()));
     }
 }

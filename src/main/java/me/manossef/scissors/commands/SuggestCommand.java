@@ -7,13 +7,13 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
-import kong.unirest.core.UnirestException;
 import me.manossef.scissors.*;
 import me.manossef.scissors.arguments.UserArgumentType;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
 
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -92,7 +92,7 @@ public class SuggestCommand {
     private static int createIssueWithContext(CommandContext<ChatCommandSource> context, Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) throws CommandSyntaxException {
         try {
             return createIssue(context.getSource(), type, context.getArgument("summary", String.class), withUser ? context.getArgument("reporter", User.class) : context.getSource().user(), priority);
-        } catch(UnirestException e) {
+        } catch(UncheckedIOException e) {
             throw Commands.IO_EXCEPTION.create();
         }
     }

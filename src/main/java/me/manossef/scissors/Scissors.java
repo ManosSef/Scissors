@@ -15,6 +15,7 @@ import me.manossef.scissors.listeners.Startup;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,7 @@ public class Scissors {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting()
         .registerTypeAdapter(Settings.class, new SettingsAdapter()).setStrictness(Strictness.STRICT).create();
     public static final RandomGenerator RANDOM = RandomGenerator.of("L64X128MixRandom");
+    public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().build();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Scissors.class);
     private static final String CHECKED_ISSUES_FILE_NAME = "checked_issues.json";
