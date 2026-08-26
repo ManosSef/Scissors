@@ -22,4 +22,16 @@ public class Messages {
         else
             return message.substring(0, Message.MAX_CONTENT_LENGTH - 3) + "...";
     }
+
+    public static String properMonospace(String message) {
+        if(message.isEmpty()) return "` `";
+        if(message.contains("`") && !message.contains("``")) {
+            String prefix = message.startsWith("`") ? "`` " : "``";
+            String suffix = message.endsWith("`") ? " ``" : "``";
+            return prefix + message + suffix;
+        }
+        String prefix = message.startsWith("`") ? "` " : "`";
+        String suffix = message.endsWith("`") ? " `" : "`";
+        return prefix + message + suffix;
+    }
 }

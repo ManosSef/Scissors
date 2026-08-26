@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.channel.Channel;
 
 import java.util.function.Predicate;
 
+import static me.manossef.scissors.Messages.properMonospace;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class Commands {
@@ -36,13 +37,13 @@ public class Commands {
         String username = user.getName().replace("_", "\\_");
         try {
             int result = DISPATCHER.execute(command, source);
-            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and succeeded with return value " + result));
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", properMonospace(command), " in " + Messages.getLinkWithInfo(message) + " and succeeded with return value " + result));
         } catch(CommandSyntaxException e) {
             source.sendFailure(e.getMessage());
-            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and failed"));
+            DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", properMonospace(command), " in " + Messages.getLinkWithInfo(message) + " and failed"));
         } catch(Exception e) {
             source.sendError(e.getMessage());
-            DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and threw an exception:"), e);
+            DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", properMonospace(command), " in " + Messages.getLinkWithInfo(message) + " and threw an exception:"), e);
             Issues.createForException(e, "Command error: ", "Command: {{" + command + "}}");
         }
     }
