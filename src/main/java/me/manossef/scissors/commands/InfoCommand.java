@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Messages;
+import me.manossef.scissors.Scissors;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -37,6 +38,9 @@ public class InfoCommand {
             )
             .then(Commands.literal("options")
                 .executes(context -> sendOptions(context.getSource()))
+            )
+            .then(Commands.literal("servercount")
+                .executes(context -> sendGuildCount(context.getSource()))
             )
         );
         HelpCommand.addLine(baseLiteral, s -> "Provides information about the bot.");
@@ -92,5 +96,11 @@ public class InfoCommand {
             builder.append("\n- ").append(line);
         source.sendSuccess(builder.toString(), false);
         return OPTIONS.size();
+    }
+
+    private static int sendGuildCount(ChatCommandSource source) {
+        int count = Scissors.DISCORD_API.getGuilds().size();
+        source.sendSuccess("I am currently in " + count + " servers", false);
+        return count;
     }
 }
