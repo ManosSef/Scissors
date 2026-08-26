@@ -56,7 +56,6 @@ public record JiraAPI(String baseUrl) {
             .header("Authorization", this.getAuthHeader())
             .build();
         try(Response response = Scissors.HTTP_CLIENT.newCall(request).execute()) {
-            if(!response.isSuccessful()) return null;
             return response.body().string();
         } catch(IOException e) {
             throw new UncheckedIOException(e);
@@ -71,7 +70,6 @@ public record JiraAPI(String baseUrl) {
             .header("Accept", "application/json")
             .build();
         try(Response response = Scissors.HTTP_CLIENT.newCall(request).execute()) {
-            if(!response.isSuccessful()) return null;
             return response.body().string();
         } catch(IOException e) {
             throw new UncheckedIOException(e);
