@@ -100,7 +100,7 @@ public class InfoCommand {
 
     private static int sendGuildCount(ChatCommandSource source) {
         int count = Scissors.DISCORD_API.getGuilds().size();
-        source.sendSuccess("I am currently in " + count + " servers", false);
+        source.sendSuccess("I am currently in " + count + " server" + (count == 1 ? "" : "s"), false);
         return count;
     }
 }
