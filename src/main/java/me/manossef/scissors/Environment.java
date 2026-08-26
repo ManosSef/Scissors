@@ -11,4 +11,5 @@ public class Environment {
     public static final boolean IS_STAGING = "staging".equalsIgnoreCase(ENVIRONMENT);
 
     public static final boolean DEBUG_SCISSORS_BIRTHDAY = false;
+    public static final boolean DEBUG_ALWAYS_CREATE_ISSUES = false;
 }

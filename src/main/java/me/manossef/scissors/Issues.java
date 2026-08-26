@@ -14,7 +14,7 @@ public class Issues {
     public static void createForException(Throwable exception, String summaryPrefix, String description) {
         String summary = summaryPrefix + exception.getClass().getName();
         if(exception.getMessage() != null) summary += ": " + exception.getMessage();
-        if(Environment.IS_STAGING) {
+        if(Environment.IS_STAGING && !Environment.DEBUG_ALWAYS_CREATE_ISSUES) {
             LOGGER.info("Not creating issue in staging, summary would be: {}", summary);
             return;
         }

@@ -7,6 +7,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
+import net.dv8tion.jda.api.components.container.Container;
+import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -18,11 +20,17 @@ public class EchoCommand {
     private static final SimpleCommandExceptionType CANNOT_DELETE = new SimpleCommandExceptionType(new LiteralMessage("Cannot delete this type of message"));
     private static final SimpleCommandExceptionType NOT_IN_GUILD = new SimpleCommandExceptionType(new LiteralMessage("Cannot delete messages in channels outside servers"));
     private static final SimpleCommandExceptionType NO_PERMISSION = new SimpleCommandExceptionType(new LiteralMessage("Cannot delete messages in this channel; no permission"));
-    private static final SimpleCommandExceptionType TOO_LONG = new SimpleCommandExceptionType(new LiteralMessage("Cannot send messages longer than " + Message.MAX_CONTENT_LENGTH + " characters"));
+    private static final SimpleCommandExceptionType TOO_LONG = new SimpleCommandExceptionType(new LiteralMessage("Cannot send messages longer than " + Message.MAX_CONTENT_LENGTH_COMPONENT_V2 + " characters"));
 
     public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "echo";
         dispatcher.register(Commands.literal(baseLiteral)
+            .then(Commands.literal("tenfold")
+                .requires(Commands.devRestricted())
+                .then(Commands.argument("text", StringArgumentType.greedyString())
+                    .executes(context -> echoTenfold(context.getSource(), context.getArgument("text", String.class)))
+                )
+            )
             .then(Commands.argument("text", StringArgumentType.greedyString())
                 .executes(context -> echo(context.getSource(), context.getArgument("text", String.class)))
             )
@@ -42,13 +50,24 @@ public class EchoCommand {
         if(!commandMessage.getType().canDelete()) throw CANNOT_DELETE.create();
         MessageChannelUnion channel = commandMessage.getChannel();
         if(!(channel instanceof GuildChannel)) throw NOT_IN_GUILD.create();
-        if(message.length() > Message.MAX_CONTENT_LENGTH) throw TOO_LONG.create();
+        if(message.length() > Message.MAX_CONTENT_LENGTH_COMPONENT_V2) throw TOO_LONG.create();
         try {
             commandMessage.delete().queue();
         } catch(InsufficientPermissionException e) {
             throw NO_PERMISSION.create();
         }
+        if(message.length() > Message.MAX_CONTENT_LENGTH) {
+            channel.sendMessageComponents(Container.of(TextDisplay.of(message)))
+                .useComponentsV2()
+                .setAllowedMentions(Collections.emptyList())
+                .queue();
+            return 2;
+        }
         channel.sendMessage(message).setAllowedMentions(Collections.emptyList()).queue();
         return 1;
+    }
+
+    private static int echoTenfold(ChatCommandSource source, String message) throws CommandSyntaxException {
+        return echo(source, message.repeat(10));
     }
 }
