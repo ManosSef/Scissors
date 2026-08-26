@@ -1,4 +1,4 @@
-package me.manossef.scissors.commands;
+package me.manossef.scissors.commands.debug;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.manossef.scissors.ChatCommandSource;

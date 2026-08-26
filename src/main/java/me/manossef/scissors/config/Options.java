@@ -1,7 +1,7 @@
 package me.manossef.scissors.config;
 
 import me.manossef.scissors.commands.InfoCommand;
-import me.manossef.scissors.listeners.GPPCTHandling;
+import me.manossef.scissors.listeners.responses.GPPCTHandling;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -3,6 +3,7 @@ package me.manossef.scissors.listeners;
 import me.manossef.scissors.*;
 import me.manossef.scissors.config.Configuration;
 import me.manossef.scissors.config.Options;
+import me.manossef.scissors.listeners.responses.ResponseType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;

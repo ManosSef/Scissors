@@ -1,4 +1,4 @@
-package me.manossef.scissors.listeners;
+package me.manossef.scissors.listeners.responses;
 
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.LazilyFormattedText;

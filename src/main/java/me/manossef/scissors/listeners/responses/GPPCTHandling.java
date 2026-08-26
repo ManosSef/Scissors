@@ -1,4 +1,4 @@
-package me.manossef.scissors.listeners;
+package me.manossef.scissors.listeners.responses;
 
 public enum GPPCTHandling {
     NUMBER("^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][-+]?[0-9]+)?$"),
