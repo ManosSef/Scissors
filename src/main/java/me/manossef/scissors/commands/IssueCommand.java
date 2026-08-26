@@ -43,7 +43,7 @@ public class IssueCommand {
         try {
             Issue issue = Scissors.JIRA_API.getIssue(issueKey);
             if(issue == null || issue.id() == null || !canSeeIssue(source, issue)) throw ISSUE_NOT_FOUND.create(issueKey);
-            source.sendSuccess("Successfully found issue " + issueKey + ":", false, issue.makeEmbed());
+            source.sendSuccess(issue.makeEmbed());
             return 1;
         } catch(UncheckedIOException e) {
             throw Commands.IO_EXCEPTION.create();

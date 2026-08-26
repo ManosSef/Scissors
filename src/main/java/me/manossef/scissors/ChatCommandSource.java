@@ -21,6 +21,10 @@ public record ChatCommandSource(Message commandMessage, User user) {
                 .setAllowedMentions(Collections.emptyList()).queue();
     }
 
+    public void sendSuccess(MessageEmbed... embeds) {
+        this.commandMessage.reply(new MessageCreateBuilder().setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
+    }
+
     public void sendSuccess(String message, boolean feedback, MessageEmbed... embeds) {
         this.commandMessage.reply(new MessageCreateBuilder().setContent(truncate((feedback ? Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " : "") + message))
                 .setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
