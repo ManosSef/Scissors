@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 
 import java.util.Collections;
 
@@ -51,19 +52,19 @@ public class EchoCommand {
         MessageChannelUnion channel = commandMessage.getChannel();
         if(!(channel instanceof GuildChannel)) throw NOT_IN_GUILD.create();
         if(message.length() > Message.MAX_CONTENT_LENGTH_COMPONENT_V2) throw TOO_LONG.create();
+        Message referenced = commandMessage.getReferencedMessage();
         try {
             commandMessage.delete().queue();
         } catch(InsufficientPermissionException e) {
             throw NO_PERMISSION.create();
         }
-        if(message.length() > Message.MAX_CONTENT_LENGTH) {
-            channel.sendMessageComponents(Container.of(TextDisplay.of(message)))
+        MessageCreateAction toCreate = message.length() > Message.MAX_CONTENT_LENGTH
+            ? channel.sendMessageComponents(Container.of(TextDisplay.of(message)))
                 .useComponentsV2()
                 .setAllowedMentions(Collections.emptyList())
-                .queue();
-            return 2;
-        }
-        channel.sendMessage(message).setAllowedMentions(Collections.emptyList()).queue();
+            : channel.sendMessage(message).setAllowedMentions(Collections.emptyList());
+        if(referenced != null) toCreate.setMessageReference(referenced).mentionRepliedUser(false).queue();
+        else toCreate.queue();
         return 1;
     }
 
