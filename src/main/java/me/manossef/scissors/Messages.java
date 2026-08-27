@@ -24,7 +24,6 @@ public class Messages {
     }
 
     public static String properMonospace(String message) {
-        if(message.isEmpty()) return "` `";
         if(message.contains("`") && !message.contains("``")) {
             String prefix = message.startsWith("`") ? "`` " : "``";
             String suffix = message.endsWith("`") ? " ``" : "``";
