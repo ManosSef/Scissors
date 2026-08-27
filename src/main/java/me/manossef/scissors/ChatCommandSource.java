@@ -1,5 +1,6 @@
 package me.manossef.scissors;
 
+import net.dv8tion.jda.api.components.MessageTopLevelComponent;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -18,7 +19,7 @@ public record ChatCommandSource(Message commandMessage, User user) {
 
     public void sendSuccess(String message, boolean feedback) {
         this.commandMessage.reply(truncate((feedback ? Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " : "") + message))
-                .setAllowedMentions(Collections.emptyList()).queue();
+            .setAllowedMentions(Collections.emptyList()).queue();
     }
 
     public void sendSuccess(MessageEmbed... embeds) {
@@ -27,7 +28,12 @@ public record ChatCommandSource(Message commandMessage, User user) {
 
     public void sendSuccess(String message, boolean feedback, MessageEmbed... embeds) {
         this.commandMessage.reply(new MessageCreateBuilder().setContent(truncate((feedback ? Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " : "") + message))
-                .setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
+            .setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
+    }
+
+    public void sendSuccess(String message, boolean feedback, MessageTopLevelComponent... components) {
+        this.commandMessage.reply(new MessageCreateBuilder().setContent(truncate((feedback ? Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " : "") + message))
+            .addComponents(components).build()).setAllowedMentions(Collections.emptyList()).queue();
     }
 
     public void sendFailure(String message) {

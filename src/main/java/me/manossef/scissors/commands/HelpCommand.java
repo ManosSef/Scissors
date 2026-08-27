@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.LazilyFormattedText;
+import net.dv8tion.jda.api.components.MessageTopLevelComponent;
 import net.dv8tion.jda.api.entities.channel.Channel;
 
 import java.util.HashSet;
@@ -31,6 +32,13 @@ public class HelpCommand {
 
     public static void addLiteral(String baseLiteral, LazilyFormattedText text, String... aliases) {
         Command<ChatCommandSource> command = context -> showHelpForCommand(context.getSource(), baseLiteral, text, aliases);
+        BASE_ARGUMENT.then(Commands.literal(baseLiteral).executes(command));
+        for(String alias : aliases)
+            BASE_ARGUMENT.then(Commands.literal(alias).executes(command));
+    }
+
+    public static void addLiteral(String baseLiteral, LazilyFormattedText text, String[] aliases, MessageTopLevelComponent... components) {
+        Command<ChatCommandSource> command = context -> showHelpForCommand(context.getSource(), baseLiteral, text, aliases, components);
         BASE_ARGUMENT.then(Commands.literal(baseLiteral).executes(command));
         for(String alias : aliases)
             BASE_ARGUMENT.then(Commands.literal(alias).executes(command));
@@ -62,7 +70,7 @@ public class HelpCommand {
         return LINES.size();
     }
 
-    private static int showHelpForCommand(ChatCommandSource source, String baseLiteral, LazilyFormattedText helpText, String[] aliases) {
+    private static int showHelpForCommand(ChatCommandSource source, String baseLiteral, LazilyFormattedText helpText, String[] aliases, MessageTopLevelComponent... components) {
         StringBuilder builder = new StringBuilder();
         Channel channel = source.commandMessage().getChannel();
         builder.append(Commands.format(baseLiteral, channel));
@@ -73,7 +81,7 @@ public class HelpCommand {
             builder.delete(builder.length() - 2, builder.length());
         }
         builder.append("\n\n").append(helpText.format(source));
-        source.sendSuccess(builder.toString(), false);
+        source.sendSuccess(builder.toString(), false, components);
         return 1;
     }
 }

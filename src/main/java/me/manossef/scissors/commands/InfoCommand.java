@@ -91,11 +91,16 @@ public class InfoCommand {
 
     private static int sendOptions(ChatCommandSource source) throws CommandSyntaxException {
         if(Options.values().length != OPTIONS.size()) throw IMPOSSIBLE_ERROR.create();
+        String message = getAllOptions(source);
+        source.sendSuccess(message, false);
+        return OPTIONS.size();
+    }
+
+    public static String getAllOptions(ChatCommandSource source) {
         StringBuilder builder = new StringBuilder("Here are all my configuration options, which can be queried or edited using " + Commands.format("config", source.commandMessage().getChannel()) + ":");
         for(String line : OPTIONS)
             builder.append("\n- ").append(line);
-        source.sendSuccess(builder.toString(), false);
-        return OPTIONS.size();
+        return builder.toString();
     }
 
     private static int sendGuildCount(ChatCommandSource source) {

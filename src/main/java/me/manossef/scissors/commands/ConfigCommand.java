@@ -17,6 +17,8 @@ import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.OptionValue;
 import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -183,7 +185,7 @@ public class ConfigCommand {
                     
                     You need the "Manage Server" permission to run %9$s commands, and the "Manage Channel" permission in the respective channel to run %10$s commands.
                     
-                    Use %11$s to see all available options.""",
+                    Use %11$s or click the button below to see all available options.""",
                 Commands.format(baseLiteral + " <scope>", channel),
                 Commands.format(baseLiteral + " <scope> <option>", channel),
                 Commands.format(baseLiteral + " <scope> <option> <value>", channel),
@@ -198,7 +200,7 @@ public class ConfigCommand {
                 monospace("<scope>"),
                 monospace("channel <channel>"),
                 monospace("<#ID>"));
-        });
+        }, new String[0], ActionRow.of(Button.primary("1", "All Options")));
     }
 
     private static ArgumentBuilder<ChatCommandSource, ?> optionsArguments(ArgumentBuilder<ChatCommandSource, ?> argument, OptionContextFunction optionContext) {
