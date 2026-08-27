@@ -27,6 +27,8 @@ public class MessageListeners extends ListenerAdapter {
         }
         if(message.getContentRaw().toLowerCase().contains("paper") && config.getOptionForChannel(Options.REACT_TO_PAPER, message.getChannel()))
             message.addReaction(Emojis.SCISSORS).onErrorMap(e -> null).queue();
+        if(message.getContentRaw().toLowerCase().contains("rock") && config.getOptionForChannel(Options.REACT_TO_ROCK, message.getChannel()))
+            message.addReaction(Emojis.WA).onErrorMap(e -> null).queue();
     }
 
     @Override

@@ -49,6 +49,10 @@ public class Options {
         Option.integer("pingResponseChance", 100, 0, 100),
         "The chance (from 0 to 100) that a response to each new message mentioning the bot is posted."
     );
+    public static final Option<Boolean> REACT_TO_ROCK = register(
+        Option.bool("reactToRock", true),
+        "Whether the bot reacts to mentions of rocks with an emoji. The value is either %s or %s.".formatted(monospace("true"), monospace("false"))
+    );
 
     private static final Map<String, Option<?>> LEGACY_OPTIONS = new HashMap<>();
     private static final Option<Boolean> GPPCT_ON_INTEGERS_ONLY = registerLegacy(Option.bool("gppctOnIntegersOnly", false));

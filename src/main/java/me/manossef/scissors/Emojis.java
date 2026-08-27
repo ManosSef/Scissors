@@ -26,6 +26,7 @@ public class Emojis {
     public static final Emoji FOUR_LEAF_CLOVER = Emoji.fromUnicode("U+1F340");
     public static final Emoji WHITE_MEDIUM_STAR = Emoji.fromUnicode("U+2B50");
 
+    public static final Emoji WA = Emoji.fromCustom("wa", 1542632477821247538L, false);
     public static final Emoji TICTACTOE = Emoji.fromCustom("tictactoe", 1436395840276135936L, true);
     public static final Emoji TICTACTOE_X = Emoji.fromCustom("x_", 1440259387934642284L, false);
     public static final Emoji TICTACTOE_O = Emoji.fromCustom("o_", 1440259386306990181L, false);
