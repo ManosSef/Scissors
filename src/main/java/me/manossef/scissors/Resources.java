@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class Resources {
     private static final Logger LOGGER = LoggerFactory.getLogger(Resources.class);
-    private static final String FILE_DIRECTORY = "storage";
+    private static final String FILE_DIRECTORY = Environment.IS_STAGING ? "storage" : "/storage";
 
     public static <T> T getJsonFromFile(String fileName, Class<T> type) {
         String json = "";
