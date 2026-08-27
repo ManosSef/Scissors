@@ -4,11 +4,13 @@ import me.manossef.scissors.Commands;
 import me.manossef.scissors.Emojis;
 import me.manossef.scissors.Resources;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
@@ -143,8 +145,12 @@ public class Wordle extends Puzzle {
         if(this.isSolved()) builder.append(bold(this.getFinalComment()));
         else if(this.isLost()) builder.append(bold("Failed! The answer was " + this.answer.toUpperCase()));
         else builder.append("Reply to this message with a 5-letter word to guess it!");
-        this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Wordle" + (this.hardMode ? " (hard mode)" : ""), builder.toString(), EmbedType.RICH, null, 0x5865F2, null, null,
-            null, null, null, null, null, 0))).queue();
+        MessageEmbed embed = new MessageEmbed(null, "Wordle" + (this.hardMode ? " (hard mode)" : ""), builder.toString(), EmbedType.RICH, null, 0x5865F2, null, null,
+            null, null, null, null, null, 0);
+        MessageChannelUnion channel;
+        if(Scissors.getConfiguration().getOptionForChannel(Options.RESEND_PUZZLE_MESSAGES, (channel = this.message.getChannel())))
+            this.message = channel.sendMessage(MessageCreateData.fromEmbeds(embed)).complete();
+        else this.message.editMessage(MessageEditData.fromEmbeds(embed)).queue();
     }
 
     private String formatGuess(String guess) {

@@ -53,6 +53,11 @@ public class Options {
         Option.bool("reactToRock", true),
         "Whether the bot reacts to mentions of rocks with an emoji. The value is either %s or %s.".formatted(monospace("true"), monospace("false"))
     );
+    public static final Option<Boolean> RESEND_PUZZLE_MESSAGES = register(
+        Option.bool("resendPuzzleMessages", false),
+        "Whether Hangman and Wordle messages are sent anew after every guess, so that they're not lost if the chat is flooded with messages. The value is either %s or %s."
+            .formatted(monospace("true"), monospace("false"))
+    );
 
     private static final Map<String, Option<?>> LEGACY_OPTIONS = new HashMap<>();
     private static final Option<Boolean> GPPCT_ON_INTEGERS_ONLY = registerLegacy(Option.bool("gppctOnIntegersOnly", false));

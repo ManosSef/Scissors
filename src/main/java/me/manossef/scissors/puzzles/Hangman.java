@@ -3,11 +3,13 @@ package me.manossef.scissors.puzzles;
 import me.manossef.scissors.Commands;
 import me.manossef.scissors.Resources;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
@@ -110,10 +112,14 @@ public class Hangman extends Puzzle {
     }
 
     private void updateMessage() {
-        this.message.editMessage(MessageEditData.fromEmbeds(new MessageEmbed(null, "Hangman", "# " + new String(this.revealedLetters).toUpperCase().replace("_", "\\_") + "\n" + this.getHangmanDrawing()
-            + (this.guesses.isEmpty() ? "" : "\nPrevious guesses: " + this.guesses.toString().replaceAll("[\\[\\]]", "").toUpperCase()) + (this.isSolved() ? "\n\n" + bold("Solved!") : this.isLost()
-            ? "\n\n" + bold("Failed! The answer was " + this.word.toUpperCase()) : "\n\nReply to this message with a letter or word to guess it!\n" + this.getMistakesSentence()), EmbedType.RICH, null,
-            0x5865F2, null, null, null, null, null, null, null, 0))).queue();
+        MessageEmbed embed = new MessageEmbed(null, "Hangman", "# " + new String(this.revealedLetters).toUpperCase().replace("_", "\\_") + "\n" + this.getHangmanDrawing()
+            + (this.guesses.isEmpty() ? "" : "\nPrevious guesses: " + this.guesses.toString().replaceAll("[\\[\\]]", "").toUpperCase()) + (this.isSolved() ? "\n\n" + bold("Solved!")
+            : this.isLost() ? "\n\n" + bold("Failed! The answer was " + this.word.toUpperCase()) : "\n\nReply to this message with a letter or word to guess it!\n" + this.getMistakesSentence()), EmbedType.RICH,
+            null, 0x5865F2, null, null, null, null, null, null, null, 0);
+        MessageChannelUnion channel;
+        if(Scissors.getConfiguration().getOptionForChannel(Options.RESEND_PUZZLE_MESSAGES, (channel = this.message.getChannel())))
+            this.message = channel.sendMessage(MessageCreateData.fromEmbeds(embed)).complete();
+        else this.message.editMessage(MessageEditData.fromEmbeds(embed)).queue();
     }
 
     private String getMistakesSentence() {
