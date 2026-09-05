@@ -38,7 +38,7 @@ public class Responses {
         s -> "YOU HAVE TO BE RAGEBAITING RIGHT NOW",
         s -> "Ah yes, counting... I used to like it, until it corrupted me",
         s -> "Trust me, rock paper scissors is more fun than this",
-        s -> "?warn %s Spam",
+        s -> "?warn " + s.user().getAsMention() + " Spam",
         s -> "Would you like me to summon the admins?",
         s -> "Are you testing my nerves or something?",
         s -> "A number?! At this time of year? At this time of day? In this part of the country? " + strike("Localized entirely within your kitchen?!"),
