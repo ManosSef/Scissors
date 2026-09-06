@@ -6,7 +6,7 @@
 
     <groupId>me.manossef</groupId>
     <artifactId>Scissors</artifactId>
-    <version>1.11.2</version>
+    <version>1.12.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>6.5.0</version>
+            <version>6.6.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
