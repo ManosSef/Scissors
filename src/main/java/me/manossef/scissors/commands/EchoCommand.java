@@ -62,7 +62,7 @@ public class EchoCommand {
         if(!(channel instanceof MessageChannelUnion messageChannel)) throw NOT_MESSAGE_CHANNEL.create();
         if(message.length() > Message.MAX_CONTENT_LENGTH_COMPONENT_V2) throw TOO_LONG.create();
         Message referenced = commandMessage.getReferencedMessage();
-        boolean isRemote = channel.getIdLong() != source.commandMessage().getChannel().getIdLong();
+        boolean isRemote = channel.getIdLong() != commandMessage.getChannel().getIdLong();
         if(!isRemote) try {
             commandMessage.delete().queue();
         } catch(InsufficientPermissionException e) {

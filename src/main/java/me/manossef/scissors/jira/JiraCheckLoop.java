@@ -1,5 +1,6 @@
 package me.manossef.scissors.jira;
 
+import com.google.gson.JsonSyntaxException;
 import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
@@ -61,7 +62,7 @@ public class JiraCheckLoop extends Thread {
                 }
                 this.checkedIssues = newChecked;
                 Scissors.saveCheckedIssues(newChecked);
-            } catch(UncheckedIOException e) {
+            } catch(UncheckedIOException | JsonSyntaxException e) {
                 LOGGER.warn("Something went wrong; ignoring and continuing as normal.");
             }
         }
