@@ -1,8 +1,8 @@
 package me.manossef.scissors.listeners.responses;
 
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.Emojis;
 import me.manossef.scissors.LazilyFormattedText;
+import me.manossef.scissors.commands.core.Commands;
 
 import java.util.List;
 
@@ -103,7 +103,7 @@ public class Responses {
         s -> "You'd better not want to throw a rock at me",
         s -> "At your service!",
         s -> "0% AI!",
-        s -> "Type " + Commands.format("help", s.commandMessage().getChannel()) + " to get started!",
+        s -> "Type " + Commands.format("help", s.channel()) + " to get started!",
         s -> "Best paper cutting performance on the market!",
         s -> "Cutting edge technology!",
         s -> "Whomst has awakened the ancient one?"

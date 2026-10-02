@@ -1,21 +1,21 @@
 package me.manossef.scissors.commands.debug;
 
 import com.mojang.brigadier.CommandDispatcher;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.games.Game;
 import me.manossef.scissors.puzzles.Puzzle;
 
 public class StopAllGamesCommand {
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("stopallgames")
             .requires(Commands.devRestricted())
             .executes(context -> stopAllGames(context.getSource()))
         );
     }
 
-    private static int stopAllGames(ChatCommandSource source) {
+    private static int stopAllGames(CommandSource source) {
         int stopped = 0;
         for(Object listener : Scissors.DISCORD_API.getRegisteredListeners()) {
             if(listener instanceof Game game) {

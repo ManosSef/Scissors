@@ -1,11 +1,12 @@
 package me.manossef.scissors.listeners;
 
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.commands.InfoCommand;
+import me.manossef.scissors.commands.core.ChatCommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -21,6 +22,11 @@ public class CommandListener extends ListenerAdapter {
         User user = event.getAuthor();
         if(user.isBot() || user.isSystem()) return;
         Commands.dispatch(message, user);
+    }
+
+    @Override
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        Commands.dispatchSlash(event);
     }
 
     @Override

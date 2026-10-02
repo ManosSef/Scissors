@@ -1,4 +1,4 @@
-package me.manossef.scissors;
+package me.manossef.scissors.commands.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
@@ -6,13 +6,21 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.*;
+import me.manossef.scissors.*;
 import me.manossef.scissors.commands.*;
 import me.manossef.scissors.commands.debug.*;
 import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
@@ -20,7 +28,9 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 public class Commands {
     public static final SimpleCommandExceptionType IO_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Something went wrong; please try again"));
     public static final SimpleCommandExceptionType GUILD_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No guild was found"));
-    private static final CommandDispatcher<ChatCommandSource> DISPATCHER = new CommandDispatcher<>() {{
+    public static final SimpleCommandExceptionType TEMP_NO_SLASH = new SimpleCommandExceptionType(new LiteralMessage("Slash commands not implemented yet")); // TODO temp temp temp
+    private static final Map<String, SlashCommandDispatcher> SLASH_COMMANDS = new HashMap<>();
+    private static final CommandDispatcher<CommandSource> DISPATCHER = new CommandDispatcher<>() {{
         registerCommands(this);
     }};
 
@@ -32,7 +42,7 @@ public class Commands {
         String prefix = getPrefix(message.getChannel());
         String command = message.getContentRaw().replaceFirst(prefix, "").strip();
         if(command.isEmpty()) return;
-        ChatCommandSource source = new ChatCommandSource(message, user);
+        CommandSource source = new ChatCommandSource(message, user);
         String username = user.getName().replace("_", "\\_");
         try {
             int result = DISPATCHER.execute(command, source);
@@ -40,11 +50,36 @@ public class Commands {
         } catch(CommandSyntaxException e) {
             source.sendFailure(e.getMessage());
             DevGuild.logCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and failed"));
-        } catch(Exception e) {
+        } catch(RuntimeException e) {
             source.sendError(e.getMessage());
             DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and threw an exception:"), e);
             Issues.createForException(e, "Command error: ", "Command: {{" + command + "}}");
         }
+    }
+
+    public static void dispatchSlash(SlashCommandInteractionEvent event) {
+        User user = event.getUser();
+        String username = user.getName().replace("_", "\\_");
+        Channel channel = event.getChannel();
+        String command = stringifySlashCommand(event);
+        SlashCommandSource source = new SlashCommandSource(event);
+        try {
+            SLASH_COMMANDS.get(event.getFullCommandName()).execute(source);
+            DevGuild.logSlashCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " and succeeded"));
+        } catch(CommandSyntaxException e) {
+            source.sendFailure(e.getMessage());
+            DevGuild.logSlashCommand(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " and failed"));
+        } catch(RuntimeException e) {
+            source.sendError(e.getMessage());
+            DevGuild.logSlashCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " and threw an exception:"), e);
+            Issues.createForException(e, "Slash command error: ", "Command: {{" + command + "}}");
+        }
+    }
+
+    private static String stringifySlashCommand(SlashCommandInteractionEvent event) {
+        StringBuilder builder = new StringBuilder(event.getFullCommandName());
+        for(OptionMapping option : event.getOptions()) builder.append(" ").append(option.getName()).append(":").append(option.getAsString());
+        return builder.toString();
     }
 
     private static String shortenMiddle(String start, String middle, String end) {
@@ -59,16 +94,21 @@ public class Commands {
         return string.substring(0, fromStart) + "..." + string.substring(string.length() - fromEnd);
     }
 
-    public static LiteralArgumentBuilder<ChatCommandSource> literal(String name) {
+    public static LiteralArgumentBuilder<CommandSource> literal(String name) {
         return LiteralArgumentBuilder.literal(name);
     }
 
-    public static <T> RequiredArgumentBuilder<ChatCommandSource, T> argument(String name, ArgumentType<T> type) {
+    public static <T> RequiredArgumentBuilder<CommandSource, T> argument(String name, ArgumentType<T> type) {
         return RequiredArgumentBuilder.argument(name, type);
     }
 
-    private static void registerCommands(CommandDispatcher<ChatCommandSource> dispatcher) {
-        CatFactCommand.register(dispatcher);
+    public static void registerSlashCommand(String name, SlashCommandDispatcher dispatcher) {
+        SLASH_COMMANDS.put(name, dispatcher);
+    }
+
+    private static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
+        List<SlashCommandData> slashCommands = new ArrayList<>();
+        CatFactCommand.register(dispatcher, slashCommands);
         CoinflipCommand.register(dispatcher);
         ConfigCommand.register(dispatcher);
         EchoCommand.register(dispatcher);
@@ -92,9 +132,10 @@ public class Commands {
         HelpCommand.register(dispatcher);
         if(Environment.IS_STAGING)
             ManualErrorCommand.register(dispatcher);
+        Scissors.DISCORD_API.updateCommands().addCommands(slashCommands.toArray(new SlashCommandData[0])).queue();
     }
 
-    public static Predicate<ChatCommandSource> devRestricted() {
+    public static Predicate<CommandSource> devRestricted() {
         return source -> source.user().getIdLong() == Messages.MY_USER_ID;
     }
 
@@ -112,7 +153,12 @@ public class Commands {
 
     public static LazilyFormattedText.ExceptionType lazyExceptionWithCommand(String message, String command) {
         return new LazilyFormattedText.ExceptionType(
-            source -> message.formatted(Commands.format(command, source.commandMessage().getChannel())));
+            source -> message.formatted(Commands.format(command, source.channel())));
+    }
+
+    @FunctionalInterface
+    public interface SlashCommandDispatcher {
+        void execute(SlashCommandSource source) throws CommandSyntaxException;
     }
 
     private static class BuiltInExceptions implements BuiltInExceptionProvider {

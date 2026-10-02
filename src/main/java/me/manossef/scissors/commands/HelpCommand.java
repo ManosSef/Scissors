@@ -3,9 +3,9 @@ package me.manossef.scissors.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.LazilyFormattedText;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.components.MessageTopLevelComponent;
 import net.dv8tion.jda.api.entities.channel.Channel;
 
@@ -14,14 +14,14 @@ import java.util.Set;
 
 public class HelpCommand {
     private static final String BASE_LITERAL = "help";
-    private static final LiteralArgumentBuilder<ChatCommandSource> BASE_ARGUMENT = Commands.literal(BASE_LITERAL)
+    private static final LiteralArgumentBuilder<CommandSource> BASE_ARGUMENT = Commands.literal(BASE_LITERAL)
         .executes(context -> showHelpMessage(context.getSource()));
     private static final Set<LazilyFormattedText> LINES = new HashSet<>();
 
     public static void addLine(String baseLiteral, LazilyFormattedText line, String... aliases) {
         LINES.add(source -> {
             StringBuilder builder = new StringBuilder();
-            Channel channel = source.commandMessage().getChannel();
+            Channel channel = source.channel();
             builder.append(Commands.format(baseLiteral, channel));
             for(String alias : aliases)
                 builder.append("/").append(Commands.format(alias, channel));
@@ -31,23 +31,23 @@ public class HelpCommand {
     }
 
     public static void addLiteral(String baseLiteral, LazilyFormattedText text, String... aliases) {
-        Command<ChatCommandSource> command = context -> showHelpForCommand(context.getSource(), baseLiteral, text, aliases);
+        Command<CommandSource> command = context -> showHelpForCommand(context.getSource(), baseLiteral, text, aliases);
         BASE_ARGUMENT.then(Commands.literal(baseLiteral).executes(command));
         for(String alias : aliases)
             BASE_ARGUMENT.then(Commands.literal(alias).executes(command));
     }
 
     public static void addLiteral(String baseLiteral, LazilyFormattedText text, String[] aliases, MessageTopLevelComponent... components) {
-        Command<ChatCommandSource> command = context -> showHelpForCommand(context.getSource(), baseLiteral, text, aliases, components);
+        Command<CommandSource> command = context -> showHelpForCommand(context.getSource(), baseLiteral, text, aliases, components);
         BASE_ARGUMENT.then(Commands.literal(baseLiteral).executes(command));
         for(String alias : aliases)
             BASE_ARGUMENT.then(Commands.literal(alias).executes(command));
     }
 
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         addLine(BASE_LITERAL, s -> "Shows all available commands or explains a command.");
         addLiteral(BASE_LITERAL, source -> {
-            Channel channel = source.commandMessage().getChannel();
+            Channel channel = source.channel();
             return String.format("""
                     Lists all available commands or explains what a command does and how to use it in detail.
                     
@@ -60,19 +60,19 @@ public class HelpCommand {
         dispatcher.register(BASE_ARGUMENT);
     }
 
-    private static int showHelpMessage(ChatCommandSource source) {
+    private static int showHelpMessage(CommandSource source) {
         StringBuilder builder = new StringBuilder();
         builder.append("All available commands are listed below. To learn more about a command, use ")
-            .append(Commands.format("help <command>", source.commandMessage().getChannel())).append(".");
+            .append(Commands.format("help <command>", source.channel())).append(".");
         for(LazilyFormattedText line : LINES)
             builder.append("\n- ").append(line.format(source));
         source.sendSuccess(builder.toString(), false);
         return LINES.size();
     }
 
-    private static int showHelpForCommand(ChatCommandSource source, String baseLiteral, LazilyFormattedText helpText, String[] aliases, MessageTopLevelComponent... components) {
+    private static int showHelpForCommand(CommandSource source, String baseLiteral, LazilyFormattedText helpText, String[] aliases, MessageTopLevelComponent... components) {
         StringBuilder builder = new StringBuilder();
-        Channel channel = source.commandMessage().getChannel();
+        Channel channel = source.channel();
         builder.append(Commands.format(baseLiteral, channel));
         if(aliases.length > 0) {
             builder.append("\n\nAliases: ");

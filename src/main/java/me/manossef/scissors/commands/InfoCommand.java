@@ -4,10 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.Messages;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -26,7 +26,7 @@ public class InfoCommand {
         OPTIONS.add(monospace(option.getName()) + ": " + line);
     }
 
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         String baseLiteral = "info";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendGenericInfo(context.getSource()))
@@ -45,7 +45,7 @@ public class InfoCommand {
         );
         HelpCommand.addLine(baseLiteral, s -> "Provides information about the bot.");
         HelpCommand.addLiteral(baseLiteral, source -> {
-            Channel channel = source.commandMessage().getChannel();
+            Channel channel = source.channel();
             return String.format("""
                     Provides information about the bot.
                     
@@ -59,8 +59,8 @@ public class InfoCommand {
         });
     }
 
-    private static int sendGenericInfo(ChatCommandSource source) {
-        Channel channel = source.commandMessage().getChannel();
+    private static int sendGenericInfo(CommandSource source) {
+        Channel channel = source.channel();
         source.sendSuccess(String.format("""
                 Hi! I'm a Discord bot that can do one or two things. Mostly cutting paper.
                 
@@ -79,31 +79,31 @@ public class InfoCommand {
         return 1;
     }
 
-    private static int sendDevServer(ChatCommandSource source) {
+    private static int sendDevServer(CommandSource source) {
         source.sendSuccess("My development server can be joined at https://discord.gg/FjRTdwBdM8", false);
         return 1;
     }
 
-    private static int sendGithub(ChatCommandSource source) {
+    private static int sendGithub(CommandSource source) {
         source.sendSuccess("The GitHub repository where my code is hosted can be found at https://github.com/ManosSef/Scissors", false);
         return 1;
     }
 
-    private static int sendOptions(ChatCommandSource source) throws CommandSyntaxException {
+    private static int sendOptions(CommandSource source) throws CommandSyntaxException {
         if(Options.values().length != OPTIONS.size()) throw IMPOSSIBLE_ERROR.create();
         String message = getAllOptions(source);
         source.sendSuccess(message, false);
         return OPTIONS.size();
     }
 
-    public static String getAllOptions(ChatCommandSource source) {
-        StringBuilder builder = new StringBuilder("Here are all my configuration options, which can be queried or edited using " + Commands.format("config", source.commandMessage().getChannel()) + ":");
+    public static String getAllOptions(CommandSource source) {
+        StringBuilder builder = new StringBuilder("Here are all my configuration options, which can be queried or edited using " + Commands.format("config", source.channel()) + ":");
         for(String line : OPTIONS)
             builder.append("\n- ").append(line);
         return builder.toString();
     }
 
-    private static int sendGuildCount(ChatCommandSource source) {
+    private static int sendGuildCount(CommandSource source) {
         int count = Scissors.DISCORD_API.getGuilds().size();
         source.sendSuccess("I am currently in " + count + " server" + (count == 1 ? "" : "s"), false);
         return count;

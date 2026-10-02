@@ -1,8 +1,8 @@
 package me.manossef.scissors.listeners.responses;
 
-import me.manossef.scissors.ChatCommandSource;
 import me.manossef.scissors.LazilyFormattedText;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.commands.core.ChatCommandSource;
 import me.manossef.scissors.config.Configuration;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.Options;
