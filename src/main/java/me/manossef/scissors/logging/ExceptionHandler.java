@@ -16,7 +16,7 @@ public class ExceptionHandler extends UnsynchronizedAppenderBase<ILoggingEvent> 
         if(throwableProxy == null) return;
         Throwable t = ((ThrowableProxy) throwableProxy).getThrowable();
         if(t == null) return;
-        Issues.createForException(t, "", this.layout.doLayout(event));
+        Issues.createForException(t, "", "{{" + this.layout.doLayout(event) + "}}");
     }
 
     public Layout<ILoggingEvent> getLayout() {

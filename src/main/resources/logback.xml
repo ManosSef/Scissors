@@ -18,7 +18,7 @@
             <level>INFO</level>
         </filter>
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{HH:mm:ss.SSS} [%thread] [%logger{0}] [%level] %msg%n%ex%nopex</pattern>
+            <pattern>[%thread] [%logger{0}] [%level] %msg%nopex</pattern>
         </layout>
     </appender>
 

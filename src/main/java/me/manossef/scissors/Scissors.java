@@ -43,10 +43,7 @@ public class Scissors {
     public static void main(String[] args) {
         try {
             DISCORD_API.awaitReady();
-            Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
-                LOGGER.error("Uncaught exception thrown!", exception);
-                Issues.createForException(exception);
-            });
+            Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> LOGGER.error("Uncaught exception thrown!", exception));
             JiraCheckLoop.CheckedIssues checkedIssues = getCheckedIssues();
             if(checkedIssues == null)
                 checkedIssues = new JiraCheckLoop.CheckedIssues(new ArrayList<>(), new ArrayList<>());

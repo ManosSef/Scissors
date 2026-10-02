@@ -7,10 +7,6 @@ import org.slf4j.LoggerFactory;
 public class Issues {
     private static final Logger LOGGER = LoggerFactory.getLogger(Issues.class);
 
-    public static void createForException(Throwable exception) {
-        createForException(exception, "", "");
-    }
-
     public static void createForException(Throwable exception, String summaryPrefix, String description) {
         String summary = summaryPrefix + exception.getClass().getName();
         if(exception.getMessage() != null) summary += ": " + exception.getMessage();
