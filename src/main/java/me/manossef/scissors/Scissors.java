@@ -47,9 +47,6 @@ public class Scissors {
                 LOGGER.error("Uncaught exception thrown!", exception);
                 Issues.createForException(exception);
             });
-            config = getConfigFromFile();
-            if(config == null) config = new Configuration();
-            saveConfiguration();
             JiraCheckLoop.CheckedIssues checkedIssues = getCheckedIssues();
             if(checkedIssues == null)
                 checkedIssues = new JiraCheckLoop.CheckedIssues(new ArrayList<>(), new ArrayList<>());
@@ -61,6 +58,11 @@ public class Scissors {
     }
 
     public static Configuration getConfiguration() {
+        if(config == null) {
+            config = getConfigFromFile();
+            if(config == null) config = new Configuration();
+            saveConfiguration();
+        }
         return config;
     }
 
