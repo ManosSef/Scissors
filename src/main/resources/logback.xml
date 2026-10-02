@@ -13,9 +13,18 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] [%logger{0}] [%level] %msg%n%ex%nopex</pattern>
         </layout>
     </appender>
+    <appender name="EXCEPTIONS" class="me.manossef.scissors.logging.ExceptionHandler">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] [%logger{0}] [%level] %msg%n%ex%nopex</pattern>
+        </layout>
+    </appender>
 
     <root level="debug">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="DISCORD"/>
+        <appender-ref ref="EXCEPTIONS"/>
     </root>
 </configuration>
