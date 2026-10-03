@@ -109,7 +109,7 @@ public class Commands {
     private static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
         List<SlashCommandData> slashCommands = new ArrayList<>();
         CatFactCommand.register(dispatcher, slashCommands);
-        CoinflipCommand.register(dispatcher);
+        CoinflipCommand.register(dispatcher, slashCommands);
         ConfigCommand.register(dispatcher);
         EchoCommand.register(dispatcher);
         HangmanCommand.register(dispatcher);
