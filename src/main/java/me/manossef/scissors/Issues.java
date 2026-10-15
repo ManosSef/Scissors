@@ -23,7 +23,9 @@ public class Issues {
             null,
             null
         );
-        if(issue.id() == null) {
+        if(issue == null) {
+            LOGGER.error("Failed to create issue; not logged in or Jira is down");
+        } else if(issue.id() == null) {
             StringBuilder builder = new StringBuilder();
             for(String error : issue.errorMessages()) builder.append(error).append(", ");
             for(String error : issue.errors().values()) builder.append(error).append(", ");

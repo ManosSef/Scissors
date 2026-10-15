@@ -7,6 +7,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.*;
 import me.manossef.scissors.arguments.LengthLimitedStringArgumentType;
 import me.manossef.scissors.arguments.UserArgumentType;
@@ -22,6 +23,7 @@ import java.util.List;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class SuggestCommand {
+    private static final SimpleCommandExceptionType NO_JIRA = new SimpleCommandExceptionType(new LiteralMessage("Failed to create the issue; either the bot is not logged in or Jira is down"));
     private static final DynamicNCommandExceptionType ISSUE_CREATION_FAILED = new DynamicNCommandExceptionType(errors -> {
         StringBuilder builder = new StringBuilder();
         for(Object error : errors) builder.append("\n- ").append(error);
@@ -108,6 +110,7 @@ public class SuggestCommand {
             priority,
             null
         );
+        if(issue == null) throw NO_JIRA.create();
         if(issue.id() == null) {
             List<String> errors = new ArrayList<>();
             if(issue.errorMessages() != null) errors.addAll(Arrays.stream(issue.errorMessages()).toList());

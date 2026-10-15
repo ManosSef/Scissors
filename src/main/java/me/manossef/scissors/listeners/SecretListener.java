@@ -32,6 +32,10 @@ public class SecretListener extends ListenerAdapter {
             null,
             Issue.Fields.CustomFieldOption.IMPEDIMENT
         );
+        if(issue == null) {
+            message.reply("Failed to create the issue; either the bot is not logged in or Jira is down. Please try again later.").queue();
+            return;
+        }
         if(issue.id() == null) {
             List<String> errors = new ArrayList<>();
             if(issue.errorMessages() != null) errors.addAll(Arrays.stream(issue.errorMessages()).toList());

@@ -4,6 +4,7 @@ import com.google.gson.JsonSyntaxException;
 import me.manossef.scissors.DevGuild;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
+import me.manossef.scissors.jira.objects.SearchResults;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,19 +47,29 @@ public class JiraCheckLoop extends Thread {
                 CheckedIssues newChecked = this.checkIssues();
                 List<Integer> uncheckedFixed = new ArrayList<>(newChecked.checkedFixed);
                 uncheckedFixed.removeAll(this.checkedIssues.checkedFixed);
-                LOGGER.debug("To post in #done-issues: {}", uncheckedFixed);
-                for(Integer number : uncheckedFixed) {
-                    Issue issue = Scissors.JIRA_API.getIssue("SCIS-" + number);
-                    if(issue.fields().flagged() != null) continue;
-                    DevGuild.logDoneIssue(MessageCreateData.fromEmbeds(issue.makeEmbed()));
+                if(uncheckedFixed.contains(2))
+                    LOGGER.warn("SCIS-2 to post in #done-issues. Assuming something has gone wrong, will not post anything.");
+                else {
+                    LOGGER.debug("To post in #done-issues: {}", uncheckedFixed);
+                    for(Integer number : uncheckedFixed) {
+                        Issue issue = Scissors.JIRA_API.getIssue("SCIS-" + number);
+                        if(issue == null) continue;
+                        if(issue.fields().flagged() != null) continue;
+                        DevGuild.logDoneIssue(MessageCreateData.fromEmbeds(issue.makeEmbed()));
+                    }
                 }
                 List<Integer> uncheckedInvalid = new ArrayList<>(newChecked.checkedInvalid);
                 uncheckedInvalid.removeAll(this.checkedIssues.checkedInvalid);
-                LOGGER.debug("To post in #invalid-issues: {}", uncheckedInvalid);
-                for(Integer number : uncheckedInvalid) {
-                    Issue issue = Scissors.JIRA_API.getIssue("SCIS-" + number);
-                    if(issue.fields().flagged() != null) continue;
-                    DevGuild.logInvalidIssue(MessageCreateData.fromEmbeds(issue.makeEmbed()));
+                if(uncheckedInvalid.contains(8))
+                    LOGGER.warn("SCIS-8 to post in #invalid-issues. Assuming something has gone wrong, will not post anything.");
+                else {
+                    LOGGER.debug("To post in #invalid-issues: {}", uncheckedInvalid);
+                    for(Integer number : uncheckedInvalid) {
+                        Issue issue = Scissors.JIRA_API.getIssue("SCIS-" + number);
+                        if(issue == null) continue;
+                        if(issue.fields().flagged() != null) continue;
+                        DevGuild.logInvalidIssue(MessageCreateData.fromEmbeds(issue.makeEmbed()));
+                    }
                 }
                 this.checkedIssues = newChecked;
                 Scissors.saveCheckedIssues(newChecked);
@@ -75,20 +86,26 @@ public class JiraCheckLoop extends Thread {
     }
 
     private CheckedIssues checkIssues() {
-        Issue[] fixedIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution = Done ORDER BY created ASC", "id,key").issues();
-        List<Integer> checkedFixed;
-        if(fixedIssues != null) checkedFixed = Arrays.stream(fixedIssues)
-            .map(issue -> issue.key().replace("SCIS-", ""))
-            .map(Integer::parseInt)
-            .toList();
-        else checkedFixed = this.checkedIssues.checkedFixed;
-        Issue[] invalidIssues = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution IN (Invalid, \"Won't Do\", \"Works as Intended\") ORDER BY created ASC", "id,key,resolution").issues();
-        List<Integer> checkedInvalid;
-        if(invalidIssues != null) checkedInvalid = Arrays.stream(invalidIssues)
-            .map(issue -> issue.key().replace("SCIS-", ""))
-            .map(Integer::parseInt)
-            .toList();
-        else checkedInvalid = this.checkedIssues.checkedInvalid;
+        SearchResults search1 = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution = Done ORDER BY created ASC", "id,key");
+        List<Integer> checkedFixed = new ArrayList<>();
+        if(search1 != null) {
+            Issue[] fixedIssues = search1.issues();
+            if(fixedIssues != null) checkedFixed = Arrays.stream(fixedIssues)
+                .map(issue -> issue.key().replace("SCIS-", ""))
+                .map(Integer::parseInt)
+                .toList();
+            else checkedFixed = this.checkedIssues.checkedFixed;
+        } else LOGGER.warn("Could not search done issues; not logged in or Jira is down");
+        SearchResults search2 = Scissors.JIRA_API.searchIssues("project = SCIS AND resolution IN (Invalid, \"Won't Do\", \"Works as Intended\") ORDER BY created ASC", "id,key,resolution");
+        List<Integer> checkedInvalid = new ArrayList<>();
+        if(search2 != null) {
+            Issue[] invalidIssues = search2.issues();
+            if(invalidIssues != null) checkedInvalid = Arrays.stream(invalidIssues)
+                .map(issue -> issue.key().replace("SCIS-", ""))
+                .map(Integer::parseInt)
+                .toList();
+            else checkedInvalid = this.checkedIssues.checkedInvalid;
+        } else LOGGER.warn("Could not search invalid issues; not logged in or Jira is down");
         CheckedIssues found = new CheckedIssues(checkedFixed, checkedInvalid);
         LOGGER.debug("Checked issues, found: {}", found);
         return found;
