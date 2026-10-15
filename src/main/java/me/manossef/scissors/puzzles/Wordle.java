@@ -1,9 +1,9 @@
 package me.manossef.scissors.puzzles;
 
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.Emojis;
 import me.manossef.scissors.Resources;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;

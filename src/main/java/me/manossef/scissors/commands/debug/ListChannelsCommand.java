@@ -3,16 +3,16 @@ package me.manossef.scissors.commands.debug;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 
 import java.util.List;
 
 public class ListChannelsCommand {
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("listchannels")
             .requires(Commands.devRestricted())
             .then(Commands.argument("guild", LongArgumentType.longArg())
@@ -21,7 +21,7 @@ public class ListChannelsCommand {
         );
     }
 
-    private static int listChannels(ChatCommandSource source, long guildId) throws CommandSyntaxException {
+    private static int listChannels(CommandSource source, long guildId) throws CommandSyntaxException {
         Guild guild = Scissors.DISCORD_API.getGuildById(guildId);
         if(guild == null) throw Commands.GUILD_NOT_FOUND.create();
         StringBuilder builder = new StringBuilder();

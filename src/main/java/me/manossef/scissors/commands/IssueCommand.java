@@ -5,9 +5,9 @@ import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
@@ -18,7 +18,7 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 public class IssueCommand {
     private static final DynamicCommandExceptionType ISSUE_NOT_FOUND = new DynamicCommandExceptionType(issue -> new LiteralMessage("Could not find issue " + issue));
 
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         String baseLiteral = "issue";
         dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.argument("number", IntegerArgumentType.integer(1))
@@ -36,10 +36,10 @@ public class IssueCommand {
                 Fails if there is no work item with the specified number.""",
             monospace("SCIS-<#>"),
             monospace("<#>"),
-            Commands.format(baseLiteral + " <number>", source.commandMessage().getChannel())));
+            Commands.format(baseLiteral + " <number>", source.channel())));
     }
 
-    private static int getIssue(ChatCommandSource source, String issueKey) throws CommandSyntaxException {
+    private static int getIssue(CommandSource source, String issueKey) throws CommandSyntaxException {
         try {
             Issue issue = Scissors.JIRA_API.getIssue(issueKey);
             if(issue == null || issue.id() == null || !canSeeIssue(source, issue)) throw ISSUE_NOT_FOUND.create(issueKey);
@@ -50,8 +50,8 @@ public class IssueCommand {
         }
     }
 
-    private static boolean canSeeIssue(ChatCommandSource source, Issue issue) {
+    private static boolean canSeeIssue(CommandSource source, Issue issue) {
         if(issue.fields().flagged() == null) return true;
-        return source.commandMessage().getChannel() instanceof PrivateChannel && source.user().getId().equals(issue.fields().reporterUserID());
+        return source.channel() instanceof PrivateChannel && source.user().getId().equals(issue.fields().reporterUserID());
     }
 }

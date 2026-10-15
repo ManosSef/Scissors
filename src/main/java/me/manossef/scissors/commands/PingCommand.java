@@ -4,10 +4,11 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.Messages;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.commands.core.ChatCommandSource;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.entities.channel.Channel;
 
 import java.time.Duration;
@@ -18,7 +19,7 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 public class PingCommand {
     private static final SimpleCommandExceptionType TOO_LONG = new SimpleCommandExceptionType(new LiteralMessage("It took me way too long to reply to this command"));
 
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         String baseLiteral = "ping";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> pingUser(context.getSource(), false))
@@ -40,7 +41,7 @@ public class PingCommand {
         );
         HelpCommand.addLine(baseLiteral, s -> "Pings Discord, measures the bot's reaction time, or replies with \"Pong!\"");
         HelpCommand.addLiteral(baseLiteral, source -> {
-            Channel channel = source.commandMessage().getChannel();
+            Channel channel = source.channel();
             return String.format("""
                     Checks if or how quickly the bot replies to requests.
                    
@@ -56,8 +57,9 @@ public class PingCommand {
         });
     }
 
-    private static int pingUser(ChatCommandSource source, boolean nanos) throws CommandSyntaxException {
-        OffsetDateTime messageTime = source.commandMessage().getTimeCreated();
+    private static int pingUser(CommandSource source, boolean nanos) throws CommandSyntaxException {
+        if(!(source instanceof ChatCommandSource pSource)) throw Commands.TEMP_NO_SLASH.create();  // TODO temp temp temp
+        OffsetDateTime messageTime = pSource.commandMessage().getTimeCreated();
         OffsetDateTime now = OffsetDateTime.now();
         try {
             long ping = nanos ? Duration.between(messageTime, now).toNanos() : Duration.between(messageTime, now).toMillis();
@@ -68,18 +70,18 @@ public class PingCommand {
         }
     }
 
-    private static int pingDiscord(ChatCommandSource source) {
+    private static int pingDiscord(CommandSource source) {
         Long ping = Scissors.DISCORD_API.getRestPing().complete();
         source.sendSuccess("My ping to Discord is " + monospace(ping + "ms"), false);
         return ping.intValue();
     }
 
-    private static int pong(ChatCommandSource source) {
+    private static int pong(CommandSource source) {
         source.sendSuccess("Pong!", false);
         return 1;
     }
 
-    private static int mentionMe(ChatCommandSource source) {
+    private static int mentionMe(CommandSource source) {
         source.sendSuccess(Messages.MY_MENTION, false);
         return 1;
     }

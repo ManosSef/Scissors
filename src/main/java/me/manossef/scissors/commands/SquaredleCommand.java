@@ -4,8 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.squaredle.PuzzleData;
 import me.manossef.scissors.squaredle.PuzzleUtil;
 import me.manossef.scissors.squaredle.TodayConfig;
@@ -19,7 +19,7 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 public class SquaredleCommand {
     private static final SimpleCommandExceptionType CONFIG_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("Failed to get the daily Squaredle puzzle configuration"));
 
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         String baseLiteral = "squaredle";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendDailySquaredle(context.getSource(), false))
@@ -29,7 +29,7 @@ public class SquaredleCommand {
         );
         HelpCommand.addLine(baseLiteral, s -> "Displays information about today's Squaredle puzzle.");
         HelpCommand.addLiteral(baseLiteral, source -> {
-            Channel channel = source.commandMessage().getChannel();
+            Channel channel = source.channel();
             return String.format("""
                     Provides information about today's Squaredle (https://squaredle.app/) puzzle. Displays the grid with emoji, and reports the word count (including the number of words of each length), the bonus word count, a hint for the \
                     Bonus Word of the Day (the same as in-game), the difficulty, and the author.
@@ -42,7 +42,7 @@ public class SquaredleCommand {
         });
     }
 
-    private static int sendDailySquaredle(ChatCommandSource source, boolean xp) throws CommandSyntaxException {
+    private static int sendDailySquaredle(CommandSource source, boolean xp) throws CommandSyntaxException {
         try {
             TodayConfig todayConfig = TodayConfigReader.readTodayPuzzleConfig();
             if(todayConfig == null) throw CONFIG_NOT_FOUND.create();

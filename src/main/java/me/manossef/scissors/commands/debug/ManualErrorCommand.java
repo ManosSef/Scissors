@@ -2,11 +2,11 @@ package me.manossef.scissors.commands.debug;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 
 public class ManualErrorCommand {
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("manualerror")
             .executes(context -> recurse(50))
             .then(Commands.argument("times", IntegerArgumentType.integer())

@@ -5,9 +5,10 @@ import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.arguments.ChannelArgumentType;
+import me.manossef.scissors.commands.core.ChatCommandSource;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.components.container.Container;
 import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
 import net.dv8tion.jda.api.entities.Message;
@@ -26,7 +27,7 @@ public class EchoCommand {
     private static final SimpleCommandExceptionType TOO_LONG = new SimpleCommandExceptionType(new LiteralMessage("Cannot send messages longer than " + Message.MAX_CONTENT_LENGTH_COMPONENT_V2 + " characters"));
     private static final SimpleCommandExceptionType NOT_MESSAGE_CHANNEL = new SimpleCommandExceptionType(new LiteralMessage("That channel is not a message channel"));
 
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         String baseLiteral = "echo";
         dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.literal("tenfold")
@@ -52,11 +53,12 @@ public class EchoCommand {
                 Syntax: %s
                 
                 Fails when the bot doesn't have permission to delete messages. Always fails when used in a DM.""",
-            Commands.format(baseLiteral + " <text>", source.commandMessage().getChannel())));
+            Commands.format(baseLiteral + " <text>", source.channel())));
     }
 
-    private static int echo(ChatCommandSource source, String message, Channel channel) throws CommandSyntaxException {
-        Message commandMessage = source.commandMessage();
+    private static int echo(CommandSource source, String message, Channel channel) throws CommandSyntaxException {
+        if(!(source instanceof ChatCommandSource pSource)) throw Commands.TEMP_NO_SLASH.create();  // TODO temp temp temp
+        Message commandMessage = pSource.commandMessage();
         if(!commandMessage.getType().canDelete()) throw CANNOT_DELETE.create();
         if(!(channel instanceof GuildChannel)) throw NOT_IN_GUILD.create();
         if(!(channel instanceof MessageChannelUnion messageChannel)) throw NOT_MESSAGE_CHANNEL.create();
@@ -79,11 +81,11 @@ public class EchoCommand {
         return 1;
     }
 
-    private static int echo(ChatCommandSource source, String message) throws CommandSyntaxException {
-        return echo(source, message, source.commandMessage().getChannel());
+    private static int echo(CommandSource source, String message) throws CommandSyntaxException {
+        return echo(source, message, source.channel());
     }
 
-    private static int echoTenfold(ChatCommandSource source, String message) throws CommandSyntaxException {
-        return echo(source, message.repeat(10), source.commandMessage().getChannel());
+    private static int echoTenfold(CommandSource source, String message) throws CommandSyntaxException {
+        return echo(source, message.repeat(10), source.channel());
     }
 }

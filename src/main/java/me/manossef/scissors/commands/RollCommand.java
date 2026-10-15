@@ -8,9 +8,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import me.manossef.scissors.ChatCommandSource;
-import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.commands.core.CommandSource;
+import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.entities.channel.Channel;
 
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
@@ -22,7 +22,7 @@ public class RollCommand {
     private static final SimpleCommandExceptionType MAX_FLOAT_LESS_THAN_0 = new SimpleCommandExceptionType(new LiteralMessage("The maximum value must be greater than 0"));
     private static final SimpleCommandExceptionType MAX_FLOAT_LESS_THAN_MIN = new SimpleCommandExceptionType(new LiteralMessage("The maximum value must be greater than the minimum value"));
 
-    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         String baseLiteral = "roll";
         dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.argument("max", IntegerArgumentType.integer())
@@ -64,7 +64,7 @@ public class RollCommand {
         );
         HelpCommand.addLine(baseLiteral, s -> "Rolls a random number from a range.");
         HelpCommand.addLiteral(baseLiteral, source -> {
-            Channel channel = source.commandMessage().getChannel();
+            Channel channel = source.channel();
             return String.format("""
                     Rolls a random number from a specific range.
                     
@@ -90,48 +90,48 @@ public class RollCommand {
         });
     }
 
-    private static int roll(ChatCommandSource source, int max) throws CommandSyntaxException {
+    private static int roll(CommandSource source, int max) throws CommandSyntaxException {
         if(max < 1) throw MAX_LESS_THAN_1.create();
         return roll(source, 1, max);
     }
 
-    private static int roll(ChatCommandSource source, int min, int max) throws CommandSyntaxException {
+    private static int roll(CommandSource source, int min, int max) throws CommandSyntaxException {
         if(max < min) throw MAX_LESS_THAN_MIN.create();
         int random = Scissors.RANDOM.nextInt(min, max + 1);
         source.sendSuccess("You rolled " + bold(String.valueOf(random)), false);
         return random;
     }
 
-    private static int roll(ChatCommandSource source, long max) throws CommandSyntaxException {
+    private static int roll(CommandSource source, long max) throws CommandSyntaxException {
         if(max < 1) throw MAX_LESS_THAN_1.create();
         return roll(source, 1, max);
     }
 
-    private static int roll(ChatCommandSource source, long min, long max) throws CommandSyntaxException {
+    private static int roll(CommandSource source, long min, long max) throws CommandSyntaxException {
         if(max < min) throw MAX_LESS_THAN_MIN.create();
         long random = Scissors.RANDOM.nextLong(min, max + 1);
         source.sendSuccess("You rolled " + bold(String.valueOf(random)), false);
         return (int) random;
     }
 
-    private static int roll(ChatCommandSource source, float max) throws CommandSyntaxException {
+    private static int roll(CommandSource source, float max) throws CommandSyntaxException {
         if(max <= 0) throw MAX_FLOAT_LESS_THAN_0.create();
         return roll(source, 0, max);
     }
 
-    private static int roll(ChatCommandSource source, float min, float max) throws CommandSyntaxException {
+    private static int roll(CommandSource source, float min, float max) throws CommandSyntaxException {
         if(max <= min) throw MAX_FLOAT_LESS_THAN_MIN.create();
         float random = Scissors.RANDOM.nextFloat(min, max);
         source.sendSuccess("You rolled " + bold(String.valueOf(random)), false);
         return (int) random;
     }
 
-    private static int roll(ChatCommandSource source, double max) throws CommandSyntaxException {
+    private static int roll(CommandSource source, double max) throws CommandSyntaxException {
         if(max <= 0) throw MAX_FLOAT_LESS_THAN_0.create();
         return roll(source, 0, max);
     }
 
-    private static int roll(ChatCommandSource source, double min, double max) throws CommandSyntaxException {
+    private static int roll(CommandSource source, double min, double max) throws CommandSyntaxException {
         if(max <= min) throw MAX_FLOAT_LESS_THAN_MIN.create();
         double random = Scissors.RANDOM.nextDouble(min, max);
         source.sendSuccess("You rolled " + bold(String.valueOf(random)), false);
