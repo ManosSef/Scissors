@@ -3,6 +3,7 @@ package me.manossef.scissors.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.commands.core.ChatCommandSource;
 import me.manossef.scissors.commands.core.CommandSource;
 import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -24,7 +25,7 @@ public class CatFactCommand {
         HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, s -> "Replies with a random fact about cats. Facts are sourced from https://catfact.ninja/fact.");
         slashCommands.add(slash(baseLiteral, description));
-        Commands.registerSlashCommand(baseLiteral, CatFactCommand::getCatFact);
+        Commands.registerSlashCommand(baseLiteral, source -> getCatFact(new ChatCommandSource(null, source.user())));
     }
 
     private static int getCatFact(CommandSource source) throws CommandSyntaxException {
