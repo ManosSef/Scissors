@@ -43,6 +43,8 @@ public class Scissors {
     public static void main(String[] args) {
         try {
             DISCORD_API.awaitReady();
+            if(!JIRA_API.isLoggedIn())
+                DevGuild.logStatus("Failed to log into Jira. All interactions with Jira will fail during this session.");
             Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> LOGGER.error("Uncaught exception thrown!", exception));
             JiraCheckLoop.CheckedIssues checkedIssues = getCheckedIssues();
             if(checkedIssues == null)

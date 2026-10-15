@@ -1,5 +1,6 @@
 package me.manossef.scissors.jira;
 
+import com.google.gson.JsonSyntaxException;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.jira.objects.Issue;
 import me.manossef.scissors.jira.objects.SearchResults;
@@ -13,24 +14,52 @@ public record JiraAPI(String baseUrl) {
     private static final String JIRA_EMAIL = System.getenv("JIRA_ALT_EMAIL");
     private static final String JIRA_API_TOKEN = System.getenv("JIRA_ALT_API_TOKEN");
 
+    public boolean isLoggedIn() {
+        try {
+            return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "myself")), Object.class) != null;
+        } catch(JsonSyntaxException e) {
+            return false;
+        }
+    }
+
     public Issue getIssue(String key) {
-        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "issue/" + key)), Issue.class);
+        try {
+            return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "issue/" + key)), Issue.class);
+        } catch(JsonSyntaxException e) {
+            return null;
+        }
     }
 
     public Issue.Fields.Issuetype getIssuetype(String id) {
-        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "issuetype/" + id)), Issue.Fields.Issuetype.class);
+        try {
+            return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "issuetype/" + id)), Issue.Fields.Issuetype.class);
+        } catch(JsonSyntaxException e) {
+            return null;
+        }
     }
 
     public Issue.Fields.Project getProject(String id) {
-        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "project/" + id)), Issue.Fields.Project.class);
+        try {
+            return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "project/" + id)), Issue.Fields.Project.class);
+        } catch(JsonSyntaxException e) {
+            return null;
+        }
     }
 
     public Issue.Fields.Priority getPriority(String id) {
-        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "priority/" + id)), Issue.Fields.Priority.class);
+        try {
+            return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "priority/" + id)), Issue.Fields.Priority.class);
+        } catch(JsonSyntaxException e) {
+            return null;
+        }
     }
 
     public Issue.Fields.CustomFieldOption getCustomFieldOption(String id) {
-        return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "customFieldOption/" + id)), Issue.Fields.CustomFieldOption.class);
+        try {
+            return Scissors.GSON.fromJson(get(HttpUrl.get(this.baseUrl + "customFieldOption/" + id)), Issue.Fields.CustomFieldOption.class);
+        } catch(JsonSyntaxException e) {
+            return null;
+        }
     }
 
     public SearchResults searchIssues(String jql, String fields) {
@@ -39,7 +68,11 @@ public record JiraAPI(String baseUrl) {
             .addQueryParameter("maxResults", "1000")
             .addQueryParameter("fields", fields)
             .build();
-        return Scissors.GSON.fromJson(get(url), SearchResults.class);
+        try {
+            return Scissors.GSON.fromJson(get(url), SearchResults.class);
+        } catch(JsonSyntaxException e) {
+            return null;
+        }
     }
 
     public Issue createIssue(String summary, String description, Issue.Fields.Issuetype issuetype, Issue.Fields.Project project, String reporterUserID, Issue.Fields.Priority priority, Issue.Fields.CustomFieldOption flagged) {
@@ -47,7 +80,11 @@ public record JiraAPI(String baseUrl) {
             issuetype, project, null, priority, summary, description, null,
             flagged == null ? null : new Issue.Fields.CustomFieldOption[]{flagged}, null, reporterUserID
         ), null, null)));
-        return Scissors.GSON.fromJson(node, Issue.class);
+        try {
+            return Scissors.GSON.fromJson(node, Issue.class);
+        } catch(JsonSyntaxException e) {
+            return null;
+        }
     }
 
     private String get(HttpUrl endpoint) {
