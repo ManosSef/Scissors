@@ -21,8 +21,4 @@ public interface CommandSource {
     void sendFailure(String message);
 
     void sendError(String message);
-
-    default String getDetails() {
-        return this.getClass().getName() + "[channel=" + this.channel().getJumpUrl() + ", user=" + this.user().getName() + " (" + this.user().getId() + ")]";
-    }
 }

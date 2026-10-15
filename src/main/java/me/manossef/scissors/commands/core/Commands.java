@@ -53,7 +53,7 @@ public class Commands {
         } catch(RuntimeException e) {
             source.sendError(e.getMessage());
             DevGuild.logCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + Messages.getLinkWithInfo(message) + " and threw an exception:"), e);
-            Issues.createForException(e, "Command error: ", "Command: {{" + command + "}}\nSource: {{" + source.getDetails() + "}}");
+            Issues.createForException(e, "Command error: ", "Command: {{" + command + "}}");
         }
     }
 
@@ -72,7 +72,7 @@ public class Commands {
         } catch(RuntimeException e) {
             source.sendError(e.getMessage());
             DevGuild.logSlashCommandError(shortenMiddle(username + " (" + user.getId() + ") executed command ", monospace(command), " in " + channel.getAsMention() + " and threw an exception:"), e);
-            Issues.createForException(e, "Slash command error: ", "Command: {{" + command + "}}\nSource: {{" + source.getDetails() + "}}");
+            Issues.createForException(e, "Slash command error: ", "Command: {{" + command + "}}");
         }
     }
 
