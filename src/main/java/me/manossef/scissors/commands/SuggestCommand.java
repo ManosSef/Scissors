@@ -7,13 +7,9 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicNCommandExceptionType;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.manossef.scissors.*;
 import me.manossef.scissors.arguments.LengthLimitedStringArgumentType;
 import me.manossef.scissors.arguments.UserArgumentType;
-import me.manossef.scissors.commands.core.ChatCommandSource;
-import me.manossef.scissors.commands.core.CommandSource;
-import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -26,7 +22,6 @@ import java.util.List;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class SuggestCommand {
-    private static final SimpleCommandExceptionType NO_JIRA = new SimpleCommandExceptionType(new LiteralMessage("Failed to create the issue; either the bot is not logged in or Jira is down"));
     private static final DynamicNCommandExceptionType ISSUE_CREATION_FAILED = new DynamicNCommandExceptionType(errors -> {
         StringBuilder builder = new StringBuilder();
         for(Object error : errors) builder.append("\n- ").append(error);
@@ -37,7 +32,7 @@ public class SuggestCommand {
         "suggest"
     );
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "suggest";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendIssueTypeHint(context.getSource()))
@@ -58,7 +53,7 @@ public class SuggestCommand {
         );
         HelpCommand.addLine(baseLiteral, s -> "Posts a suggestion for the bot.");
         HelpCommand.addLiteral(baseLiteral, source -> {
-            Channel channel = source.channel();
+            Channel channel = source.commandMessage().getChannel();
             return String.format("""
                     Posts a suggestion or bug report for the bot. A work item with the provided summary is created in the bot's internal Jira instance for %s to eventually take a look at.
                     
@@ -75,7 +70,7 @@ public class SuggestCommand {
         });
     }
 
-    private static ArgumentBuilder<CommandSource, ?> argumentsForIssueType(String literal, Issue.Fields.Issuetype type, boolean withUser) {
+    private static ArgumentBuilder<ChatCommandSource, ?> argumentsForIssueType(String literal, Issue.Fields.Issuetype type, boolean withUser) {
         return Commands.literal(literal)
             .then(argumentForPriority("vi", type, withUser, Issue.Fields.Priority.VERY_IMPORTANT))
             .then(argumentForPriority("i", type, withUser, Issue.Fields.Priority.IMPORTANT))
@@ -84,18 +79,18 @@ public class SuggestCommand {
             .then(summaryArgument(type, withUser, null));
     }
 
-    private static ArgumentBuilder<CommandSource, ?> argumentForPriority(String literal, Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) {
+    private static ArgumentBuilder<ChatCommandSource, ?> argumentForPriority(String literal, Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) {
         return Commands.literal(literal)
             .requires(Commands.devRestricted())
             .then(summaryArgument(type, withUser, priority));
     }
 
-    private static ArgumentBuilder<CommandSource, ?> summaryArgument(Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) {
+    private static ArgumentBuilder<ChatCommandSource, ?> summaryArgument(Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) {
         return Commands.argument("summary", LengthLimitedStringArgumentType.greedyString(255))
             .executes(context -> createIssueWithContext(context, type, withUser, priority));
     }
 
-    private static int createIssueWithContext(CommandContext<CommandSource> context, Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) throws CommandSyntaxException {
+    private static int createIssueWithContext(CommandContext<ChatCommandSource> context, Issue.Fields.Issuetype type, boolean withUser, Issue.Fields.Priority priority) throws CommandSyntaxException {
         try {
             return createIssue(context.getSource(), type, context.getArgument("summary", String.class), withUser ? context.getArgument("reporter", User.class) : context.getSource().user(), priority);
         } catch(UncheckedIOException e) {
@@ -103,18 +98,16 @@ public class SuggestCommand {
         }
     }
 
-    private static int createIssue(CommandSource source, Issue.Fields.Issuetype type, String summary, User user, Issue.Fields.Priority priority) throws CommandSyntaxException {
-        if(!(source instanceof ChatCommandSource pSource)) throw Commands.TEMP_NO_SLASH.create();  // TODO temp temp temp
+    private static int createIssue(ChatCommandSource source, Issue.Fields.Issuetype type, String summary, User user, Issue.Fields.Priority priority) throws CommandSyntaxException {
         Issue issue = Scissors.JIRA_API.createIssue(
             summary,
-            "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: " + pSource.commandMessage().getJumpUrl(),
+            "Reported by " + user.getName() + " (" + user.getId() + ")\nOriginal message: " + source.commandMessage().getJumpUrl(),
             type,
             Issue.Fields.Project.SCIS,
             user.getId(),
             priority,
             null
         );
-        if(issue == null) throw NO_JIRA.create();
         if(issue.id() == null) {
             List<String> errors = new ArrayList<>();
             if(issue.errorMessages() != null) errors.addAll(Arrays.stream(issue.errorMessages()).toList());
@@ -125,7 +118,7 @@ public class SuggestCommand {
         return 1;
     }
 
-    private static int sendIssueTypeHint(CommandSource source) throws CommandSyntaxException {
+    private static int sendIssueTypeHint(ChatCommandSource source) throws CommandSyntaxException {
         throw NO_ISSUE_TYPE.create(source);
     }
 }

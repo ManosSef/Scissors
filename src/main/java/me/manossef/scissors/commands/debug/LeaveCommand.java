@@ -5,16 +5,15 @@ import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import me.manossef.scissors.ChatCommandSource;
+import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
-import me.manossef.scissors.commands.core.ChatCommandSource;
-import me.manossef.scissors.commands.core.CommandSource;
-import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.entities.Guild;
 
 public class LeaveCommand {
     private static final SimpleCommandExceptionType NOT_IN_GUILD = new SimpleCommandExceptionType(new LiteralMessage("Not in that guild"));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         dispatcher.register(Commands.literal("leave")
             .requires(Commands.devRestricted())
             .executes(context -> leave(context.getSource()))
@@ -24,14 +23,13 @@ public class LeaveCommand {
         );
     }
 
-    private static int leave(CommandSource source) throws CommandSyntaxException {
-        if(!(source instanceof ChatCommandSource pSource)) throw Commands.TEMP_NO_SLASH.create();  // TODO temp temp temp
+    private static int leave(ChatCommandSource source) {
         source.sendSuccess("Leaving guild", true);
-        pSource.commandMessage().getGuild().leave().queue();
+        source.commandMessage().getGuild().leave().queue();
         return 1;
     }
 
-    private static int leave(CommandSource source, long id) throws CommandSyntaxException {
+    private static int leave(ChatCommandSource source, long id) throws CommandSyntaxException {
         Guild guild = Scissors.DISCORD_API.getGuildById(id);
         if(guild == null) throw NOT_IN_GUILD.create();
         source.sendSuccess("Leaving " + guild.getName(), true);

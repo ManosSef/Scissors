@@ -4,10 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import me.manossef.scissors.ChatCommandSource;
+import me.manossef.scissors.Commands;
 import me.manossef.scissors.Scissors;
 import me.manossef.scissors.arguments.UserArgumentType;
-import me.manossef.scissors.commands.core.CommandSource;
-import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.games.TicTacToe;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -18,7 +18,7 @@ public class TicTacToeCommand {
     private static final SimpleCommandExceptionType SAME_USER = new SimpleCommandExceptionType(new LiteralMessage("You cannot play tic-tac-toe with yourself"));
     private static final SimpleCommandExceptionType NO_BOTS = new SimpleCommandExceptionType(new LiteralMessage("You cannot play tic-tac-toe with that bot"));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<ChatCommandSource> dispatcher) {
         String baseLiteral = "tictactoe";
         dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.literal("bot")
@@ -30,7 +30,7 @@ public class TicTacToeCommand {
         );
         HelpCommand.addLine(baseLiteral, s -> "Starts a tic-tac-toe game between you and the bot or another user.");
         HelpCommand.addLiteral(baseLiteral, source -> {
-            Channel channel = source.channel();
+            Channel channel = source.commandMessage().getChannel();
             return String.format("""
                     Starts a game of tic-tac-toe between you and the bot or the specified user.
                     
@@ -45,19 +45,19 @@ public class TicTacToeCommand {
         });
     }
 
-    private static int startBotTicTacToeGame(CommandSource source) {
+    private static int startBotTicTacToeGame(ChatCommandSource source) {
         source.sendSuccess("Starting a tic-tac-toe game with the bot", true);
-        new TicTacToe(source.user(), Scissors.DISCORD_API.getSelfUser(), source.channel());
+        new TicTacToe(source.user(), Scissors.DISCORD_API.getSelfUser(), source.commandMessage().getChannel());
         return 1;
     }
 
-    private static int startTicTacToeGame(CommandSource source, User user) throws CommandSyntaxException {
+    private static int startTicTacToeGame(ChatCommandSource source, User user) throws CommandSyntaxException {
         if(user.isBot() && user.getIdLong() == Scissors.DISCORD_API.getSelfUser().getIdLong())
             return startBotTicTacToeGame(source);
         if(user.isBot() || user.isSystem()) throw NO_BOTS.create();
         if(user.getIdLong() == source.user().getIdLong()) throw SAME_USER.create();
         source.sendSuccess("Starting a tic-tac-toe game with " + user.getAsMention(), true);
-        new TicTacToe(source.user(), user, source.channel());
+        new TicTacToe(source.user(), user, source.commandMessage().getChannel());
         return 1;
     }
 }
