@@ -113,7 +113,7 @@ public class Commands {
         CoinflipCommand.register(dispatcher, slashCommands);
         ConfigCommand.register(dispatcher);
         EchoCommand.register(dispatcher, slashCommands);
-        HangmanCommand.register(dispatcher);
+        HangmanCommand.register(dispatcher, slashCommands);
         InfoCommand.register(dispatcher);
         IssueCommand.register(dispatcher);
         PingCommand.register(dispatcher);

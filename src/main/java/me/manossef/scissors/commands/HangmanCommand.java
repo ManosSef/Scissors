@@ -9,22 +9,31 @@ import me.manossef.scissors.commands.core.CommandSource;
 import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.puzzles.Hangman;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+
+import java.util.List;
+
+import static net.dv8tion.jda.api.interactions.commands.build.Commands.slash;
 
 public class HangmanCommand {
     private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start hangman games in this session. Please yell at " + Messages.MY_MENTION + " to restart me"));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "hangman";
+        String hard = "hard";
+        String impossible = "impossible";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> startHangman(context.getSource(), Hangman.Difficulty.NORMAL))
-            .then(Commands.literal("hard")
+            .then(Commands.literal(hard)
                 .executes(context -> startHangman(context.getSource(), Hangman.Difficulty.HARD))
             )
-            .then(Commands.literal("impossible")
+            .then(Commands.literal(impossible)
                 .executes(context -> startHangman(context.getSource(), Hangman.Difficulty.IMPOSSIBLE))
             )
         );
-        HelpCommand.addLine(baseLiteral, s -> "Starts a game of hangman.");
+        String description = "Starts a game of hangman.";
+        HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, source -> {
             Channel channel = source.channel();
             return String.format("""
@@ -39,6 +48,10 @@ public class HangmanCommand {
                 Commands.format(baseLiteral + " hard", channel),
                 Commands.format(baseLiteral + " impossible", channel));
         });
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(hard, description), new SubcommandData(impossible, description)));
+        Commands.registerSlashCommand(baseLiteral, source -> startHangman(source, Hangman.Difficulty.NORMAL));
+        Commands.registerSlashCommand(baseLiteral + " " + hard, source -> startHangman(source, Hangman.Difficulty.HARD));
+        Commands.registerSlashCommand(baseLiteral + " " + impossible, source -> startHangman(source, Hangman.Difficulty.IMPOSSIBLE));
     }
 
     private static int startHangman(CommandSource source, Hangman.Difficulty difficulty) throws CommandSyntaxException {
