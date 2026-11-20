@@ -27,7 +27,7 @@ public class Messages {
     public static String truncateCommandResponse(String content, Logger logger) {
         if(content.length() > Message.MAX_CONTENT_LENGTH) {
             logger.warn("Tried to send too long a command response; truncating: {}", content);
-            return Messages.truncate(content);
+            return truncate(content);
         }
         return content;
     }

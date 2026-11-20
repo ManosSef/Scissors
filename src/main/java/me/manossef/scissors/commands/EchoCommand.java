@@ -9,6 +9,7 @@ import me.manossef.scissors.arguments.ChannelArgumentType;
 import me.manossef.scissors.commands.core.ChatCommandSource;
 import me.manossef.scissors.commands.core.CommandSource;
 import me.manossef.scissors.commands.core.Commands;
+import me.manossef.scissors.commands.core.SlashCommandSource;
 import net.dv8tion.jda.api.components.container.Container;
 import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
 import net.dv8tion.jda.api.entities.Message;
@@ -16,9 +17,15 @@ import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 
 import java.util.Collections;
+import java.util.List;
+
+import static net.dv8tion.jda.api.interactions.commands.build.Commands.slash;
 
 public class EchoCommand {
     private static final SimpleCommandExceptionType CANNOT_DELETE = new SimpleCommandExceptionType(new LiteralMessage("Cannot delete this type of message"));
@@ -27,7 +34,7 @@ public class EchoCommand {
     private static final SimpleCommandExceptionType TOO_LONG = new SimpleCommandExceptionType(new LiteralMessage("Cannot send messages longer than " + Message.MAX_CONTENT_LENGTH_COMPONENT_V2 + " characters"));
     private static final SimpleCommandExceptionType NOT_MESSAGE_CHANNEL = new SimpleCommandExceptionType(new LiteralMessage("That channel is not a message channel"));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "echo";
         dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.literal("tenfold")
@@ -46,7 +53,8 @@ public class EchoCommand {
                 .executes(context -> echo(context.getSource(), context.getArgument("text", String.class)))
             )
         );
-        HelpCommand.addLine(baseLiteral, s -> "Posts a message as the bot.");
+        String description = "Posts a message as the bot.";
+        HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, source -> String.format("""
                 Deletes your command message and posts a new message with the provided text as the bot.
                 
@@ -54,10 +62,25 @@ public class EchoCommand {
                 
                 Fails when the bot doesn't have permission to delete messages. Always fails when used in a DM.""",
             Commands.format(baseLiteral + " <text>", source.channel())));
+        slashCommands.add(slash(baseLiteral, description).addOption(OptionType.STRING, "text", "The message to post."));
+        Commands.registerSlashCommand(baseLiteral, source -> echo(source, source.event().getOption("text", OptionMapping::getAsString)));
     }
 
     private static int echo(CommandSource source, String message, Channel channel) throws CommandSyntaxException {
-        if(!(source instanceof ChatCommandSource pSource)) throw Commands.TEMP_NO_SLASH.create();  // TODO temp temp temp
+        if(source instanceof SlashCommandSource sSource) {
+            if(message.length() > Message.MAX_CONTENT_LENGTH_COMPONENT_V2) throw TOO_LONG.create();
+            if(!(channel instanceof GuildChannel)) throw NOT_IN_GUILD.create();
+            if(!(channel instanceof MessageChannelUnion messageChannel)) throw NOT_MESSAGE_CHANNEL.create();
+            MessageCreateAction toCreate = message.length() > Message.MAX_CONTENT_LENGTH
+                ? messageChannel.sendMessageComponents(Container.of(TextDisplay.of(message)))
+                .useComponentsV2()
+                .setAllowedMentions(Collections.emptyList())
+                : messageChannel.sendMessage(message).setAllowedMentions(Collections.emptyList());
+            toCreate.queue();
+            sSource.sendEphemeralSuccess("Posted the specified message");
+            return 2;
+        }
+        if(!(source instanceof ChatCommandSource pSource)) throw new IllegalStateException("Did someone add a third type of source?");
         Message commandMessage = pSource.commandMessage();
         if(!commandMessage.getType().canDelete()) throw CANNOT_DELETE.create();
         if(!(channel instanceof GuildChannel)) throw NOT_IN_GUILD.create();

@@ -28,6 +28,7 @@ import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 public class Commands {
     public static final SimpleCommandExceptionType IO_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Something went wrong; please try again"));
     public static final SimpleCommandExceptionType GUILD_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("No guild was found"));
+    public static final SimpleCommandExceptionType WRONG_SOURCE = new SimpleCommandExceptionType(new LiteralMessage("This error should not have happened! Chat and slash commands have been mixed up!"));
     public static final SimpleCommandExceptionType TEMP_NO_SLASH = new SimpleCommandExceptionType(new LiteralMessage("Slash commands not implemented yet")); // TODO temp temp temp
     private static final Map<String, SlashCommandDispatcher> SLASH_COMMANDS = new HashMap<>();
     private static final CommandDispatcher<CommandSource> DISPATCHER = new CommandDispatcher<>() {{
@@ -111,7 +112,7 @@ public class Commands {
         CatFactCommand.register(dispatcher, slashCommands);
         CoinflipCommand.register(dispatcher, slashCommands);
         ConfigCommand.register(dispatcher);
-        EchoCommand.register(dispatcher);
+        EchoCommand.register(dispatcher, slashCommands);
         HangmanCommand.register(dispatcher);
         InfoCommand.register(dispatcher);
         IssueCommand.register(dispatcher);

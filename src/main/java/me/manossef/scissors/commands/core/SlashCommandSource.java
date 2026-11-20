@@ -32,6 +32,11 @@ public record SlashCommandSource(SlashCommandInteractionEvent event) implements 
             .setAllowedMentions(Collections.emptyList()).queue();
     }
 
+    public void sendEphemeralSuccess(String message) {
+        this.event.reply(Messages.truncateCommandResponse(Emojis.WHITE_HEAVY_CHECK_MARK.getFormatted() + " " + message, LOGGER))
+            .setAllowedMentions(Collections.emptyList()).setEphemeral(true).queue();
+    }
+
     @Override
     public void sendSuccess(MessageEmbed... embeds) {
         this.event.reply(new MessageCreateBuilder().setEmbeds(embeds).build()).setAllowedMentions(Collections.emptyList()).queue();
