@@ -10,26 +10,34 @@ import me.manossef.scissors.commands.core.CommandSource;
 import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.puzzles.Wordle;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+
+import java.util.List;
+
+import static net.dv8tion.jda.api.interactions.commands.build.Commands.slash;
 
 public class WordleCommand {
     private static final SimpleCommandExceptionType CANNOT_START = new SimpleCommandExceptionType(new LiteralMessage("Cannot start Wordle games in this session. Please yell at " + Messages.MY_MENTION + " to restart me"));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "wordle";
+        String hard = "hard";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> startWordle(context.getSource(), false))
-            .then(Commands.literal("hard")
+            .then(Commands.literal(hard)
                 .executes(context -> startWordle(context.getSource(), true))
             )
             .then(Commands.argument("answer", StringArgumentType.word())
                 .requires(Commands.devRestricted())
                 .executes(context -> startWordle(context.getSource(), false, context.getArgument("answer", String.class)))
-                .then(Commands.literal("hard")
+                .then(Commands.literal(hard)
                     .executes(context -> startWordle(context.getSource(), true, context.getArgument("answer", String.class)))
                 )
             )
         );
-        HelpCommand.addLine(baseLiteral, s -> "Starts a game of Wordle.");
+        String description = "Starts a game of Wordle.";
+        HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, source -> {
             Channel channel = source.channel();
             return String.format("""
@@ -43,6 +51,9 @@ public class WordleCommand {
                 Commands.format(baseLiteral + " hard", channel)
             );
         });
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(hard, description)));
+        Commands.registerSlashCommand(baseLiteral, source -> startWordle(source, false));
+        Commands.registerSlashCommand(baseLiteral + " " + hard, source -> startWordle(source, true));
     }
 
     private static int startWordle(CommandSource source, boolean hardMode) throws CommandSyntaxException {

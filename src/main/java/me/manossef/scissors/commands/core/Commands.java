@@ -122,7 +122,7 @@ public class Commands {
         SquaredleCommand.register(dispatcher, slashCommands);
         SuggestCommand.register(dispatcher);
         TicTacToeCommand.register(dispatcher);
-        WordleCommand.register(dispatcher);
+        WordleCommand.register(dispatcher, slashCommands);
         NineCommand.register(dispatcher);
         JiraCheckLoopCommand.register(dispatcher);
         LeaveCommand.register(dispatcher);
