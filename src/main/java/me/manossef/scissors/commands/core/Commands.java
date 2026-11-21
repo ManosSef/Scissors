@@ -121,7 +121,7 @@ public class Commands {
         RollCommand.register(dispatcher, slashCommands);
         SquaredleCommand.register(dispatcher, slashCommands);
         SuggestCommand.register(dispatcher);
-        TicTacToeCommand.register(dispatcher);
+        TicTacToeCommand.register(dispatcher, slashCommands);
         WordleCommand.register(dispatcher, slashCommands);
         NineCommand.register(dispatcher);
         JiraCheckLoopCommand.register(dispatcher);
