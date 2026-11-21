@@ -10,22 +10,29 @@ import me.manossef.scissors.commands.core.CommandSource;
 import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import java.io.UncheckedIOException;
+import java.util.List;
 
+import static net.dv8tion.jda.api.interactions.commands.build.Commands.slash;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class IssueCommand {
     private static final DynamicCommandExceptionType ISSUE_NOT_FOUND = new DynamicCommandExceptionType(issue -> new LiteralMessage("Could not find issue " + issue));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "issue";
+        String number = "number";
         dispatcher.register(Commands.literal(baseLiteral)
-            .then(Commands.argument("number", IntegerArgumentType.integer(1))
-                .executes(context -> getIssue(context.getSource(), "SCIS-" + context.getArgument("number", Integer.class)))
+            .then(Commands.argument(number, IntegerArgumentType.integer(1))
+                .executes(context -> getIssue(context.getSource(), "SCIS-" + context.getArgument(number, Integer.class)))
             )
         );
-        HelpCommand.addLine(baseLiteral, s -> "Fetches a work item from the bot's internal Jira instance and shows information about it.");
+        String description = "Fetches a work item from the bot's internal Jira instance and shows information about it.";
+        HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, source -> String.format("""
                 Fetches a work item from the bot's internal Jira instance and displays information about it with an embed. The work item to be fetched has the key %s, where %s is the specified number.
                 
@@ -37,6 +44,8 @@ public class IssueCommand {
             monospace("SCIS-<#>"),
             monospace("<#>"),
             Commands.format(baseLiteral + " <number>", source.channel())));
+        slashCommands.add(slash(baseLiteral, description).addOption(OptionType.INTEGER, number, "The issue number."));
+        Commands.registerSlashCommand(baseLiteral, source -> getIssue(source, "SCIS-" + source.event().getOption(number, OptionMapping::getAsInt)));
     }
 
     private static int getIssue(CommandSource source, String issueKey) throws CommandSyntaxException {

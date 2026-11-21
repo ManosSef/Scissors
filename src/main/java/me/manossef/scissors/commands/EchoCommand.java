@@ -36,21 +36,22 @@ public class EchoCommand {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "echo";
+        String text = "text";
         dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.literal("tenfold")
                 .requires(Commands.devRestricted())
-                .then(Commands.argument("text", StringArgumentType.greedyString())
-                    .executes(context -> echoTenfold(context.getSource(), context.getArgument("text", String.class)))
+                .then(Commands.argument(text, StringArgumentType.greedyString())
+                    .executes(context -> echoTenfold(context.getSource(), context.getArgument(text, String.class)))
                 )
             )
             .then(Commands.argument("channel", ChannelArgumentType.channel())
                 .requires(Commands.devRestricted())
-                .then(Commands.argument("text", StringArgumentType.greedyString())
-                    .executes(context -> echo(context.getSource(), context.getArgument("text", String.class), context.getArgument("channel", Channel.class)))
+                .then(Commands.argument(text, StringArgumentType.greedyString())
+                    .executes(context -> echo(context.getSource(), context.getArgument(text, String.class), context.getArgument("channel", Channel.class)))
                 )
             )
-            .then(Commands.argument("text", StringArgumentType.greedyString())
-                .executes(context -> echo(context.getSource(), context.getArgument("text", String.class)))
+            .then(Commands.argument(text, StringArgumentType.greedyString())
+                .executes(context -> echo(context.getSource(), context.getArgument(text, String.class)))
             )
         );
         String description = "Posts a message as the bot.";
@@ -62,8 +63,8 @@ public class EchoCommand {
                 
                 Fails when the bot doesn't have permission to delete messages. Always fails when used in a DM.""",
             Commands.format(baseLiteral + " <text>", source.channel())));
-        slashCommands.add(slash(baseLiteral, description).addOption(OptionType.STRING, "text", "The message to post."));
-        Commands.registerSlashCommand(baseLiteral, source -> echo(source, source.event().getOption("text", OptionMapping::getAsString)));
+        slashCommands.add(slash(baseLiteral, description).addOption(OptionType.STRING, text, "The message to post."));
+        Commands.registerSlashCommand(baseLiteral, source -> echo(source, source.event().getOption(text, OptionMapping::getAsString)));
     }
 
     private static int echo(CommandSource source, String message, Channel channel) throws CommandSyntaxException {
