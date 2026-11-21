@@ -25,7 +25,7 @@ public class LeaveCommand {
     }
 
     private static int leave(CommandSource source) {
-        if(!(source instanceof ChatCommandSource pSource)) return -1;
+        if(!(source instanceof ChatCommandSource pSource)) throw new IllegalStateException("No slash command for this one");
         source.sendSuccess("Leaving guild", true);
         pSource.commandMessage().getGuild().leave().queue();
         return 1;
