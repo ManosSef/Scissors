@@ -63,7 +63,7 @@ public class EchoCommand {
                 
                 Fails when the bot doesn't have permission to delete messages. Always fails when used in a DM.""",
             Commands.format(baseLiteral + " <text>", source.channel())));
-        slashCommands.add(slash(baseLiteral, description).addOption(OptionType.STRING, text, "The message to post."));
+        slashCommands.add(slash(baseLiteral, description).addOption(OptionType.STRING, text, "The message to post.", true));
         Commands.registerSlashCommand(baseLiteral, source -> echo(source, source.event().getOption(text, OptionMapping::getAsString)));
     }
 

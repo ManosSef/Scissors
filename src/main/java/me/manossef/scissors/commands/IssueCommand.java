@@ -44,7 +44,7 @@ public class IssueCommand {
             monospace("SCIS-<#>"),
             monospace("<#>"),
             Commands.format(baseLiteral + " <number>", source.channel())));
-        slashCommands.add(slash(baseLiteral, description).addOption(OptionType.INTEGER, number, "The issue number."));
+        slashCommands.add(slash(baseLiteral, description).addOption(OptionType.INTEGER, number, "The issue number.", true));
         Commands.registerSlashCommand(baseLiteral, source -> getIssue(source, "SCIS-" + source.event().getOption(number, OptionMapping::getAsInt)));
     }
 
