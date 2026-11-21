@@ -12,7 +12,15 @@ import me.manossef.scissors.Scissors;
 import me.manossef.scissors.commands.core.CommandSource;
 import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
+import java.util.List;
+import java.util.Objects;
+
+import static net.dv8tion.jda.api.interactions.commands.build.Commands.slash;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
@@ -22,8 +30,10 @@ public class RollCommand {
     private static final SimpleCommandExceptionType MAX_FLOAT_LESS_THAN_0 = new SimpleCommandExceptionType(new LiteralMessage("The maximum value must be greater than 0"));
     private static final SimpleCommandExceptionType MAX_FLOAT_LESS_THAN_MIN = new SimpleCommandExceptionType(new LiteralMessage("The maximum value must be greater than the minimum value"));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "roll";
+        String longLiteral = "long";
+        String doubleLiteral = "double";
         dispatcher.register(Commands.literal(baseLiteral)
             .then(Commands.argument("max", IntegerArgumentType.integer())
                 .executes(context -> roll(context.getSource(), context.getArgument("max", Integer.class)))
@@ -41,7 +51,7 @@ public class RollCommand {
                     .executes(context -> roll(context.getSource(), context.getArgument("minFloat", Float.class), context.getArgument("maxFloat", Float.class)))
                 )
             )
-            .then(Commands.literal("long")
+            .then(Commands.literal(longLiteral)
                 .then(Commands.argument("maxLong", LongArgumentType.longArg())
                     .executes(context -> roll(context.getSource(), context.getArgument("maxLong", Long.class)))
                 )
@@ -51,7 +61,7 @@ public class RollCommand {
                     )
                 )
             )
-            .then(Commands.literal("double")
+            .then(Commands.literal(doubleLiteral)
                 .then(Commands.argument("maxDouble", DoubleArgumentType.doubleArg())
                     .executes(context -> roll(context.getSource(), context.getArgument("maxDouble", Double.class)))
                 )
@@ -62,7 +72,8 @@ public class RollCommand {
                 )
             )
         );
-        HelpCommand.addLine(baseLiteral, s -> "Rolls a random number from a range.");
+        String description = "Rolls a random number from a range.";
+        HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, source -> {
             Channel channel = source.channel();
             return String.format("""
@@ -87,6 +98,40 @@ public class RollCommand {
                 Integer.MIN_VALUE,
                 Long.MAX_VALUE,
                 Long.MIN_VALUE);
+        });
+        slashCommands.add(slash(baseLiteral, description)
+            .addOption(OptionType.NUMBER, "max", "The maximum value.", true)
+            .addOption(OptionType.NUMBER, "min", "The minimum value.")
+            .addSubcommands(
+                new SubcommandData(longLiteral, description)
+                    .addOption(OptionType.INTEGER, "max", "The maximum value.", true)
+                    .addOption(OptionType.INTEGER, "min", "The minimum value."),
+                new SubcommandData(doubleLiteral, description)
+                    .addOption(OptionType.NUMBER, "max", "The maximum value.", true)
+                    .addOption(OptionType.NUMBER, "min", "The minimum value.")
+            ));
+        Commands.registerSlashCommand(baseLiteral, source -> {
+            double max = Objects.requireNonNull(source.event().getOption("max", OptionMapping::getAsDouble));
+            Double min = source.event().getOption("min", OptionMapping::getAsDouble);
+            if(min == null) {
+                if(max == (int) max) roll(source, (int) max);
+                else roll(source, (float) max);
+            } else {
+                if(min == min.intValue() && max == (int) max) roll(source, min.intValue(), (int) max);
+                else roll(source, min.floatValue(), (float) max);
+            }
+        });
+        Commands.registerSlashCommand(baseLiteral + " " + longLiteral, source -> {
+            long max = Objects.requireNonNull(source.event().getOption("max", OptionMapping::getAsLong));
+            Long min = source.event().getOption("min", OptionMapping::getAsLong);
+            if(min == null) roll(source, max);
+            else roll(source, min, max);
+        });
+        Commands.registerSlashCommand(baseLiteral + " " + doubleLiteral, source -> {
+            double max = Objects.requireNonNull(source.event().getOption("max", OptionMapping::getAsDouble));
+            Double min = source.event().getOption("min", OptionMapping::getAsDouble);
+            if(min == null) roll(source, max);
+            else roll(source, min, max);
         });
     }
 
