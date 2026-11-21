@@ -11,10 +11,14 @@ import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.config.Option;
 import me.manossef.scissors.config.Options;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static net.dv8tion.jda.api.interactions.commands.build.Commands.slash;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.italics;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
@@ -26,24 +30,29 @@ public class InfoCommand {
         OPTIONS.add(monospace(option.getName()) + ": " + line);
     }
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "info";
+        String devserver = "devserver";
+        String github = "github";
+        String options = "options";
+        String servercount = "servercount";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendGenericInfo(context.getSource()))
-            .then(Commands.literal("devserver")
+            .then(Commands.literal(devserver)
                 .executes(context -> sendDevServer(context.getSource()))
             )
-            .then(Commands.literal("github")
+            .then(Commands.literal(github)
                 .executes(context -> sendGithub(context.getSource()))
             )
-            .then(Commands.literal("options")
+            .then(Commands.literal(options)
                 .executes(context -> sendOptions(context.getSource()))
             )
-            .then(Commands.literal("servercount")
+            .then(Commands.literal(servercount)
                 .executes(context -> sendGuildCount(context.getSource()))
             )
         );
-        HelpCommand.addLine(baseLiteral, s -> "Provides information about the bot.");
+        String description = "Provides information about the bot.";
+        HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, source -> {
             Channel channel = source.channel();
             return String.format("""
@@ -57,6 +66,13 @@ public class InfoCommand {
                 Commands.format(baseLiteral + " devserver", channel),
                 Commands.format(baseLiteral + " github", channel));
         });
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(devserver, description), new SubcommandData(github, description),
+            new SubcommandData(options, description), new SubcommandData(servercount, description)));
+        Commands.registerSlashCommand(baseLiteral, InfoCommand::sendGenericInfo);
+        Commands.registerSlashCommand(baseLiteral + " " + devserver, InfoCommand::sendDevServer);
+        Commands.registerSlashCommand(baseLiteral + " " + github, InfoCommand::sendGithub);
+        Commands.registerSlashCommand(baseLiteral + " " + options, InfoCommand::sendOptions);
+        Commands.registerSlashCommand(baseLiteral + " " + servercount, InfoCommand::sendGuildCount);
     }
 
     private static int sendGenericInfo(CommandSource source) {

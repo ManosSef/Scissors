@@ -114,7 +114,7 @@ public class Commands {
         ConfigCommand.register(dispatcher);
         EchoCommand.register(dispatcher, slashCommands);
         HangmanCommand.register(dispatcher, slashCommands);
-        InfoCommand.register(dispatcher);
+        InfoCommand.register(dispatcher, slashCommands);
         IssueCommand.register(dispatcher);
         PingCommand.register(dispatcher);
         RockPaperScissorsCommand.register(dispatcher);
