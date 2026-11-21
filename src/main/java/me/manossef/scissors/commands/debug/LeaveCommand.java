@@ -24,8 +24,8 @@ public class LeaveCommand {
         );
     }
 
-    private static int leave(CommandSource source) throws CommandSyntaxException {
-        if(!(source instanceof ChatCommandSource pSource)) throw Commands.TEMP_NO_SLASH.create();  // TODO temp temp temp
+    private static int leave(CommandSource source) {
+        if(!(source instanceof ChatCommandSource pSource)) return -1;
         source.sendSuccess("Leaving guild", true);
         pSource.commandMessage().getGuild().leave().queue();
         return 1;
