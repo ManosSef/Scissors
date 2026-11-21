@@ -13,7 +13,15 @@ import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.games.RockPaperScissors;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
+import java.util.List;
+import java.util.Objects;
+
+import static net.dv8tion.jda.api.interactions.commands.build.Commands.slash;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.*;
 
 public class RockPaperScissorsCommand {
@@ -21,20 +29,24 @@ public class RockPaperScissorsCommand {
     private static final SimpleCommandExceptionType NO_BOTS = new SimpleCommandExceptionType(new LiteralMessage("You cannot play rock paper scissors with that bot"));
     private static final LazilyFormattedText.ExceptionType NO_SCISSORS = Commands.lazyExceptionWithCommand("Use %s to play with the bot!", "rockpaperscissors (rock|paper|scissors)");
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "rockpaperscissors";
+        String paper = "paper";
+        String rock = "rock";
+        String scissors = "scissors";
+        String opponent = "opponent";
         LiteralCommandNode<CommandSource> node = dispatcher.register(Commands.literal(baseLiteral)
-            .then(Commands.literal("paper")
+            .then(Commands.literal(paper)
                 .executes(context -> rockPaperScissors(context.getSource(), RockPaperScissors.Move.PAPER))
             )
-            .then(Commands.literal("rock")
+            .then(Commands.literal(rock)
                 .executes(context -> rockPaperScissors(context.getSource(), RockPaperScissors.Move.ROCK))
             )
-            .then(Commands.literal("scissors")
+            .then(Commands.literal(scissors)
                 .executes(context -> rockPaperScissors(context.getSource(), RockPaperScissors.Move.SCISSORS))
             )
-            .then(Commands.argument("opponent", UserArgumentType.user())
-                .executes(context -> startRockPaperScissorsGame(context.getSource(), context.getArgument("opponent", User.class)))
+            .then(Commands.argument(opponent, UserArgumentType.user())
+                .executes(context -> startRockPaperScissorsGame(context.getSource(), context.getArgument(opponent, User.class)))
             )
         );
         String alias = "rps";
@@ -54,6 +66,16 @@ public class RockPaperScissorsCommand {
                 Commands.format(baseLiteral + " <opponent>", channel),
                 monospace("<opponent>"));
         }, alias);
+        slashCommands.add(slash(baseLiteral, "Starts a game of rock paper scissors with another user.").addOption(OptionType.USER, opponent, "The user to play against.", true)
+            .addSubcommands(
+                new SubcommandData(paper, "Plays paper against the bot."),
+                new SubcommandData(rock, "Plays rock against the bot."),
+                new SubcommandData(scissors, "Plays scissors against the bot.")
+            ));
+        Commands.registerSlashCommand(baseLiteral, source -> startRockPaperScissorsGame(source, Objects.requireNonNull(source.event().getOption(opponent, OptionMapping::getAsUser))));
+        Commands.registerSlashCommand(baseLiteral + " " + paper, source -> rockPaperScissors(source, RockPaperScissors.Move.PAPER));
+        Commands.registerSlashCommand(baseLiteral + " " + rock, source -> rockPaperScissors(source, RockPaperScissors.Move.ROCK));
+        Commands.registerSlashCommand(baseLiteral + " " + scissors, source -> rockPaperScissors(source, RockPaperScissors.Move.SCISSORS));
     }
 
     private static int rockPaperScissors(CommandSource source, RockPaperScissors.Move move) {

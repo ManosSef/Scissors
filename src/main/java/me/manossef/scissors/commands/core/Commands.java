@@ -117,7 +117,7 @@ public class Commands {
         InfoCommand.register(dispatcher, slashCommands);
         IssueCommand.register(dispatcher, slashCommands);
         PingCommand.register(dispatcher, slashCommands);
-        RockPaperScissorsCommand.register(dispatcher);
+        RockPaperScissorsCommand.register(dispatcher, slashCommands);
         RollCommand.register(dispatcher, slashCommands);
         SquaredleCommand.register(dispatcher, slashCommands);
         SuggestCommand.register(dispatcher);
