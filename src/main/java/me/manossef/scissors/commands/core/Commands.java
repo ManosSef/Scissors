@@ -119,7 +119,7 @@ public class Commands {
         PingCommand.register(dispatcher, slashCommands);
         RockPaperScissorsCommand.register(dispatcher);
         RollCommand.register(dispatcher);
-        SquaredleCommand.register(dispatcher);
+        SquaredleCommand.register(dispatcher, slashCommands);
         SuggestCommand.register(dispatcher);
         TicTacToeCommand.register(dispatcher);
         WordleCommand.register(dispatcher);

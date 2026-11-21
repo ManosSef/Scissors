@@ -11,23 +11,29 @@ import me.manossef.scissors.squaredle.PuzzleUtil;
 import me.manossef.scissors.squaredle.TodayConfig;
 import me.manossef.scissors.squaredle.TodayConfigReader;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 import java.io.UncheckedIOException;
+import java.util.List;
 
+import static net.dv8tion.jda.api.interactions.commands.build.Commands.slash;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.bold;
 
 public class SquaredleCommand {
     private static final SimpleCommandExceptionType CONFIG_NOT_FOUND = new SimpleCommandExceptionType(new LiteralMessage("Failed to get the daily Squaredle puzzle configuration"));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "squaredle";
+        String xp = "xp";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendDailySquaredle(context.getSource(), false))
-            .then(Commands.literal("xp")
+            .then(Commands.literal(xp)
                 .executes(context -> sendDailySquaredle(context.getSource(), true))
             )
         );
-        HelpCommand.addLine(baseLiteral, s -> "Displays information about today's Squaredle puzzle.");
+        String description = "Displays information about today's Squaredle puzzle.";
+        HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, source -> {
             Channel channel = source.channel();
             return String.format("""
@@ -40,6 +46,9 @@ public class SquaredleCommand {
                 Commands.format(baseLiteral, channel),
                 Commands.format(baseLiteral + " xp", channel));
         });
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(xp, "Displays information about today's Squaredle Express puzzle.")));
+        Commands.registerSlashCommand(baseLiteral, source -> sendDailySquaredle(source, false));
+        Commands.registerSlashCommand(baseLiteral + " " + xp, source -> sendDailySquaredle(source, true));
     }
 
     private static int sendDailySquaredle(CommandSource source, boolean xp) throws CommandSyntaxException {
