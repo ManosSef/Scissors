@@ -66,9 +66,10 @@ public class InfoCommand {
                 Commands.format(baseLiteral + " devserver", channel),
                 Commands.format(baseLiteral + " github", channel));
         });
-        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(devserver, description), new SubcommandData(github, description),
+        String bot = "bot";
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(bot, description), new SubcommandData(devserver, description), new SubcommandData(github, description),
             new SubcommandData(options, description), new SubcommandData(servercount, description)));
-        Commands.registerSlashCommand(baseLiteral, InfoCommand::sendGenericInfo);
+        Commands.registerSlashCommand(baseLiteral + " " + bot, InfoCommand::sendGenericInfo);
         Commands.registerSlashCommand(baseLiteral + " " + devserver, InfoCommand::sendDevServer);
         Commands.registerSlashCommand(baseLiteral + " " + github, InfoCommand::sendGithub);
         Commands.registerSlashCommand(baseLiteral + " " + options, InfoCommand::sendOptions);

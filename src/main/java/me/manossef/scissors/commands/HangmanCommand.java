@@ -48,8 +48,9 @@ public class HangmanCommand {
                 Commands.format(baseLiteral + " hard", channel),
                 Commands.format(baseLiteral + " impossible", channel));
         });
-        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(hard, description), new SubcommandData(impossible, description)));
-        Commands.registerSlashCommand(baseLiteral, source -> startHangman(source, Hangman.Difficulty.NORMAL));
+        String normal = "normal";
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(normal, description), new SubcommandData(hard, description), new SubcommandData(impossible, description)));
+        Commands.registerSlashCommand(baseLiteral + " " + normal, source -> startHangman(source, Hangman.Difficulty.NORMAL));
         Commands.registerSlashCommand(baseLiteral + " " + hard, source -> startHangman(source, Hangman.Difficulty.HARD));
         Commands.registerSlashCommand(baseLiteral + " " + impossible, source -> startHangman(source, Hangman.Difficulty.IMPOSSIBLE));
     }

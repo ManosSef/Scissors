@@ -46,8 +46,12 @@ public class SquaredleCommand {
                 Commands.format(baseLiteral, channel),
                 Commands.format(baseLiteral + " xp", channel));
         });
-        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(xp, "Displays information about today's Squaredle Express puzzle.")));
-        Commands.registerSlashCommand(baseLiteral, source -> sendDailySquaredle(source, false));
+        String daily = "daily";
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(
+            new SubcommandData(daily, "Displays information about today's Squaredle puzzle."),
+            new SubcommandData(xp, "Displays information about today's Squaredle Express puzzle.")
+        ));
+        Commands.registerSlashCommand(baseLiteral + " " + daily, source -> sendDailySquaredle(source, false));
         Commands.registerSlashCommand(baseLiteral + " " + xp, source -> sendDailySquaredle(source, true));
     }
 

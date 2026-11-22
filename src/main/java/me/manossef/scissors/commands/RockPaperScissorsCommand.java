@@ -51,7 +51,8 @@ public class RockPaperScissorsCommand {
         );
         String alias = "rps";
         dispatcher.register(Commands.literal(alias).redirect(node));
-        HelpCommand.addLine(baseLiteral, s -> "Plays rock paper scissors with the bot or starts a game of rock paper scissors with another user.", alias);
+        String description = "Plays rock paper scissors with the bot or starts a game of rock paper scissors with another user.";
+        HelpCommand.addLine(baseLiteral, s -> description, alias);
         HelpCommand.addLiteral(baseLiteral, source -> {
             Channel channel = source.channel();
             return String.format("""
@@ -66,16 +67,18 @@ public class RockPaperScissorsCommand {
                 Commands.format(baseLiteral + " <opponent>", channel),
                 monospace("<opponent>"));
         }, alias);
-        slashCommands.add(slash(baseLiteral, "Starts a game of rock paper scissors with another user.").addOption(OptionType.USER, opponent, "The user to play against.", true)
+        String user = "user";
+        slashCommands.add(slash(baseLiteral, description)
             .addSubcommands(
                 new SubcommandData(paper, "Plays paper against the bot."),
                 new SubcommandData(rock, "Plays rock against the bot."),
-                new SubcommandData(scissors, "Plays scissors against the bot.")
+                new SubcommandData(scissors, "Plays scissors against the bot."),
+                new SubcommandData(user, "Starts a game of rock paper scissors with another user.").addOption(OptionType.USER, opponent, "The user to play against.", true)
             ));
-        Commands.registerSlashCommand(baseLiteral, source -> startRockPaperScissorsGame(source, Objects.requireNonNull(source.event().getOption(opponent, OptionMapping::getAsUser))));
         Commands.registerSlashCommand(baseLiteral + " " + paper, source -> rockPaperScissors(source, RockPaperScissors.Move.PAPER));
         Commands.registerSlashCommand(baseLiteral + " " + rock, source -> rockPaperScissors(source, RockPaperScissors.Move.ROCK));
         Commands.registerSlashCommand(baseLiteral + " " + scissors, source -> rockPaperScissors(source, RockPaperScissors.Move.SCISSORS));
+        Commands.registerSlashCommand(baseLiteral + " " + user, source -> startRockPaperScissorsGame(source, Objects.requireNonNull(source.event().getOption(opponent, OptionMapping::getAsUser))));
     }
 
     private static int rockPaperScissors(CommandSource source, RockPaperScissors.Move move) {

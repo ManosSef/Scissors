@@ -47,7 +47,8 @@ public class PingCommand {
                 .executes(context -> mentionMe(context.getSource()))
             )
         );
-        HelpCommand.addLine(baseLiteral, s -> "Pings Discord, measures the bot's reaction time, or replies with \"Pong!\"");
+        String description = "Pings Discord, measures the bot's reaction time, or replies with \"Pong!\"";
+        HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, source -> {
             Channel channel = source.channel();
             return String.format("""
@@ -63,10 +64,12 @@ public class PingCommand {
                 Commands.format(baseLiteral + " discord", channel),
                 Commands.format(baseLiteral + " pong", channel));
         });
-        slashCommands.add(slash(baseLiteral, "Measures the bot's reaction time in milliseconds.").addSubcommands(
+        String millis = "millis";
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(
+            new SubcommandData(millis, "Measures the bot's reaction time in milliseconds."),
             new SubcommandData(nanos, "Measures the bot's reaction time in nanoseconds."), new SubcommandData(discord, "Pings Discord's API."),
             new SubcommandData(pong, "Replies with \"Pong!\"")));
-        Commands.registerSlashCommand(baseLiteral, source -> pingUser(source, false));
+        Commands.registerSlashCommand(baseLiteral + " " + millis, source -> pingUser(source, false));
         Commands.registerSlashCommand(baseLiteral + " " + nanos, source -> pingUser(source, true));
         Commands.registerSlashCommand(baseLiteral + " " + discord, PingCommand::pingDiscord);
         Commands.registerSlashCommand(baseLiteral + " " + pong, PingCommand::pong);

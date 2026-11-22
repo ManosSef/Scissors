@@ -99,10 +99,12 @@ public class RollCommand {
                 Long.MAX_VALUE,
                 Long.MIN_VALUE);
         });
+        String number = "number";
         slashCommands.add(slash(baseLiteral, description)
-            .addOption(OptionType.NUMBER, "max", "The maximum value.", true)
-            .addOption(OptionType.NUMBER, "min", "The minimum value.")
             .addSubcommands(
+                new SubcommandData(number, description)
+                    .addOption(OptionType.NUMBER, "max", "The maximum value.", true)
+                    .addOption(OptionType.NUMBER, "min", "The minimum value."),
                 new SubcommandData(longLiteral, description)
                     .addOption(OptionType.INTEGER, "max", "The maximum value.", true)
                     .addOption(OptionType.INTEGER, "min", "The minimum value."),
@@ -110,7 +112,7 @@ public class RollCommand {
                     .addOption(OptionType.NUMBER, "max", "The maximum value.", true)
                     .addOption(OptionType.NUMBER, "min", "The minimum value.")
             ));
-        Commands.registerSlashCommand(baseLiteral, source -> {
+        Commands.registerSlashCommand(baseLiteral + " " + number, source -> {
             double max = Objects.requireNonNull(source.event().getOption("max", OptionMapping::getAsDouble));
             Double min = source.event().getOption("min", OptionMapping::getAsDouble);
             if(min == null) {

@@ -51,8 +51,9 @@ public class WordleCommand {
                 Commands.format(baseLiteral + " hard", channel)
             );
         });
-        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(hard, description)));
-        Commands.registerSlashCommand(baseLiteral, source -> startWordle(source, false));
+        String normal = "normal";
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(normal, description), new SubcommandData(hard, description)));
+        Commands.registerSlashCommand(baseLiteral + " " + normal, source -> startWordle(source, false));
         Commands.registerSlashCommand(baseLiteral + " " + hard, source -> startWordle(source, true));
     }
 

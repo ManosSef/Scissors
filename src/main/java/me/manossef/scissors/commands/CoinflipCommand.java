@@ -6,8 +6,9 @@ import me.manossef.scissors.Scissors;
 import me.manossef.scissors.commands.core.CommandSource;
 import me.manossef.scissors.commands.core.Commands;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 import java.util.List;
 
@@ -43,9 +44,12 @@ public class CoinflipCommand {
                 Commands.format(baseLiteral, channel),
                 Commands.format(baseLiteral + " nofunnybusiness", channel));
         });
-        slashCommands.add(slash(baseLiteral, description).addSubcommands(new SubcommandData(nofunnybusiness, description)));
-        Commands.registerSlashCommand(baseLiteral, CoinflipCommand::flipCoin);
-        Commands.registerSlashCommand(baseLiteral + " " + nofunnybusiness, CoinflipCommand::flipCoinNoFunnyBusiness);
+        slashCommands.add(slash(baseLiteral, description).addOption(OptionType.BOOLEAN, nofunnybusiness, "Whether the coin should be flipped with no funny business."));
+        Commands.registerSlashCommand(baseLiteral, source -> {
+            Boolean serious = source.event().getOption(nofunnybusiness, OptionMapping::getAsBoolean);
+            if(serious == null || !serious) flipCoin(source);
+            else flipCoinNoFunnyBusiness(source);
+        });
     }
 
     private static int flipCoin(CommandSource source) {
