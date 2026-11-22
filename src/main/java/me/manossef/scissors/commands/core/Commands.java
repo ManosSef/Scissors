@@ -120,7 +120,7 @@ public class Commands {
         RockPaperScissorsCommand.register(dispatcher, slashCommands);
         RollCommand.register(dispatcher, slashCommands);
         SquaredleCommand.register(dispatcher, slashCommands);
-        SuggestCommand.register(dispatcher);
+        SuggestCommand.register(dispatcher, slashCommands);
         TicTacToeCommand.register(dispatcher, slashCommands);
         WordleCommand.register(dispatcher, slashCommands);
         NineCommand.register(dispatcher);

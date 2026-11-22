@@ -18,12 +18,17 @@ import me.manossef.scissors.commands.core.Commands;
 import me.manossef.scissors.jira.objects.Issue;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static net.dv8tion.jda.api.interactions.commands.build.Commands.slash;
 import static net.dv8tion.jda.api.utils.MarkdownUtil.monospace;
 
 public class SuggestCommand {
@@ -37,26 +42,32 @@ public class SuggestCommand {
         "suggest"
     );
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher, List<SlashCommandData> slashCommands) {
         String baseLiteral = "suggest";
+        String bug = "bug";
+        String feature = "feature";
+        String improvement = "improvement";
+        String task = "task";
+        String summary = "summary";
         dispatcher.register(Commands.literal(baseLiteral)
             .executes(context -> sendIssueTypeHint(context.getSource()))
-            .then(argumentsForIssueType("bug", Issue.Fields.Issuetype.BUG, false))
-            .then(argumentsForIssueType("feature", Issue.Fields.Issuetype.FEATURE, false))
-            .then(argumentsForIssueType("improvement", Issue.Fields.Issuetype.IMPROVEMENT, false))
-            .then(argumentsForIssueType("task", Issue.Fields.Issuetype.TASK, false).requires(Commands.devRestricted()))
+            .then(argumentsForIssueType(bug, Issue.Fields.Issuetype.BUG, false))
+            .then(argumentsForIssueType(feature, Issue.Fields.Issuetype.FEATURE, false))
+            .then(argumentsForIssueType(improvement, Issue.Fields.Issuetype.IMPROVEMENT, false))
+            .then(argumentsForIssueType(task, Issue.Fields.Issuetype.TASK, false).requires(Commands.devRestricted()))
             .then(Commands.argument("reporter", UserArgumentType.user())
                 .requires(Commands.devRestricted())
-                .then(argumentsForIssueType("bug", Issue.Fields.Issuetype.BUG, true))
-                .then(argumentsForIssueType("feature", Issue.Fields.Issuetype.FEATURE, true))
-                .then(argumentsForIssueType("improvement", Issue.Fields.Issuetype.IMPROVEMENT, true))
-                .then(argumentsForIssueType("task", Issue.Fields.Issuetype.TASK, true))
+                .then(argumentsForIssueType(bug, Issue.Fields.Issuetype.BUG, true))
+                .then(argumentsForIssueType(feature, Issue.Fields.Issuetype.FEATURE, true))
+                .then(argumentsForIssueType(improvement, Issue.Fields.Issuetype.IMPROVEMENT, true))
+                .then(argumentsForIssueType(task, Issue.Fields.Issuetype.TASK, true))
             )
-            .then(Commands.argument("summary", StringArgumentType.greedyString())
+            .then(Commands.argument(summary, StringArgumentType.greedyString())
                 .executes(context -> sendIssueTypeHint(context.getSource()))
             )
         );
-        HelpCommand.addLine(baseLiteral, s -> "Posts a suggestion for the bot.");
+        String description = "Posts a suggestion for the bot.";
+        HelpCommand.addLine(baseLiteral, s -> description);
         HelpCommand.addLiteral(baseLiteral, source -> {
             Channel channel = source.channel();
             return String.format("""
@@ -73,6 +84,14 @@ public class SuggestCommand {
                 Commands.format(baseLiteral + " feature <summary>", channel),
                 Commands.format(baseLiteral + " improvement <summary>", channel));
         });
+        slashCommands.add(slash(baseLiteral, description).addSubcommands(
+            new SubcommandData(bug, description).addOption(OptionType.STRING, summary, "The suggestion.", true),
+            new SubcommandData(feature, description).addOption(OptionType.STRING, summary, "The suggestion.", true),
+            new SubcommandData(improvement, description).addOption(OptionType.STRING, summary, "The suggestion.", true)
+        ));
+        Commands.registerSlashCommand(baseLiteral + " " + bug, source -> createIssue(source, Issue.Fields.Issuetype.BUG, source.event().getOption(summary, OptionMapping::getAsString), source.user(), null));
+        Commands.registerSlashCommand(baseLiteral + " " + feature, source -> createIssue(source, Issue.Fields.Issuetype.FEATURE, source.event().getOption(summary, OptionMapping::getAsString), source.user(), null));
+        Commands.registerSlashCommand(baseLiteral + " " + improvement, source -> createIssue(source, Issue.Fields.Issuetype.IMPROVEMENT, source.event().getOption(summary, OptionMapping::getAsString), source.user(), null));
     }
 
     private static ArgumentBuilder<CommandSource, ?> argumentsForIssueType(String literal, Issue.Fields.Issuetype type, boolean withUser) {
