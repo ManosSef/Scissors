@@ -2,6 +2,7 @@ package me.manossef.scissors.jira;
 
 import com.google.gson.JsonSyntaxException;
 import me.manossef.scissors.Scissors;
+import me.manossef.scissors.jira.objects.Comment;
 import me.manossef.scissors.jira.objects.Issue;
 import me.manossef.scissors.jira.objects.SearchResults;
 import okhttp3.*;
@@ -75,13 +76,23 @@ public record JiraAPI(String baseUrl) {
         }
     }
 
-    public Issue createIssue(String summary, String description, Issue.Fields.Issuetype issuetype, Issue.Fields.Project project, String reporterUserID, Issue.Fields.Priority priority, Issue.Fields.CustomFieldOption flagged) {
+    public Issue createIssue(String summary, String description, Issue.Fields.Issuetype issuetype, Issue.Fields.Project project, String reporterUserID, Issue.Fields.Priority priority, Issue.Fields.CustomFieldOption flagged, String stackTrace) {
         String node = post(HttpUrl.get(this.baseUrl + "issue"), Scissors.GSON.toJson(new Issue(null, null, new Issue.Fields(
             issuetype, project, null, priority, summary, description, null,
-            flagged == null ? null : new Issue.Fields.CustomFieldOption[]{flagged}, null, reporterUserID
+            flagged == null ? null : new Issue.Fields.CustomFieldOption[]{flagged}, null, reporterUserID,
+            stackTrace
         ), null, null)));
         try {
             return Scissors.GSON.fromJson(node, Issue.class);
+        } catch(JsonSyntaxException e) {
+            return null;
+        }
+    }
+
+    public Comment addComment(String key, String body) {
+        String node = post(HttpUrl.get(this.baseUrl + "issue/" + key + "/comment"), Scissors.GSON.toJson(new Comment(body, null, null)));
+        try {
+            return Scissors.GSON.fromJson(node, Comment.class);
         } catch(JsonSyntaxException e) {
             return null;
         }

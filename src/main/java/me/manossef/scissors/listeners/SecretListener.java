@@ -30,7 +30,8 @@ public class SecretListener extends ListenerAdapter {
             Issue.Fields.Project.SCIS,
             user.getId(),
             null,
-            Issue.Fields.CustomFieldOption.IMPEDIMENT
+            Issue.Fields.CustomFieldOption.IMPEDIMENT,
+            null
         );
         if(issue == null) {
             message.reply("Failed to create the issue; either the bot is not logged in or Jira is down. Please try again later.").queue();
